@@ -1,2 +1,3 @@
 # yzl
-F# DSL for YAML
+
+yzl [/ˈiːz(ə)l/] - YAML Zero-Language - F# DSL for YAML
