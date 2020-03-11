@@ -11,10 +11,10 @@ module Yzl =
         | Folded of 'a
         | Literal of 'a
 
-    type Key = | Key of string
+    type Name = | Name of string
 
     type Node =
-        | Map of KN list
+        | Map of NamedNode list
         | Seq of Node list
         | Scalar of Scalar
         | None
@@ -23,29 +23,23 @@ module Yzl =
         static member op_Implicit(source: System.Boolean) : Node = Scalar(Bool(Plain source))
         static member op_Implicit(source: System.String) : Node = Scalar(String(Plain source))
         static member op_Implicit(source: Node list) : Node = Seq(source)
-       // static member op_Implicit(source: Node seq) : Node = Seq(source)
-        static member op_Implicit(source: KN list) : Node = Map(source)
-       // static member op_Implicit(source: KN seq) : Node = Map(source)
+        static member op_Implicit(source: NamedNode list) : Node = Map(source)
         static member op_Implicit(source: Node) : Node = source
-        // static member op_Implicit(source: Tagged seq -> Tagged) : Tagged list -> Node = 
-            
-        //     fun z -> Map(z)
-        static member op_Implicit(source: KN) : Node = Map([source]) 
-            
-    and KN =
-        | KN of Key * Node
+        static member op_Implicit(source: NamedNode) : Node = Map([source]) 
+    and NamedNode =
+        | Named of Name * Node
     and Scalar =
         | Int of Scalar<System.Int32>
         | Float of Scalar<System.Double>
         | String of Scalar<System.String>
         | Bool of Scalar<System.Boolean>
 
-    let str t value = KN(Key (t), Scalar(String(Plain(value))))
-    let int t value = KN(Key (t), Scalar(Int(Plain(value))))
-    let float t value = KN(Key (t), Scalar(Float(Plain(value))))
-    let boolean t value = KN(Key (t), Scalar(Bool(Plain(value))))
-    let map t map = KN(Key (t), Map(map))
-    let seq t seq = KN(Key(t), Seq(seq))
+    let str t value = Named(Name (t), Scalar(String(Plain(value))))
+    let int t value = Named(Name (t), Scalar(Int(Plain(value))))
+    let float t value = Named(Name (t), Scalar(Float(Plain(value))))
+    let boolean t value = Named(Name (t), Scalar(Bool(Plain(value))))
+    let map t map = Named(Name (t), Map(map))
+    let seq t seq = Named(Name(t), Seq(seq))
 
     type RenderOptions = { indentSpaces: int}
     let renderTree (yaml:Node) = sprintf "%A" yaml
@@ -55,11 +49,6 @@ module Yzl =
         let zero = ""
         let space = " "
         let eol = "\n"
-        let pl1 = "||"
-        let pl2 = "[["
-        let pl3 = "''"
-        let pl4 = ".."
-        let pl5 = ",,"
 
         let rec render soFar (indent:string) this parent =
 
@@ -70,39 +59,31 @@ module Yzl =
              | Folded z -> sprintf "> \n%O\n" z
              | Literal z -> sprintf "| \n%O\n" z
 
-            let nextMapIndent c = 
-                indent +
-                match c with
-                 | Map _ -> tab
-                 | Seq _ -> zero
-                 | _ -> zero
-            let nextSeqIndent q = 
-                indent +
-                match q with
-                 | Map _ -> tab
-                 | Seq _ -> pl4
-                 | _ -> zero
-
-            let seqElem q = 
-                let ni = nextSeqIndent q
-                render (sprintf "%s- " indent) ni q this
+            let seqElem q =
+                render (sprintf "%s- " indent) (indent + tab) q this
 
             let mapElem i m =
-              let (KN (Key t, c)) = m
-              let ni = nextMapIndent c
+              let (Named (Name t, c)) = m
               let whitespace =
                 match c with 
                  | Scalar _ -> space
                  | _ -> eol
               
+              let nextIndent c = 
+                indent +
+                match c with
+                 | Map _ -> tab
+                 | _ -> zero
+
               let indent = 
                 match parent with
                  | Seq _ ->
-                    match i,c with
-                     | 0, _ -> zero
+                    match i with
+                     | 0 -> zero
                      |_ -> indent
                  | _ -> indent
-              render (sprintf "%s%s:%s" indent t whitespace) ni c this
+ 
+              render (sprintf "%s%s:%s" indent t whitespace) (nextIndent c) c this
 
             let r =
                 match this with
