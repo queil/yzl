@@ -18,10 +18,10 @@ module Yzl =
         | Seq of Node list
         | Scalar of Scalar
         | None
-        static member op_Implicit(source: System.Int32) :  Node = Scalar(Int(Plain source))
-        static member op_Implicit(source: System.Double) : Node = Scalar(Float(Plain source))
-        static member op_Implicit(source: System.Boolean) : Node = Scalar(Bool(Plain source))
-        static member op_Implicit(source: System.String) : Node = Scalar(String(Plain source))
+        static member op_Implicit(source: int) :  Node = Scalar(Int(Plain source))
+        static member op_Implicit(source: double) : Node = Scalar(Float(Plain source))
+        static member op_Implicit(source: bool) : Node = Scalar(Bool(Plain source))
+        static member op_Implicit(source: string) : Node = Scalar(Str(Plain source))
         static member op_Implicit(source: Node list) : Node = Seq(source)
         static member op_Implicit(source: NamedNode list) : Node = Map(source)
         static member op_Implicit(source: Node) : Node = source
@@ -29,12 +29,12 @@ module Yzl =
     and NamedNode =
         | Named of Name * Node
     and Scalar =
-        | Int of Scalar<System.Int32>
-        | Float of Scalar<System.Double>
-        | String of Scalar<System.String>
-        | Bool of Scalar<System.Boolean>
+        | Int of Scalar<int>
+        | Float of Scalar<double>
+        | Str of Scalar<string>
+        | Bool of Scalar<bool>
 
-    let str t value = Named(Name (t), Scalar(String(Plain(value))))
+    let str t value = Named(Name (t), Scalar(Str(Plain(value))))
     let int t value = Named(Name (t), Scalar(Int(Plain(value))))
     let float t value = Named(Name (t), Scalar(Float(Plain(value))))
     let boolean t value = Named(Name (t), Scalar(Bool(Plain(value))))
@@ -43,12 +43,15 @@ module Yzl =
 
     type RenderOptions = { indentSpaces: int}
     let renderTree (yaml:Node) = sprintf "%A" yaml
+    [<Literal>]
+    let Zero = ""
+    [<Literal>]
+    let Space = " "
+    [<Literal>]
+    let Eol = "\n"
 
     let renderYaml (opts:RenderOptions) (yaml:Node) =
         let tab = System.String(' ', opts.indentSpaces)
-        let zero = ""
-        let space = " "
-        let eol = "\n"
 
         let rec render soFar (indent:string) this parent =
 
@@ -59,43 +62,34 @@ module Yzl =
              | Folded z -> sprintf "> \n%O\n" z
              | Literal z -> sprintf "| \n%O\n" z
 
-            let seqElem q =
-                render (sprintf "%s- " indent) (indent + tab) q this
+            let seqElem q = render (sprintf "%s- " indent) (indent + tab) q this
 
             let mapElem i m =
               let (Named (Name t, c)) = m
-              let whitespace =
-                match c with 
-                 | Scalar _ -> space
-                 | _ -> eol
-              
-              let nextIndent c = 
-                indent +
-                match c with
-                 | Map _ -> tab
-                 | _ -> zero
+              let whitespace = function | Scalar _ -> Space | _ -> Eol
+              let increment = function | Map _ -> tab | _ -> Zero
 
-              let indent = 
+              let mapIndent = 
                 match parent with
                  | Seq _ ->
                     match i with
-                     | 0 -> zero
+                     | 0 -> Zero
                      |_ -> indent
                  | _ -> indent
  
-              render (sprintf "%s%s:%s" indent t whitespace) (nextIndent c) c this
+              render (sprintf "%s%s:%s" mapIndent t (whitespace c)) (indent + increment c) c this
 
             let r =
                 match this with
                  | Scalar a -> 
-                    match a with
+                    match a with 
                      | Int i -> scalar i
                      | Float f -> scalar f
-                     | String b -> scalar b
+                     | Str b -> scalar b
                      | Bool v -> scalar v
-                 | Seq qs -> qs |> Seq.map seqElem |> String.concat ""
-                 | Map ms -> ms |> Seq.mapi mapElem |> String.concat ""
-                 | None -> zero
+                 | Seq qs -> qs |> Seq.map seqElem |> String.concat Zero
+                 | Map ms -> ms |> Seq.mapi mapElem |> String.concat Zero
+                 | None -> Zero
                  
             soFar + r
         render "" "" yaml None
