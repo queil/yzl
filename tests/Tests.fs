@@ -27,9 +27,9 @@ let fieldpath = Yzl.str "fieldpath"
 [<Tests>]
 let tests =
   testList "generate" [
-    testCase "universe exists (╭ರᴥ•́)" <| fun _ ->
+    testCase "Kubernetes Deployment resource" <| fun _ ->
 
-      let yaml = !% [
+      let yaml = ! [
         apiVersion "apps/v1"
         kind "Deployment"
         metadata [
@@ -53,19 +53,19 @@ let tests =
             ]
             spec [
               containers [
-                !- [
+                ! [
                   name "nginx"
                   image "nginx:1.7.9"
                   ports [
-                    !- [containerPort 80]
+                    ! [containerPort 80]
                   ]
                 ]
-                !- [
+                ! [
                   name "busybox"
                   image "busybox:1.0.0"
                   ports [
-                    !- [containerPort 701]
-                    !- [containerPort 901]
+                    ! [containerPort 701]
+                    ! [containerPort 901]
                   ]
                 ]
               ]
@@ -141,7 +141,7 @@ spec:
   fieldref:
     fieldpath: metadata.annotations.e
 """
-      let single x = !% [
+      let single x = ! [
         name x
         objref [
           kind "ConfigMap"
@@ -153,12 +153,12 @@ spec:
         ]
       ]
 
-      let yaml = !-- [
-        !- (single "A")
-        !- (single "B")
-        !- (single "C")
-        !- (single "D")
-        !- (single "E")
+      let yaml = ! [
+        single "A"
+        single "B"
+        single "C"
+        single "D"
+        single "E"
       ] 
 
       "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces = 2} yaml) expected
@@ -176,11 +176,11 @@ spec:
       code: NO
 """
 
-      let yaml2 = !-- [
-        !- [
+      let yaml2 = ! [
+        ! [
           states [
-          !- [ state [ code "OH" ]]
-          !- [ state [ code "NO" ]]
+          ! [ state [ code "OH" ]]
+          ! [ state [ code "NO" ]]
          ]]]
       "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
     }
@@ -202,23 +202,47 @@ spec:
     - state:
         code: MI
 """
-      let yaml2 = !-- [
-        !- [
+      let yaml2 = ! [
+        ! [
           states [
-            !- [
+            ! [
               states [
-               !- [ state [ code "OH" ]]
-               !- [ state [ code "NO" ]]
+               ! [ state [ code "OH" ]]
+               ! [ state [ code "NO" ]]
               ]
             ]
-            !- [
+            ! [
               states [
-               !- [ state [ code "MO" ]]
-               !- [ state [ code "MI" ]]
+               ! [ state [ code "MO" ]]
+               ! [ state [ code "MI" ]]
               ]
             ]
          
          ]]]
       "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
     }
+
+    test "Bare sequence with one scalar" { 
+        
+        let expected = "- 5\n"
+        let yaml = ! [! 5]
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render)  expected
+    }
+
+    test "Bare sequence of sequence" { 
+        
+        let expected = "- \n  - true\n"
+        let yaml = ! [! [! true ]]
+        
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render)  expected
+    }
+
+    test "Should render true in lowercase" {
+        "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool true) |> Yzl.render)  "true\n"
+    }
+
+    test "Should render false in lowercase" {
+        "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool false) |> Yzl.render)  "false\n"
+    }
+
   ]
