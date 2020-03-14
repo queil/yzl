@@ -2,7 +2,6 @@ module Tests
 
 open Expecto
 open Yzl.Core
-open Yzl.Operators
 
 let kind = Yzl.str "kind"
 let apiVersion = Yzl.str "apiVersion"
