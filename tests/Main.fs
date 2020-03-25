@@ -1,4 +1,4 @@
-﻿module Yzl.Tests.Unit
+﻿module Yzl.Tests.Main
 open Expecto
 
 [<EntryPoint>]

@@ -1,0 +1,6 @@
+parent:
+  myText: |-
+    some
+    - text should
+    - have 
+        the indentation adjusted to the parent node

@@ -1,0 +1,7 @@
+parent:
+  myText: |
+    some
+    - text should : everything is allowed in here
+    other-things 
+        - the indentation adjusted to the parent node
+        - 1

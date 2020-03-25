@@ -1,247 +1,169 @@
-module Tests
+namespace Yzl.Tests.Unit
 
-open Expecto
-open Yzl.Core
+module Core =
 
-let kind = Yzl.str "kind"
-let apiVersion = Yzl.str "apiVersion"
-let metadata x = Yzl.map "metadata" x
-let name = Yzl.str "name"
-let labels x = Yzl.map "labels" x
-let app = Yzl.str "app"
-let spec x = Yzl.map "spec" x
-let replicas = Yzl.int "replicas"
-let selector x = Yzl.map "selector" x
-let matchLabels x = Yzl.map "matchLabels" x
-let template x = Yzl.map "template" x
-let containers x = Yzl.seq "containers" x
-let image = Yzl.str "image"
-let ports x = Yzl.seq "ports" x
-let containerPort = Yzl.int "containerPort"
+  open Expecto
+  open Yzl.Core
+  open System.IO
 
-let objref x = Yzl.map "objref" x
-let fieldref x = Yzl.map "fieldref" x
-let fieldpath = Yzl.str "fieldpath"
+  let kind = Yzl.str "kind"
+  let apiVersion = Yzl.str "apiVersion"
+  let metadata x = Yzl.map "metadata" x
+  let name = Yzl.str "name"
+  let labels x = Yzl.map "labels" x
+  let app = Yzl.str "app"
+  let spec x = Yzl.map "spec" x
+  let replicas = Yzl.int "replicas"
+  let selector x = Yzl.map "selector" x
+  let matchLabels x = Yzl.map "matchLabels" x
+  let template x = Yzl.map "template" x
+  let containers x = Yzl.seq "containers" x
+  let image = Yzl.str "image"
+  let ports x = Yzl.seq "ports" x
+  let containerPort = Yzl.int "containerPort"
 
-[<Tests>]
-let tests =
-  testList "generate" [
-    testCase "Kubernetes Deployment resource" <| fun _ ->
+  let objref x = Yzl.map "objref" x
+  let fieldref x = Yzl.map "fieldref" x
+  let fieldpath = Yzl.str "fieldpath"
 
-      let yaml = ! [
-        apiVersion "apps/v1"
-        kind "Deployment"
-        metadata [
-          name "nginx-deployment"
-          labels [
-            app "nginx"
-          ]
-        ]
-        spec [
-          replicas 3
-          selector [
-            matchLabels [
+  [<Tests>]
+  let tests =
+    testList "generate" [
+      testCase "K8s deployment resource" <| fun _ ->
+        
+        let expected = File.ReadAllText("./yaml/k8s-deployment-resource.yaml")
+
+        let yaml = ! [
+          apiVersion "apps/v1"
+          kind "Deployment"
+          metadata [
+            name "nginx-deployment"
+            labels [
               app "nginx"
             ]
           ]
-          template [
-            metadata [
-              labels [
+          spec [
+            replicas 3
+            selector [
+              matchLabels [
                 app "nginx"
               ]
             ]
-            spec [
-              containers [
-                ! [
-                  name "nginx"
-                  image "nginx:1.7.9"
-                  ports [
-                    ! [containerPort 80]
-                  ]
-                ]
-                ! [
-                  name "busybox"
-                  image "busybox:1.0.0"
-                  ports [
-                    ! [containerPort 701]
-                    ! [containerPort 901]
-                  ]
+            template [
+              metadata [
+                labels [
+                  app "nginx"
                 ]
               ]
-            ]
-          ]         
-        ]
-      ]
-      
-      let expected = """apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.7.9
-        ports:
-        - containerPort: 80
-      - name: busybox
-        image: busybox:1.0.0
-        ports:
-        - containerPort: 701
-        - containerPort: 901
-"""
-      Expect.equal (Yzl.renderYaml {indentSpaces = 2} yaml) expected "I compute, therefore I am."
-
-    
-    test "Top-level sequence" {
-      let expected = """- name: A
-  objref:
-    kind: ConfigMap
-    name: env-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.annotations.a
-- name: B
-  objref:
-    kind: ConfigMap
-    name: env-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.annotations.b
-- name: C
-  objref:
-    kind: ConfigMap
-    name: env-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.annotations.c
-- name: D
-  objref:
-    kind: ConfigMap
-    name: env-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.annotations.d
-- name: E
-  objref:
-    kind: ConfigMap
-    name: env-config
-    apiVersion: v1
-  fieldref:
-    fieldpath: metadata.annotations.e
-"""
-      let single x = ! [
-        name x
-        objref [
-          kind "ConfigMap"
-          name "env-config"
-          apiVersion "v1"
-        ]
-        fieldref [
-          fieldpath ("metadata.annotations." + x.ToLower())
-        ]
-      ]
-
-      let yaml = ! [
-        single "A"
-        single "B"
-        single "C"
-        single "D"
-        single "E"
-      ] 
-
-      "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces = 2} yaml) expected
-    }
-
-    test "Sequence of maps" {
-
-      let states x = Yzl.seq "states" x
-      let state x = Yzl.map "state" x
-      let code x = Yzl.str "code" x
-      let expected = """- states:
-  - state:
-      code: OH
-  - state:
-      code: NO
-"""
-
-      let yaml2 = ! [
-        ! [
-          states [
-          ! [ state [ code "OH" ]]
-          ! [ state [ code "NO" ]]
-         ]]]
-      "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
-    }
-
-    test "Sequence of sequences" {
-
-      let states x = Yzl.seq "states" x
-      let state x = Yzl.map "state" x
-      let code x = Yzl.str "code" x
-      let expected = """- states:
-  - states:
-    - state:
-        code: OH
-    - state:
-        code: NO
-  - states:
-    - state:
-        code: MO
-    - state:
-        code: MI
-"""
-      let yaml2 = ! [
-        ! [
-          states [
-            ! [
-              states [
-               ! [ state [ code "OH" ]]
-               ! [ state [ code "NO" ]]
+              spec [
+                containers [
+                  ! [
+                    name "nginx"
+                    image "nginx:1.7.9"
+                    ports [
+                      ! [containerPort 80]
+                    ]
+                  ]
+                  ! [
+                    name "busybox"
+                    image "busybox:1.0.0"
+                    ports [
+                      ! [containerPort 701]
+                      ! [containerPort 901]
+                    ]
+                  ]
+                ]
               ]
-            ]
-            ! [
-              states [
-               ! [ state [ code "MO" ]]
-               ! [ state [ code "MI" ]]
+            ]         
+          ]
+        ]
+  
+        "Rendering failed" |> Expect.equal (Yzl.render yaml) expected
+
+      test "Top-level sequence" {
+        let expected = File.ReadAllText("./yaml/top-level-sequence.yaml")
+          
+        let single x = ! [
+          name x
+          objref [
+            kind "ConfigMap"
+            name "env-config"
+            apiVersion "v1"
+          ]
+          fieldref [
+            fieldpath ("metadata.annotations." + x.ToLower())
+          ]
+        ]
+
+        let yaml = ! [
+          single "A"
+          single "B"
+          single "C"
+          single "D"
+          single "E"
+        ] 
+
+        "Rendering failed" |> Expect.equal (Yzl.render yaml) expected
+      }
+
+      test "Sequence of maps" {
+
+        let states x = Yzl.seq "states" x
+        let state x = Yzl.map "state" x
+        let code x = Yzl.str "code" x
+        let expected = File.ReadAllText("./yaml/sequence-of-maps.yaml")
+  
+        let yaml2 = ! [
+          ! [
+            states [
+            ! [ state [ code "OH" ]]
+            ! [ state [ code "NO" ]]
+           ]]]
+        "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
+      }
+
+      test "Sequence of sequences" {
+
+        let states x = Yzl.seq "states" x
+        let state x = Yzl.map "state" x
+        let code x = Yzl.str "code" x
+
+        let expected = File.ReadAllText("./yaml/sequence-of-sequences.yaml")
+        let yaml2 = ! [
+          ! [
+            states [
+              ! [
+                states [
+                 ! [ state [ code "OH" ]]
+                 ! [ state [ code "NO" ]]
+                ]
               ]
-            ]
-         
-         ]]]
-      "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
-    }
+              ! [
+                states [
+                 ! [ state [ code "MO" ]]
+                 ! [ state [ code "MI" ]]
+                ]
+              ]
+           
+           ]]]
+        "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
+      }
 
-    test "Bare sequence with one scalar" { 
-        
-        let expected = "- 5\n"
-        let yaml = ! [! 5]
-        "Rendering failed" |> Expect.equal (yaml |> Yzl.render)  expected
-    }
+      test "Bare sequence with one scalar" { 
+          
+          "Rendering failed" |> Expect.equal (! [! 5] |> Yzl.render) "- 5\n"
+      }
 
-    test "Bare sequence of sequence" { 
-        
-        let expected = "- \n  - true\n"
-        let yaml = ! [! [! true ]]
-        
-        "Rendering failed" |> Expect.equal (yaml |> Yzl.render)  expected
-    }
+      test "Bare sequence of sequence" { 
+          
+          "Rendering failed" |> Expect.equal (! [! [! true ]] |> Yzl.render)  "- \n  - true\n"
+      }
 
-    test "Should render true in lowercase" {
-        "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool true) |> Yzl.render)  "true\n"
-    }
+      test "Should render true in lowercase" {
+          "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool true) |> Yzl.render)  "true\n"
+      }
 
-    test "Should render false in lowercase" {
-        "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool false) |> Yzl.render)  "false\n"
-    }
-
-  ]
+      test "Should render false in lowercase" {
+          "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool false) |> Yzl.render)  "false\n"
+      }
+    ]

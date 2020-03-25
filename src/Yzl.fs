@@ -2,6 +2,7 @@ namespace Yzl.Core
 
 open FSharp.Collections
 open System.Text
+open System
 
 [<RequireQualifiedAccessAttribute>]
 module Yzl =
@@ -11,23 +12,25 @@ module Yzl =
      | SingleQuoted of string
      | DoubleQuoted of string
      | Folded of string
+     | FoldedDash of string
      | Literal of string
+     | LiteralDash of string
 
     type Name = | Name of string
 
     type Node =
-      | Map of NamedNode list
-      | Seq of Node list
+      | MapNode of NamedNode list
+      | SeqNode of Node list
       | Scalar of Scalar
-      | None
+      | NoNode
       static member op_Implicit(source: int) :  Node = Scalar(Int source)
       static member op_Implicit(source: double) : Node = Scalar(Float source)
       static member op_Implicit(source: bool) : Node = Scalar(Bool source)
       static member op_Implicit(source: string) : Node = Scalar(Str (Plain source))
-      static member op_Implicit(source: Node list) : Node = Seq(source)
-      static member op_Implicit(source: NamedNode list) : Node = Map(source)
+      static member op_Implicit(source: Node list) : Node = SeqNode(source)
+      static member op_Implicit(source: NamedNode list) : Node = MapNode(source)
       static member op_Implicit(source: Node) : Node = source
-      static member op_Implicit(source: NamedNode) : Node = Map([source]) 
+      static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
     and NamedNode =
       | Named of Name * Node
     and Scalar =
@@ -40,34 +43,71 @@ module Yzl =
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
     let str t value = Named(Name (t), Scalar(Str(Plain value)))
+    let strLiteral t value = Named(Name (t), Scalar(Str(Literal value)))
+    let strLiteralDash t value = Named(Name (t), Scalar(Str(LiteralDash value)))
+    let strFolded t value = Named(Name (t), Scalar(Str(Folded value)))
+    let strFoldedDash t value = Named(Name (t), Scalar(Str(FoldedDash value)))
     let int t value = Named(Name (t), Scalar(Int value))
     let float t value = Named(Name (t), Scalar(Float value))
     let boolean t value = Named(Name (t), Scalar(Bool value))
-    let map t map = Named(Name (t), Map(map))
-    let seq t seq = Named(Name(t), Seq(seq))
+    let map t map = Named(Name (t), MapNode(map))
+    let seq t seq = Named(Name(t), SeqNode(seq))
     
 
     type RenderOptions = { indentSpaces: int}
     let renderTree (yaml:Node) = sprintf "%A" yaml
     [<Literal>]
-    let Zero = ""
+    let Empty = ""
     [<Literal>]
     let Space = " "
     [<Literal>]
     let Eol = "\n"
 
     let renderYaml (opts:RenderOptions) (yaml:Node) =
-        let tab = System.String(' ', opts.indentSpaces)
+        let tab = String(' ', opts.indentSpaces)
         let builder = StringBuilder()
 
         let rec render (indent:string) this parent =
 
+            let normalizeIndent (s: string) =
+              let lines = 
+                let fixFirst z =
+                  match z with
+                   | [] -> []
+                   | h::t when String.IsNullOrWhiteSpace(h) -> t
+                   | _ -> z
+                let fixLast z =
+                  match z with
+                   | [] -> []
+                   | ls when String.IsNullOrWhiteSpace(ls |> List.last) -> ls.[0..ls.Length - 2]
+                   | _ -> z
+                s.Split('\n') |> Seq.toList |> fixFirst |> fixLast
+              let requiredIndent = indent + tab
+              let existingIndent (z:string) = z.[0..z.IndexOf(z.TrimStart()) - 1]
+              let indentBase = lines |> Seq.pick (fun x ->
+                let exs = (existingIndent x)
+                if exs <> Empty then Some exs else Some "")
+
+              System.String.Join(Eol,
+                lines |> Seq.map (fun x ->
+                    match x with
+                     | s when s = Empty -> s
+                     | s when String.IsNullOrWhiteSpace(s) -> requiredIndent
+                     | s when (existingIndent s) = Empty -> requiredIndent + s
+                     | _ -> requiredIndent + x.[indentBase.Length..x.Length - 1]
+                   )
+                 )
+            
+            let nullOr = function | null -> "null" | z -> z
+                 
             let stringScalar = function
-             | Plain z -> sprintf "%s\n" z
-             | SingleQuoted z -> sprintf "'%s'\n" z
-             | DoubleQuoted z -> sprintf "\"%s\"\n" z
-             | Folded z -> sprintf "> \n%s\n" z
-             | Literal z -> sprintf "| \n%s\n" z
+             | Plain z -> sprintf "%s\n" (nullOr z)
+             | SingleQuoted z -> sprintf "'%s'\n" (nullOr z)
+             | DoubleQuoted z -> sprintf "\"%s\"\n" (nullOr z)
+             | Folded z -> sprintf ">\n%s\n" (nullOr z |> normalizeIndent)
+             | FoldedDash z -> sprintf ">-\n%s\n" (nullOr z |> normalizeIndent)
+             | Literal z -> sprintf "|\n%s\n" (nullOr z |> normalizeIndent)
+             | LiteralDash z -> sprintf "|-\n%s\n" (nullOr z |> normalizeIndent)
 
             let stringify = function 
              | Int v -> Plain (v |> string)
@@ -79,9 +119,9 @@ module Yzl =
               let nextSeqIndent q = 
                 indent +
                 match q with
-                 | Map _ -> tab
-                 | Seq _ -> Eol + tab
-                 | _ -> Zero
+                 | MapNode _ -> tab
+                 | SeqNode _ -> Eol + tab
+                 | _ -> Empty
 
               builder.Append(sprintf "%s- " indent) |> ignore
               render  (nextSeqIndent q) q this
@@ -89,12 +129,12 @@ module Yzl =
             let mapElem i m =
               let (Named (Name t, c)) = m
               let whitespace = function | Scalar _ -> Space | _ -> Eol
-              let increment = function | Map _ -> tab | _ -> Zero
+              let increment = function | MapNode _ -> tab | _ -> Empty
               let mapIndent = 
                 match parent with
-                 | Seq _ ->
+                 | SeqNode _ ->
                     match i with
-                     | 0 -> Zero
+                     | 0 -> Empty
                      |_ -> indent
                  | _ -> indent
 
@@ -105,12 +145,12 @@ module Yzl =
                 match this with
                  | Scalar a -> 
                    builder.Append(a |> (stringify >> stringScalar)) |> ignore
-                 | Seq qs -> qs |> Seq.iter seqElem
-                 | Map ms -> ms |> Seq.iteri mapElem
-                 | None -> ()
+                 | SeqNode qs -> qs |> Seq.iter seqElem
+                 | MapNode ms -> ms |> Seq.iteri mapElem
+                 | NoNode -> ()
                  
             builder.Append(r) |> ignore
-        render Zero yaml None
+        render Empty yaml NoNode
         builder.ToString()
 
     /// Renders using 2 spaces as indent

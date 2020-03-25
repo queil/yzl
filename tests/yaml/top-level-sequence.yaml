@@ -1,0 +1,35 @@
+- name: A
+  objref:
+    kind: ConfigMap
+    name: env-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.annotations.a
+- name: B
+  objref:
+    kind: ConfigMap
+    name: env-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.annotations.b
+- name: C
+  objref:
+    kind: ConfigMap
+    name: env-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.annotations.c
+- name: D
+  objref:
+    kind: ConfigMap
+    name: env-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.annotations.d
+- name: E
+  objref:
+    kind: ConfigMap
+    name: env-config
+    apiVersion: v1
+  fieldref:
+    fieldpath: metadata.annotations.e
