@@ -7,12 +7,14 @@ pool:
 
 steps:
 - task: DotNetCoreCLI@2
+  name: 'test'
   inputs:
     command: 'test'
     projects: 'tests'
     arguments: '-c Release'
 
 - task: DotNetCoreCLI@2
+  name: 'pack'
   inputs:
     command: 'pack'
     packagesToPack: 'src/*.fsproj'
@@ -21,4 +23,5 @@ steps:
     verbosityPack: 'Normal'
 
 - script: dotnet nuget push -s  https://api.nuget.org/v3/index.json -k $(nuget-api-key) $(Build.ArtifactStagingDirectory)/*.nupkg
+  name: 'push'
   condition: ${{ startsWith(variables['Build.SourceBranch'], 'refs/tags/') }}
