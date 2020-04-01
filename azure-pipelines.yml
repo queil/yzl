@@ -20,9 +20,4 @@ steps:
     versioningScheme: 'off'
     verbosityPack: 'Normal'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-    nuGetFeedType: 'external'
-    includeNuGetOrg: true
+- script: dotnet nuget push -s  https://api.nuget.org/v3/index.json -k $(nuget-api-key) $(Build.ArtifactStagingDirectory)/*.nupkg
