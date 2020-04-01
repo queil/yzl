@@ -1,6 +1,10 @@
 trigger:
-- master
-- tags
+  branches:
+    include:
+    - 'master'
+  tags:
+    include:
+    - '*'
 
 variables:
   pkgver: ${{ variables['Build.SourceBranchName'] }}
