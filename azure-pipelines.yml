@@ -1,0 +1,17 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.fsproj'
+    arguments: '-c Release'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: 'tests'
+    arguments: '--no-build'
