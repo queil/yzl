@@ -2,6 +2,9 @@ trigger:
 - master
 - tags
 
+variables:
+  PKG_VAR: ${{ variables['Build.SourceBranchName'] }}
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -19,7 +22,13 @@ steps:
     command: 'pack'
     packagesToPack: 'src/*.fsproj'
     includesymbols: true
-    versioningScheme: 'off'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/*.fsproj'
+    includesymbols: true
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'PKG_VER'
     verbosityPack: 'Normal'
 
 - script: dotnet nuget push -s  https://api.nuget.org/v3/index.json -k $(nuget-api-key) $(Build.ArtifactStagingDirectory)/*.nupkg
