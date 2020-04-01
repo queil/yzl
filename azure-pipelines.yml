@@ -21,3 +21,4 @@ steps:
     verbosityPack: 'Normal'
 
 - script: dotnet nuget push -s  https://api.nuget.org/v3/index.json -k $(nuget-api-key) $(Build.ArtifactStagingDirectory)/*.nupkg
+  condition: ${{and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))}}
