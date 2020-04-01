@@ -10,3 +10,10 @@ steps:
     command: 'test'
     projects: 'tests'
     arguments: '-c Release'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: 'src/*.fsproj'
+    includesymbols: true
+    versioningScheme: 'off'
