@@ -20,4 +20,9 @@ steps:
     versioningScheme: 'off'
     verbosityPack: 'Normal'
 
-    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+    nuGetFeedType: 'external'
+    includeNuGetOrg: true
