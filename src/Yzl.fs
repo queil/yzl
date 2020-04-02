@@ -15,6 +15,8 @@ module Yzl =
      | FoldedDash of string
      | Literal of string
      | LiteralDash of string
+     static member op_Implicit(source: string) : Str = Plain source
+     static member op_Implicit(source: Str) : Str = source
 
     type Name = | Name of string
 
@@ -42,18 +44,14 @@ module Yzl =
     /// Implicit cast helper
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
-    let str t value = Named(Name (t), Scalar(Str(Plain value)))
-    let strLiteral t value = Named(Name (t), Scalar(Str(Literal value)))
-    let strLiteralDash t value = Named(Name (t), Scalar(Str(LiteralDash value)))
-    let strFolded t value = Named(Name (t), Scalar(Str(Folded value)))
-    let strFoldedDash t value = Named(Name (t), Scalar(Str(FoldedDash value)))
-    let int t value = Named(Name (t), Scalar(Int value))
-    let float t value = Named(Name (t), Scalar(Float value))
-    let boolean t value = Named(Name (t), Scalar(Bool value))
-    let map t map = Named(Name (t), MapNode(map))
-    let seq t seq = Named(Name(t), SeqNode(seq))
+    let private named t node = Named(Name t, node)
+    let inline str t (node:^a) = Named(Name t, Scalar(Str (node |> augment)))
+    let int name value =  Scalar(Int value) |> named name
+    let float name value = Scalar(Float value) |> named name
+    let boolean name value = Scalar(Bool value) |> named name
+    let map name map =  MapNode(map) |> named name
+    let seq name seq =  SeqNode(seq) |> named name
     
-
     type RenderOptions = { indentSpaces: int}
     let renderTree (yaml:Node) = sprintf "%A" yaml
     [<Literal>]

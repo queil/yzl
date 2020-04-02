@@ -8,13 +8,14 @@ module Strings =
 
   [<Tests>]
   let tests =
+    let myText =  Yzl.str "myText"
     testList "generate" [
       
       test "Literal dash" {
         let expected = File.ReadAllText("./yaml/literal-dash.yaml")
         let yaml = ![
           Yzl.map "parent" [
-           Yzl.strLiteralDash "myText"
+            myText !|-
   // START: this space is left here purposely - do not remove
                                              """
                                              some
@@ -34,7 +35,7 @@ module Strings =
 
         let yaml = ![
           Yzl.map "parent" [
-           Yzl.strLiteral "myText"
+           myText !|
   // START: this space is left here purposely - do not remove
                """
                some
@@ -54,7 +55,7 @@ module Strings =
         let expected = File.ReadAllText("./yaml/folded-dash.yaml")
         let yaml = ![
           Yzl.map "parent" [
-           Yzl.strFoldedDash "myText"
+           myText !>-
   // START: this space is left here purposely - do not remove
                                              """
                                              rg             
@@ -75,7 +76,7 @@ module Strings =
 
         let yaml = ![
           Yzl.map "parent" [
-           Yzl.strFolded "myText"
+           myText !>
   // START: this space is left here purposely - do not remove
                   """
                   lorem ipsum      
@@ -100,7 +101,7 @@ module Strings =
 
         let yaml = ![
           Yzl.map "parent" [
-           Yzl.strFolded "myText" null
+           myText !> null
           ]
         ]
 

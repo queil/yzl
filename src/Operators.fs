@@ -6,7 +6,10 @@ module Operators =
   /// Augment to Yzl Node
   let inline (!) (a:^a) = Yzl.augment a
   /// Folded string
-  let (!>) (value:string) = Yzl.Scalar(Yzl.Str(Yzl.Folded value))
+  let (!>) (value:string) = Yzl.Folded value
+  /// Folded dash
+  let (!>-) (value:string) = Yzl.FoldedDash value
   /// Literal string
-  let (!|) (value:string) = Yzl.Scalar(Yzl.Str(Yzl.Literal value))
-
+  let (!|) (value:string) = Yzl.Literal value
+  /// Literal dash string
+  let (!|-) (value:string) = Yzl.LiteralDash value
