@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>queil</Authors>
+    <Description>F# DSL for YAML</Description>
+    <Copyright>2020 © queil</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
