@@ -6,6 +6,7 @@
     <Description>F# DSL for YAML</Description>
     <Copyright>2020 © queil</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/queil/yzl</RepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
