@@ -24,6 +24,7 @@ steps:
   displayName: 'Pack'
   inputs:
     command: 'pack'
+    arguments: '-c Release'
     packagesToPack: 'src/*.fsproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: PKGVER
