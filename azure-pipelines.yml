@@ -8,6 +8,7 @@ trigger:
 
 variables:
   pkgver: ${{ variables['Build.SourceBranchName'] }}
+  BuildConfiguration: Release
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -24,7 +25,6 @@ steps:
   displayName: 'Pack'
   inputs:
     command: 'pack'
-    arguments: '-c Release'
     packagesToPack: 'src/*.fsproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: PKGVER
