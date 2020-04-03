@@ -6,6 +6,8 @@ Yzl is a DSL alternative for templating YAML. It was inspired by [Suave HTML Vie
 
 ## Example
 
+[Full code here](tests/Example.fs) 
+
 Yzl:
 
 ```fsharp
