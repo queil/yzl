@@ -51,8 +51,9 @@ module Yzl =
     let boolean name value = Scalar(Bool value) |> named name
     let map name map =  MapNode(map) |> named name
     let seq name seq =  SeqNode(seq) |> named name
-    
-    type RenderOptions = { indentSpaces: int}
+    let none = Named(Name "", NoNode)
+
+    type RenderOptions = { indentSpaces: int }
     let renderTree (yaml:Node) = sprintf "%A" yaml
     [<Literal>]
     let Empty = ""
@@ -121,8 +122,10 @@ module Yzl =
                  | SeqNode _ -> Eol + tab
                  | _ -> Empty
 
-              builder.Append(sprintf "%s- " indent) |> ignore
-              render  (nextSeqIndent q) q this
+              match q with
+               | NoNode -> ()
+               | _ -> builder.Append(sprintf "%s- " indent) |> ignore
+              render (nextSeqIndent q) q this
 
             let mapElem i m =
               let (Named (Name t, c)) = m
@@ -135,9 +138,11 @@ module Yzl =
                      | 0 -> Empty
                      |_ -> indent
                  | _ -> indent
-
-              builder.Append(sprintf "%s%s:%s" mapIndent t (whitespace c)) |> ignore
-              render  (indent + increment c) c this
+              
+              match (t, c) with
+               | Empty, NoNode -> ()
+               | _ -> builder.Append(sprintf "%s%s:%s" mapIndent t (whitespace c)) |> ignore
+              render (indent + increment c) c this
 
             let r =
                 match this with

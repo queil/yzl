@@ -166,4 +166,17 @@ module Core =
       test "Should render false in lowercase" {
           "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool false) |> Yzl.render)  "false\n"
       }
+
+      test "Should not render NoNode in seq" {
+          "Rendering failed" |> Expect.equal (![ ! "x"; Yzl.NoNode; ! "y" ] |> Yzl.render)  "- x\n- y\n"
+      }
+      test "Should not render NoNode in map" {
+          let expected = 
+            ![ 
+                Yzl.Named(Yzl.Name "name", ! "Value")
+                Yzl.none
+                Yzl.Named(Yzl.Name "name2", ! "Value2")
+             ] |> Yzl.render
+          "Rendering failed" |> Expect.equal expected  "name: Value\nname2: Value2\n"
+      }
     ]
