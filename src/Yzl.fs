@@ -84,19 +84,14 @@ module Yzl =
                 s.Split('\n') |> Seq.toList |> fixFirst |> fixLast
               let requiredIndent = indent + tab
               let existingIndent (z:string) = z.[0..z.IndexOf(z.TrimStart()) - 1]
-              let indentBase = lines |> Seq.pick (fun x ->
-                let exs = (existingIndent x)
-                if exs <> Empty then Some exs else Some "")
+              let indentBase = lines |> Seq.head |> existingIndent
 
               System.String.Join(Eol,
-                lines |> Seq.map (fun x ->
-                    match x with
+                lines |> Seq.map (function
                      | s when s = Empty -> s
                      | s when String.IsNullOrWhiteSpace(s) -> requiredIndent
                      | s when (existingIndent s) = Empty -> requiredIndent + s
-                     | _ -> requiredIndent + x.[indentBase.Length..x.Length - 1]
-                   )
-                 )
+                     | s -> requiredIndent + s.[indentBase.Length..s.Length - 1]))
             
             let nullOr = function | null -> "null" | z -> z
                  
