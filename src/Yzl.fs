@@ -114,42 +114,52 @@ module Yzl =
              | Float v -> Plain (v |> string)
              | Str s -> s
 
-            let seqElem q = 
-              let nextSeqIndent q = 
-                indent +
+            let renderSeq qs =
+              let seqElem q =
+                let childIndent q =
+                  indent +
+                  match q with
+                   | MapNode _ | SeqNode _ -> tab
+                   | _ -> Empty
+
                 match q with
-                 | MapNode _ -> tab
-                 | SeqNode _ -> Eol + tab
-                 | _ -> Empty
+                 | NoNode -> ()
+                 | _ -> builder.Append(sprintf "%s- " indent) |> ignore
+                render (childIndent q) q this
 
-              match q with
-               | NoNode -> ()
-               | _ -> builder.Append(sprintf "%s- " indent) |> ignore
-              render (nextSeqIndent q) q this
-
-            let mapElem i m =
-              let (Named (Name t, c)) = m
-              let whitespace = function | Scalar _ -> Space | _ -> Eol
-              let increment = function | MapNode _ -> tab | _ -> Empty
-              let mapIndent = 
+              let maybeEol =
                 match parent with
-                 | SeqNode _ ->
-                    match i with
-                     | 0 -> Empty
-                     |_ -> indent
-                 | _ -> indent
+                 | SeqNode _ -> Eol
+                 | _ -> Empty
+              builder.Append(maybeEol) |> ignore
+              qs |> Seq.iter seqElem
+
+            let renderMap ms =
+              let mapElem i m =
+                let (Named (Name t, c)) = m
+                let whitespace = function | Scalar _ -> Space | _ -> Eol
+                let increment = function | MapNode _ -> tab | _ -> Empty
+                let mapIndent =
+                  match parent with
+                   | SeqNode _ ->
+                      match i with
+                       | 0 -> Empty
+                       |_ -> indent
+                   | _ -> indent
               
-              match (t, c) with
-               | Empty, NoNode -> ()
-               | _ -> builder.Append(sprintf "%s%s:%s" mapIndent t (whitespace c)) |> ignore
-              render (indent + increment c) c this
+                match (t, c) with
+                 | Empty, NoNode -> ()
+                 | _ -> builder.Append(sprintf "%s%s:%s" mapIndent t (whitespace c)) |> ignore
+                render (indent + increment c) c this
+
+              ms |> Seq.iteri mapElem
 
             let r =
                 match this with
                  | Scalar a -> 
                    builder.Append(a |> (stringify >> stringScalar)) |> ignore
-                 | SeqNode qs -> qs |> Seq.iter seqElem
-                 | MapNode ms -> ms |> Seq.iteri mapElem
+                 | SeqNode qs -> qs |> renderSeq
+                 | MapNode ms -> ms |> renderMap
                  | NoNode -> ()
                  
             builder.Append(r) |> ignore

@@ -156,7 +156,7 @@ module Core =
 
       test "Bare sequence of sequence" { 
           
-          "Rendering failed" |> Expect.equal (! [! [! true ]] |> Yzl.render)  "- \n  - true\n"
+          "Rendering failed" |> Expect.equal (! [! [! true; ! true; ! true ]] |> Yzl.render)  "- \n  - true\n  - true\n  - true\n"
       }
 
       test "Should render true in lowercase" {
