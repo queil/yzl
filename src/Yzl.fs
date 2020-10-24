@@ -65,6 +65,7 @@ module Yzl =
     let renderYaml (opts:RenderOptions) (yaml:Node) =
         let tab = String(' ', opts.indentSpaces)
         let builder = StringBuilder()
+        let append (s:string) = s |> builder.Append |> ignore
 
         let rec render (indent:string) this parent =
 
@@ -124,14 +125,14 @@ module Yzl =
 
                 match q with
                  | NoNode -> ()
-                 | _ -> builder.Append(sprintf "%s- " indent) |> ignore
+                 | _ -> sprintf "%s- " indent |> append
                 render (childIndent q) q this
 
               let maybeEol =
                 match parent with
                  | SeqNode _ -> Eol
                  | _ -> Empty
-              builder.Append(maybeEol) |> ignore
+              maybeEol |> append
               qs |> Seq.iter seqElem
 
             let renderMap ms =
@@ -149,20 +150,17 @@ module Yzl =
               
                 match (t, c) with
                  | Empty, NoNode -> ()
-                 | _ -> builder.Append(sprintf "%s%s:%s" mapIndent t (whitespace c)) |> ignore
+                 | _ -> sprintf "%s%s:%s" mapIndent t (whitespace c) |> append
                 render (indent + increment c) c this
 
               ms |> Seq.iteri mapElem
 
-            let r =
-                match this with
-                 | Scalar a -> 
-                   builder.Append(a |> (stringify >> stringScalar)) |> ignore
-                 | SeqNode qs -> qs |> renderSeq
-                 | MapNode ms -> ms |> renderMap
-                 | NoNode -> ()
+            match this with
+             | Scalar a -> a |> (stringify >> stringScalar) |> append
+             | SeqNode qs -> qs |> renderSeq
+             | MapNode ms -> ms |> renderMap
+             | NoNode -> ()
                  
-            builder.Append(r) |> ignore
         render Empty yaml NoNode
         builder.ToString()
 
