@@ -351,3 +351,7 @@ MigrationBackup/
 
 .fake
 .ionide
+
+# MkDocs
+
+site

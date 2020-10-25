@@ -1,0 +1,7 @@
+site_name: Yzl
+nav:
+- Home: index.md
+theme: 
+  name: material
+  palette:
+    primary: teal
