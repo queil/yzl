@@ -1,6 +1,7 @@
 site_name: Yzl
 nav:
 - Home: index.md
+- API Reference: output/reference/index.html
 theme: 
   name: material
   palette:
