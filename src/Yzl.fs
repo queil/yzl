@@ -44,7 +44,7 @@ module Yzl =
       | Str of Str
       | Bool of bool
 
-    /// Implicit cast helper
+    /// <summary>Implicit cast helper</summary>
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
     let private named t node = Named(Name t, node)
@@ -59,11 +59,11 @@ module Yzl =
     type RenderOptions = { indentSpaces: int }
     let renderTree (yaml:Node) = sprintf "%A" yaml
     [<Literal>]
-    let Empty = ""
+    let private Empty = ""
     [<Literal>]
-    let Space = " "
+    let private Space = " "
     [<Literal>]
-    let Eol = "\n"
+    let private Eol = "\n"
 
     let renderYaml (opts:RenderOptions) (yaml:Node) =
         let tab = String(' ', opts.indentSpaces)
