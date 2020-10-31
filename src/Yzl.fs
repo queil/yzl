@@ -1,3 +1,6 @@
+/// <summary>
+/// Yzl core modules
+/// </summary>
 namespace Yzl.Core
 
 open FSharp.Collections
