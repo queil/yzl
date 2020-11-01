@@ -8,19 +8,19 @@
       
       
       
-      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.0">
     
     
       
-        <title>yzl - YAML Zero-Language - F# DSL for YAML - Yzl</title>
+        <title>Yzl.RenderOptions Type - Yzl</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.bc7e593a.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.bc7e593a.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab28b872.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab28b872.min.css">
         
           
           
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#building-docs" class="md-skip">
+        <a href="#yzlrenderoptions-type" class="md-skip">
           Skip to content
         </a>
       
@@ -73,7 +73,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="." title="Yzl" class="md-header-nav__button md-logo" aria-label="Yzl">
+    <a href="../../.." title="Yzl" class="md-header-nav__button md-logo" aria-label="Yzl">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -90,7 +90,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              yzl - YAML Zero-Language - F# DSL for YAML
+              Yzl.RenderOptions Type
             
           </span>
         </div>
@@ -147,7 +147,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Yzl" class="md-nav__button md-logo" aria-label="Yzl">
+    <a href="../../.." title="Yzl" class="md-nav__button md-logo" aria-label="Yzl">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -162,45 +162,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Home
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="." class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../.." class="md-nav__link">
       Home
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#building-docs" class="md-nav__link">
-    Building docs
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -210,7 +176,7 @@
 
 
   <li class="md-nav__item">
-    <a href="yzl/reference/" class="md-nav__link">
+    <a href="../" class="md-nav__link">
       API Reference
     </a>
   </li>
@@ -230,6 +196,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -238,8 +206,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#building-docs" class="md-nav__link">
-    Building docs
+  <a href="#record-fields" class="md-nav__link">
+    Record fields
   </a>
   
 </li>
@@ -257,20 +225,30 @@
               
                 
                 
-                  <h1>Home</h1>
-                
-                <p><a href="https://github.com/queil/yzl">Yzl</a> (pronounced <em>easel</em>) stands for YAML Zero-Language. It's a pragmatic template-less approach to YAML generation powered by F#.</p>
-<h2 id="building-docs">Building docs</h2>
-<p>The docs are built using MkDocs and API Reference is generated with <code>FSharp.Formatting.CommandTool</code>. At present the process is experimental and uses my fork of <a href="https://github.com/queil/FSharp.Formatting">FSharp.Formatting</a>.</p>
-<p>Generating API docs:</p>
-<pre><code>dotnet run -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj  --output docs/yzl --input docs/yzl --clean
-</code></pre>
-<p>Work with docs:</p>
-<pre><code>docker run -p 8089:8089 --rm -it -v ~/.ssh:/root/.ssh -v ${PWD}:/docs \
-  squidfunk/mkdocs-material serve -a 0.0.0.0:8089
-</code></pre>
-                
-                  
+                <h1 id="yzlrenderoptions-type">Yzl.RenderOptions Type</h1>
+<p>Namespace: <a href="/yzl/reference/yzl-core">Yzl.Core</a></p>
+<p>Assembly: Yzl.dll</p>
+<p>Parent Module: <a href="/yzl/reference/yzl-core-yzl">Yzl</a></p>
+<p>Base Type: <code>obj</code></p>
+<p>All Interfaces: , <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>, <code><span><a href="https://docs.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/yzl/reference/yzl-core-yzl-renderoptions">RenderOptions</a>&gt;</span></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code></p>
+<p>YAML rendering options</p>
+<h3 id="record-fields">Record fields</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Record Field</th>
+<th align="left">Description</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#indentSpaces">indentSpaces</a>&nbsp;</td>
+<td align="left">Specifies how many spaces are used as indentation in the output YAML<br />&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L107-107"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+</tbody>
+</table>
                 
               
               
@@ -285,27 +263,6 @@
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-        
-          <a href="yzl/reference/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                API Reference
-              </div>
-            </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -323,15 +280,15 @@
       
     </div>
     
-      <script src="assets/javascripts/vendor.6a3d08fc.min.js"></script>
-      <script src="assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../../assets/javascripts/vendor.6a3d08fc.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.71201edf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
-          base: ".",
+          base: "../../..",
           features: [],
           search: Object.assign({
-            worker: "assets/javascripts/worker/search.4ac00218.min.js"
+            worker: "../../../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
