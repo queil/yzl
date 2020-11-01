@@ -10,6 +10,7 @@ open System
 [<RequireQualifiedAccessAttribute>]
 module Yzl =
     
+    /// YAML string types
     type Str = 
      | Plain of string
      | SingleQuoted of string
@@ -23,6 +24,7 @@ module Yzl =
 
     type Name = | Name of string
 
+    /// YAML node types
     type Node =
       | MapNode of NamedNode list
       | SeqNode of Node list
@@ -44,28 +46,42 @@ module Yzl =
       | Str of Str
       | Bool of bool
 
-    /// <summary>Implicit cast helper</summary>
+    /// Augments a given type to an Yzl node
+    /// 
+    /// *Possible augmentations are specified as implicit casts of the Node type*
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
     let private named t node = Named(Name t, node)
-    let inline str t (node:^a) = Named(Name t, Scalar(Str (node |> augment)))
+    
+    /// Creates a named string scalar node
+    let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> augment)))
+    
+    /// Creates a named integer scalar node
     let int name value =  Scalar(Int value) |> named name
+    
+    /// Creates a named float scalar node
     let float name value = Scalar(Float value) |> named name
+    
+    /// Creates a named boolean scalar node
     let boolean name value = Scalar(Bool value) |> named name
+    
+    /// Creates a named map node
     let map name map =  MapNode(map) |> named name
+    
+    /// Creates a named sequence node
     let seq name seq =  SeqNode(seq) |> named name
-
 
     /// Creates an empty node
     /// 
-    /// Typically used when generating YAML tree conditionally to indicate no node should be generated
+    /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
     let none = Named(Name "", NoNode)
 
+    /// YAML rendering options
     type RenderOptions = { 
       /// Specifies how many spaces are used as indentation in the output YAML
       indentSpaces: int 
     }
-    let renderTree (yaml:Node) = sprintf "%A" yaml
+
     [<Literal>]
     let private Empty = ""
     [<Literal>]
@@ -73,6 +89,7 @@ module Yzl =
     [<Literal>]
     let private Eol = "\n"
 
+    /// Renders Yzl tree into YAML
     let renderYaml (opts:RenderOptions) (yaml:Node) =
         let tab = String(' ', opts.indentSpaces)
         let builder = StringBuilder()
@@ -170,5 +187,5 @@ module Yzl =
         render Empty yaml NoNode
         builder.ToString()
 
-    /// Renders using 2 spaces as indent
+    /// Renders Yzl tree into YAML with the default RenderOptions
     let render yaml = renderYaml {indentSpaces=2} yaml 
