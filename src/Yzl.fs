@@ -56,8 +56,9 @@ module Yzl =
     let seq name seq =  SeqNode(seq) |> named name
 
 
-    /// <summary>Creates an empty node</summary>
-    /// <remarks>Typically used when generating YAML tree conditionally to indicate no node should be generated</remarks>
+    /// Creates an empty node
+    /// 
+    /// Typically used when generating YAML tree conditionally to indicate no node should be generated
     let none = Named(Name "", NoNode)
 
     type RenderOptions = { 
