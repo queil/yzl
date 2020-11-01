@@ -7,6 +7,7 @@
     <Copyright>2020 © queil</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/queil/yzl</RepositoryUrl>
+    <FsDocsSourceRepository>https://github.com/queil/yzl/tree/master</FsDocsSourceRepository>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
