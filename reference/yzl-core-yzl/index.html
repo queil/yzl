@@ -13,7 +13,7 @@
     
     
       
-        <title>API Reference - Yzl</title>
+        <title>Yzl Module - Yzl</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#yzl-module" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              API Reference
+              Yzl Module
             
           </span>
         </div>
@@ -174,49 +174,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        API Reference
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="./" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../yzl/reference/index.md" class="md-nav__link">
       API Reference
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#available-namespaces" class="md-nav__link">
-    Available Namespaces:
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -244,8 +206,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#available-namespaces" class="md-nav__link">
-    Available Namespaces:
+  <a href="#types" class="md-nav__link">
+    Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions-and-values" class="md-nav__link">
+    Functions and values
   </a>
   
 </li>
@@ -263,9 +232,113 @@
               
                 
                 
-                <h1 id="api-reference">API Reference</h1>
-<h2 id="available-namespaces">Available Namespaces:</h2>
-<p><a href="/yzl/reference/yzl-core">Yzl.Core</a> - Yzl core modules</p>
+                <h1 id="yzl-module">Yzl Module</h1>
+<p>Namespace: <a href="/yzl/reference/yzl-core">Yzl.Core</a></p>
+<p>Assembly: Yzl.dll</p>
+<h3 id="types">Types</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Type</th>
+<th align="left">Description</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-name">Name</a>&nbsp;</td>
+<td align="left">Represents the key in a YAML key-value pair&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L41-41"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&nbsp;</td>
+<td align="left">YAML key-value pair&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L62-62"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-node">Node</a>&nbsp;</td>
+<td align="left">YAML node types&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L44-44"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-renderoptions">RenderOptions</a>&nbsp;</td>
+<td align="left">YAML rendering options&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L105-105"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-scalar">Scalar</a>&nbsp;</td>
+<td align="left">YAML scalar types&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L65-65"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="/yzl/reference/yzl-core-yzl-str">Str</a>&nbsp;</td>
+<td align="left"><a href="https://yaml-multiline.info/">YAML string types</a>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L17-17"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functions-and-values">Functions and values</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Function or value</th>
+<th align="left">Description</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#augment">augment</a>&nbsp;</td>
+<td align="left">Augments a given object to a <a href="/yzl/reference/yzl-core-yzl-node">Node</a><br />&nbsp;<br /><em>Possible augmentations are specified as implicit casts of the <a href="/yzl/reference/yzl-core-yzl-node">Node</a> type</em><br />&nbsp;<br />Parameters: &nbsp;<br /><strong>x</strong>:<code>^a</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code>^b</code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L77-77"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#boolean">boolean</a>&nbsp;</td>
+<td align="left">Creates a named boolean scalar node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>value</strong>:<code>bool</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L91-91"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#float">float</a>&nbsp;</td>
+<td align="left">Creates a named float scalar node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>value</strong>:<code>double</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L88-88"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#int">int</a>&nbsp;</td>
+<td align="left">Creates a named integer scalar node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>value</strong>:<code>int</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L85-85"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#map">map</a>&nbsp;</td>
+<td align="left">Creates a named map node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>map</strong>:<code><span><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L94-94"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#none">none</a>&nbsp;</td>
+<td align="left">Creates an empty node<br /> <br /> <em>Typically used when generating YAML tree conditionally to indicate no node should be generated</em><br />&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L102-102"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#render">render</a>&nbsp;</td>
+<td align="left">Renders Yzl tree into YAML with the default RenderOptions<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>yaml</strong>:<code><a href="/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code>string</code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L218-218"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#renderYaml">renderYaml</a>&nbsp;</td>
+<td align="left">Renders Yzl tree into YAML<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>opts</strong>:<code><a href="/yzl/reference/yzl-core-yzl-renderoptions">RenderOptions</a></code>&nbsp;<br /><strong>yaml</strong>:<code><a href="/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code>string</code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L118-118"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#seq">seq</a>&nbsp;</td>
+<td align="left">Creates a named sequence node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>seq</strong>:<code><span><a href="/yzl/reference/yzl-core-yzl-node">Node</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L97-97"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#str">str</a>&nbsp;</td>
+<td align="left">Creates a named string scalar node<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>name</strong>:<code>string</code>&nbsp;<br /><strong>node</strong>:<code>^a</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L82-82"><img alt="Link to source code" src="/yzl/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+</tbody>
+</table>
                 
               
               
@@ -280,27 +353,6 @@
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../.." class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-            </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Home
-              </div>
-            </div>
-          </a>
-        
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
