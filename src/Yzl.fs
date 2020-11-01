@@ -54,9 +54,16 @@ module Yzl =
     let boolean name value = Scalar(Bool value) |> named name
     let map name map =  MapNode(map) |> named name
     let seq name seq =  SeqNode(seq) |> named name
+
+
+    /// <summary>Creates an empty node</summary>
+    /// <remarks>Typically used when generating YAML tree conditionally to indicate no node should be generated</remarks>
     let none = Named(Name "", NoNode)
 
-    type RenderOptions = { indentSpaces: int }
+    type RenderOptions = { 
+      /// Specifies how many spaces are used as indentation in the output YAML
+      indentSpaces: int 
+    }
     let renderTree (yaml:Node) = sprintf "%A" yaml
     [<Literal>]
     let private Empty = ""
