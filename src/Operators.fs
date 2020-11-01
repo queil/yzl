@@ -7,10 +7,13 @@ module Operators =
   let inline (!) (a:^a) = Yzl.augment a
   /// Folded string
   let (!>) (value:string) = Yzl.Folded value
-  /// Folded dash
-  let (!>-) (value:string) = Yzl.FoldedDash value
+  /// Folded strip string
+  let (!>-) (value:string) = Yzl.FoldedStrip value
+  /// Folded keep string
+  let (!>+) (value:string) = Yzl.FoldedKeep value
   /// Literal string
   let (!|) (value:string) = Yzl.Literal value
-  /// Literal dash string
-  let (!|-) (value:string) = Yzl.LiteralDash value
-  
+  /// Literal strip string
+  let (!|-) (value:string) = Yzl.LiteralStrip value
+  /// Literal keep string
+  let (!|+) (value:string) = Yzl.LiteralKeep value

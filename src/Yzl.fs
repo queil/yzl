@@ -1,7 +1,10 @@
-/// <summary>
-/// Yzl core modules
-/// </summary>
 namespace Yzl.Core
+
+/// <namespacedoc>
+///   <summary>
+///   Yzl core modules
+///   </summary>
+/// </namespacedoc>
 
 open FSharp.Collections
 open System.Text
@@ -10,25 +13,42 @@ open System
 [<RequireQualifiedAccessAttribute>]
 module Yzl =
     
-    /// YAML string types
+    /// [YAML string types](https://yaml-multiline.info/)
     type Str = 
+     /// YAML plain string
      | Plain of string
+     /// YAML single-quoted string
      | SingleQuoted of string
+     /// YAML double-quoted string
      | DoubleQuoted of string
+     /// YAML > string
      | Folded of string
-     | FoldedDash of string
+     /// YAML >- string
+     | FoldedStrip of string
+     /// YAML >+ string
+     | FoldedKeep of string
+     /// YAML &#124; string
      | Literal of string
-     | LiteralDash of string
+     /// YAML &#124;- string
+     | LiteralStrip of string
+     /// YAML &#124;+ string
+     | LiteralKeep of string
+
      static member op_Implicit(source: string) : Str = Plain source
      static member op_Implicit(source: Str) : Str = source
-
+    
+    /// Represents the key in a YAML key-value pair
     type Name = | Name of string
 
     /// YAML node types
     type Node =
+      /// YAML mapping
       | MapNode of NamedNode list
+      /// YAML sequence
       | SeqNode of Node list
+      /// YAML scalar
       | Scalar of Scalar
+      /// Node with no representation
       | NoNode
       static member op_Implicit(source: int) :  Node = Scalar(Int source)
       static member op_Implicit(source: double) : Node = Scalar(Float source)
@@ -38,17 +58,22 @@ module Yzl =
       static member op_Implicit(source: NamedNode list) : Node = MapNode(source)
       static member op_Implicit(source: Node) : Node = source
       static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
+    /// YAML key-value pair
     and NamedNode =
       | Named of Name * Node
+    /// YAML scalar types
     and Scalar =
       | Int of int
       | Float of double
       | Str of Str
       | Bool of bool
 
-    /// Augments a given type to an Yzl node
-    /// 
-    /// *Possible augmentations are specified as implicit casts of the Node type*
+    /// <summary>
+    /// Augments a given object to a <see cref="T:Node" />
+    /// </summary>
+    /// <remarks>
+    /// *Possible augmentations are specified as implicit casts of the <see cref="T:Node" /> type*
+    /// </remarks>
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
     let private named t node = Named(Name t, node)
@@ -116,10 +141,10 @@ module Yzl =
 
               System.String.Join(Eol,
                 lines |> Seq.map (function
-                     | s when s = Empty -> s
-                     | s when String.IsNullOrWhiteSpace(s) -> requiredIndent
-                     | s when (existingIndent s) = Empty -> requiredIndent + s
-                     | s -> requiredIndent + s.[indentBase.Length..s.Length - 1]))
+                 | s when s = Empty -> s
+                 | s when String.IsNullOrWhiteSpace(s) -> requiredIndent
+                 | s when (existingIndent s) = Empty -> requiredIndent + s
+                 | s -> requiredIndent + s.[indentBase.Length..s.Length - 1]))
             
             let nullOr = function | null -> "null" | z -> z
                  
@@ -128,9 +153,11 @@ module Yzl =
              | SingleQuoted z -> sprintf "'%s'\n" (nullOr z)
              | DoubleQuoted z -> sprintf "\"%s\"\n" (nullOr z)
              | Folded z -> sprintf ">\n%s\n" (nullOr z |> normalizeIndent)
-             | FoldedDash z -> sprintf ">-\n%s\n" (nullOr z |> normalizeIndent)
+             | FoldedStrip z -> sprintf ">-\n%s\n" (nullOr z |> normalizeIndent)
+             | FoldedKeep z -> sprintf ">+\n%s\n" (nullOr z |> normalizeIndent)
              | Literal z -> sprintf "|\n%s\n" (nullOr z |> normalizeIndent)
-             | LiteralDash z -> sprintf "|-\n%s\n" (nullOr z |> normalizeIndent)
+             | LiteralStrip z -> sprintf "|-\n%s\n" (nullOr z |> normalizeIndent)
+             | LiteralKeep z -> sprintf "|+\n%s\n" (nullOr z |> normalizeIndent)
 
             let stringify = function 
              | Int v -> Plain (v |> string)
