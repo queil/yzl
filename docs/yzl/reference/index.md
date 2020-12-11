@@ -1,6 +1,6 @@
 # API Reference
 
-## Available Namespaces:
+## Available Namespaces
 
 [Yzl.Core](/yzl/reference/yzl-core) - Yzl core modules
 

@@ -13,7 +13,7 @@ The docs are built using MkDocs and API Reference is generated with `FSharp.Form
 Generating API docs:
 
 ```
-dotnet run --no-build -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj  --output docs/yzl --input docs/fsdocs --clean
+dotnet run -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj  --output docs/yzl --input docs/fsdocs --clean
 ```
 
 Work with docs:
