@@ -324,10 +324,11 @@
 <h2 id="building-docs">Building docs</h2>
 <p>The docs are built using MkDocs and API Reference is generated with <code>FSharp.Formatting.CommandTool</code>. At present the process is experimental and uses my fork of <a href="https://github.com/queil/FSharp.Formatting">FSharp.Formatting</a>.</p>
 <p>Generating API docs:</p>
-<pre><code>dotnet run --no-build -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj  --output ./docs --input ./fsdocs --parameters root /
+<pre><code>dotnet run --no-build -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj --output ./docs --input ./fsdocs --parameters root &quot;http://localhost:8089/&quot;
 </code></pre>
 <h2 id="publish-docs">Publish docs</h2>
-<pre><code>docker run -p 8089:8089 --rm -it -v ~/.ssh:/root/.ssh -v ${PWD}:/docs squidfunk/mkdocs-material gh-deploy
+<pre><code>dotnet run --no-build -p ~/github/FSharp.Formatting/src/FSharp.Formatting.CommandTool/ -- build --nodefaultcontent --projects ./src/Yzl.fsproj --output ./docs --input ./fsdocs --parameters root &quot;https://queil.github.io/yzl&quot;
+docker run -p 8089:8089 --rm -it -v ~/.ssh:/root/.ssh -v ${PWD}:/docs squidfunk/mkdocs-material gh-deploy
 </code></pre>
 <h2 id="work-with-docs">Work with docs</h2>
 <pre><code>docker run -p 8089:8089 --rm -it -v ~/.ssh:/root/.ssh -v ${PWD}:/docs \
