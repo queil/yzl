@@ -14,7 +14,7 @@
     
     
       
-        <title>API Reference - Yzl</title>
+        <title>Yzl.Str Type - Yzl</title>
       
     
     
@@ -61,7 +61,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#yzlstr-type" class="md-skip">
           Skip to content
         </a>
       
@@ -91,7 +91,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              API Reference
+              Yzl.Str Type
             
           </span>
         </div>
@@ -203,7 +203,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../reference/index.md" class="md-nav__link">
+    <a href="../" class="md-nav__link">
       API Reference
     </a>
   </li>
@@ -233,8 +233,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#available-namespaces" class="md-nav__link">
-    Available Namespaces
+  <a href="#union-cases" class="md-nav__link">
+    Union cases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#static-members" class="md-nav__link">
+    Static members
   </a>
   
 </li>
@@ -251,14 +258,97 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/queil/yzl/edit/master/docs/yzl/reference/index.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/queil/yzl/edit/master/docs/reference/yzl-core-yzl-str.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="api-reference">API Reference</h1>
-<h2 id="available-namespaces">Available Namespaces</h2>
-<p><a href="/yzl/reference/yzl-core">Yzl.Core</a> - Yzl core modules</p>
+                <h1 id="yzlstr-type">Yzl.Str Type</h1>
+<p>Namespace: <a href="/reference/yzl-core">Yzl.Core</a></p>
+<p>Assembly: Yzl.dll</p>
+<p>Parent Module: <a href="/reference/yzl-core-yzl">Yzl</a></p>
+<p>Base Type: <code>obj</code></p>
+<p>All Interfaces: , <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>, <code><span><a href="https://docs.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="/reference/yzl-core-yzl-str">Str</a>&gt;</span></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code></p>
+<p><a href="https://yaml-multiline.info/">YAML string types</a></p>
+<h3 id="union-cases">Union cases</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Union case</th>
+<th align="left">Description</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#DoubleQuoted">DoubleQuoted</a>&nbsp;</td>
+<td align="left">YAML double-quoted string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L23-23"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#Folded">Folded</a>&nbsp;</td>
+<td align="left">YAML &gt; string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L25-25"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#FoldedKeep">FoldedKeep</a>&nbsp;</td>
+<td align="left">YAML &gt;+ string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L29-29"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#FoldedStrip">FoldedStrip</a>&nbsp;</td>
+<td align="left">YAML &gt;- string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L27-27"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#Literal">Literal</a>&nbsp;</td>
+<td align="left">YAML &#124; string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L31-31"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#LiteralKeep">LiteralKeep</a>&nbsp;</td>
+<td align="left">YAML &#124;+ string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L35-35"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#LiteralStrip">LiteralStrip</a>&nbsp;</td>
+<td align="left">YAML &#124;- string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L33-33"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#Plain">Plain</a>&nbsp;</td>
+<td align="left">YAML plain string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L19-19"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#SingleQuoted">SingleQuoted</a>&nbsp;</td>
+<td align="left">YAML single-quoted string<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L21-21"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="static-members">Static members</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Static member</th>
+<th align="left">Description</th>
+<th align="center">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
+<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code><a href="/reference/yzl-core-yzl-str">Str</a></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/reference/yzl-core-yzl-str">Str</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L38-38"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
+<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="/reference/yzl-core-yzl-str">Str</a></code>&nbsp;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L37-37"><img alt="Link to source code" src="/content/img/github.png" /></a>&nbsp;</td>
+</tr>
+</tbody>
+</table>
                 
               
               
