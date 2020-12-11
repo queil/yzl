@@ -1,5 +1,6 @@
 site_name: Yzl
 repo_url: https://github.com/queil/yzl
+site_url: https://queil.github.io/yzl
 nav:
 - Home: index.md
 - API Reference: reference/index.md
