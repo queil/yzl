@@ -3,7 +3,8 @@ repo_url: https://github.com/queil/yzl
 site_url: https://queil.github.io/yzl
 nav:
 - Home: index.md
-- API Reference: 
+- API Reference:
+  - index.md
   - reference/yzl-core-yzl.md
   - reference/yzl-core-operators.md
 theme: 

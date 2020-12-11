@@ -2,5 +2,5 @@
 
 ## Available Namespaces
 
-[Yzl.Core](/reference/yzl-core) - Yzl core modules
+[Yzl.Core](https://queil.github.io/yzl/reference/yzl-core) - Yzl core modules
 
