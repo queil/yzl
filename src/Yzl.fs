@@ -56,6 +56,10 @@ module Yzl =
       static member op_Implicit(source: string) : Node = Scalar(Str (Plain source))
       static member op_Implicit(source: Node list) : Node = SeqNode(source)
       static member op_Implicit(source: NamedNode list) : Node = MapNode(source)
+      static member op_Implicit(source: int list) : Node = SeqNode( source |> List.map (Int >> Scalar))
+      static member op_Implicit(source: double list) : Node = SeqNode( source |> List.map (Float >> Scalar))
+      static member op_Implicit(source: bool list) : Node = SeqNode( source |> List.map (Bool >> Scalar))
+      static member op_Implicit(source: string list) : Node = SeqNode( source |> List.map (Plain >> Str >> Scalar))
       static member op_Implicit(source: Node) : Node = source
       static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
     /// YAML key-value pair
