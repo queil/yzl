@@ -8,22 +8,22 @@
       
       
       
-        <link rel="canonical" href="https://queil.github.io/yzl/reference/yzl-core-operators/">
+        <link rel="canonical" href="https://queil.github.io/yzl/docs/">
       
       
-      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
     
     
       
-        <title>Operators Module - Yzl</title>
+        <title>Working with docs - Yzl</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.19753c6b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.19753c6b.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.196e0c26.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.196e0c26.min.css">
         
           
           
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#operators-module" class="md-skip">
+        <a href="#working-with-docs" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Operators Module
+              Working with docs
             
           </span>
         </div>
@@ -193,7 +193,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." class="md-nav__link">
+    <a href=".." class="md-nav__link">
       Home
     </a>
   </li>
@@ -205,7 +205,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" class="md-nav__link">
+    <a href="../reference/" class="md-nav__link">
       API Reference
     </a>
   </li>
@@ -235,8 +235,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#functions-and-values" class="md-nav__link">
-    Functions and values
+  <a href="#publish" class="md-nav__link">
+    Publish
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#serve-locally" class="md-nav__link">
+    Serve locally
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building-api-docs" class="md-nav__link">
+    Building API docs
   </a>
   
 </li>
@@ -253,61 +267,23 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/queil/yzl/edit/master/docs/reference/yzl-core-operators.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/queil/yzl/edit/master/docs/docs.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="operators-module">Operators Module</h1>
-<p>Namespace: <a href="https://queil.github.io/yzl/reference/yzl-core">Yzl.Core</a></p>
-<p>Assembly: Yzl.dll</p>
-<h3 id="functions-and-values">Functions and values</h3>
-<table>
-<thead>
-<tr>
-<th align="left">Function or value</th>
-<th align="left">Description</th>
-<th align="center">Source</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><a href="#(+!+)">( ! )</a>&#32;</td>
-<td align="left">Augment to Yzl Node<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>a</strong>: <code>^a</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L7-7"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e+)">( !&gt; )</a>&#32;</td>
-<td align="left">Folded string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L9-9"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e%2b+)">( !&gt;+ )</a>&#32;</td>
-<td align="left">Folded keep string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L13-13"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e-+)">( !&gt;- )</a>&#32;</td>
-<td align="left">Folded strip string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L11-11"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">)](#(+!%7c+))&#32;</td>
-<td align="center">Literal string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">+ )](#(+!%7c%2b+))&#32;</td>
-<td align="center">Literal keep string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">- )](#(+!%7c-+))&#32;</td>
-<td align="center">Literal strip string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-</tbody>
-</table>
+                <h1 id="working-with-docs">Working with docs</h1>
+<h2 id="publish">Publish</h2>
+<pre><code>./publish-docs.sh
+</code></pre>
+<h2 id="serve-locally">Serve locally</h2>
+<pre><code>./serve-docs.sh
+</code></pre>
+<h2 id="building-api-docs">Building API docs</h2>
+<p>The docs are built using MkDocs and API Reference is generated with <code>FSharp.Formatting.CommandTool</code>. At present the process is experimental and uses my fork of <a href="https://github.com/queil/FSharp.Formatting">FSharp.Formatting</a>.</p>
+<p>Generating API docs:</p>
+<pre><code>./build-fsdocs.sh ${ROOT_URL}
+</code></pre>
                 
               
               
@@ -339,15 +315,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.0ac82a11.min.js"></script>
-      <script src="../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.0ac82a11.min.js"></script>
+      <script src="../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
-          base: "../..",
+          base: "..",
           features: [],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

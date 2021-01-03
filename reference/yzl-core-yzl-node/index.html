@@ -270,7 +270,7 @@
 <p>Assembly: Yzl.dll</p>
 <p>Parent Module: <a href="https://queil.github.io/yzl/reference/yzl-core-yzl">Yzl</a></p>
 <p>Base Type: <code>obj</code></p>
-<p>All Interfaces: , <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>, <code><span><a href="https://docs.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&gt;</span></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code></p>
+<p>All Interfaces: <code><span><a href="https://docs.microsoft.com/dotnet/api/system.iequatable-1">IEquatable</a>&lt;<a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&gt;</span></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralequatable">IStructuralEquatable</a></code>, <code><span><a href="https://docs.microsoft.com/dotnet/api/system.icomparable-1">IComparable</a>&lt;<a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&gt;</span></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.icomparable">IComparable</a></code>, <code><a href="https://docs.microsoft.com/dotnet/api/system.collections.istructuralcomparable">IStructuralComparable</a></code></p>
 <p>YAML node types</p>
 <h3 id="union-cases">Union cases</h3>
 <table>
@@ -283,24 +283,24 @@
 </thead>
 <tbody>
 <tr>
-<td align="left"><a href="#MapNode">MapNode</a>&nbsp;</td>
-<td align="left">YAML mapping<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L46-46"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#MapNode">MapNode</a>&#32;</td>
+<td align="left">YAML mapping<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>Item</strong>: <code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&#32;list</span></code>&#32;<br />&#32;&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L46-46"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#NoNode">NoNode</a>&nbsp;</td>
-<td align="left">Node with no representation<br />&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L52-52"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#NoNode">NoNode</a>&#32;</td>
+<td align="left">Node with no representation<br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L52-52"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#Scalar">Scalar</a>&nbsp;</td>
-<td align="left">YAML scalar<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-scalar">Scalar</a></code>&nbsp;<br />&nbsp;&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L50-50"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#Scalar">Scalar</a>&#32;</td>
+<td align="left">YAML scalar<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>Item</strong>: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-scalar">Scalar</a></code>&#32;<br />&#32;&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L50-50"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#SeqNode">SeqNode</a>&nbsp;</td>
-<td align="left">YAML sequence<br />&nbsp;<br />Parameters: &nbsp;<br /><strong>Item</strong>:<code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L48-48"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#SeqNode">SeqNode</a>&#32;</td>
+<td align="left">YAML sequence<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>Item</strong>: <code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&#32;list</span></code>&#32;<br />&#32;&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L48-48"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 </tbody>
 </table>
@@ -315,44 +315,64 @@
 </thead>
 <tbody>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L60-60"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L64-64"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L59-59"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L63-63"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L58-58"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span>string&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L62-62"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&#32;list</span></code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L57-57"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span>bool&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L61-61"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code>string</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L56-56"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span>double&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L60-60"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code>bool</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L55-55"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span>int&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L59-59"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code>double</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L54-54"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-namednode">NamedNode</a>&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L58-58"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 <tr>
-<td align="left"><a href="#op_Implicit">op_Implicit</a>&nbsp;</td>
-<td align="left">Parameters: &nbsp;<br /><strong>source</strong>:<code>int</code>&nbsp;<br />&nbsp;&nbsp;<br />Returns:<code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&nbsp;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L53-53"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&nbsp;</td>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code><span><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a>&#32;list</span></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L57-57"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
+</tr>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L56-56"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
+</tr>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code>bool</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L55-55"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
+</tr>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code>double</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L54-54"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
+</tr>
+<tr>
+<td align="left"><a href="#op_Implicit">op_Implicit</a>&#32;</td>
+<td align="left">Parameters&#32;<br />&#32;&#32;<br /><strong>source</strong>: <code>int</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
+<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Yzl.fs#L53-53"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
 </tr>
 </tbody>
 </table>

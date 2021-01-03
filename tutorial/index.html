@@ -8,22 +8,22 @@
       
       
       
-        <link rel="canonical" href="https://queil.github.io/yzl/reference/yzl-core-operators/">
+        <link rel="canonical" href="https://queil.github.io/yzl/tutorial/">
       
       
-      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.7">
     
     
       
-        <title>Operators Module - Yzl</title>
+        <title>Tutorial - Yzl</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.19753c6b.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.19753c6b.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.196e0c26.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.196e0c26.min.css">
         
           
           
@@ -63,7 +63,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#operators-module" class="md-skip">
+        <a href="#tutorial" class="md-skip">
           Skip to content
         </a>
       
@@ -93,7 +93,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Operators Module
+              Tutorial
             
           </span>
         </div>
@@ -193,7 +193,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../.." class="md-nav__link">
+    <a href=".." class="md-nav__link">
       Home
     </a>
   </li>
@@ -205,7 +205,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../" class="md-nav__link">
+    <a href="../reference/" class="md-nav__link">
       API Reference
     </a>
   </li>
@@ -235,9 +235,117 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#functions-and-values" class="md-nav__link">
-    Functions and values
+  <a href="#the-augmentation-operator" class="md-nav__link">
+    The augmentation operator
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scalar" class="md-nav__link">
+    Scalar
+  </a>
+  
+    <nav class="md-nav" aria-label="Scalar">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml" class="md-nav__link">
+    Yaml
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yzl" class="md-nav__link">
+    Yzl
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#homogenous-sequence" class="md-nav__link">
+    Homogenous sequence
+  </a>
+  
+    <nav class="md-nav" aria-label="Homogenous sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml_1" class="md-nav__link">
+    YAML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yzl_1" class="md-nav__link">
+    Yzl
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heterogenous-sequence" class="md-nav__link">
+    Heterogenous sequence
+  </a>
+  
+    <nav class="md-nav" aria-label="Heterogenous sequence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml_2" class="md-nav__link">
+    YAML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yzl_2" class="md-nav__link">
+    Yzl
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#named-value-key-value-pair" class="md-nav__link">
+    Named value (key-value pair)
+  </a>
+  
+    <nav class="md-nav" aria-label="Named value (key-value pair)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml_3" class="md-nav__link">
+    YAML
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yzl_3" class="md-nav__link">
+    Yzl
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -253,61 +361,56 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/queil/yzl/edit/master/docs/reference/yzl-core-operators.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/queil/yzl/edit/master/docs/tutorial.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="operators-module">Operators Module</h1>
-<p>Namespace: <a href="https://queil.github.io/yzl/reference/yzl-core">Yzl.Core</a></p>
-<p>Assembly: Yzl.dll</p>
-<h3 id="functions-and-values">Functions and values</h3>
-<table>
-<thead>
-<tr>
-<th align="left">Function or value</th>
-<th align="left">Description</th>
-<th align="center">Source</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><a href="#(+!+)">( ! )</a>&#32;</td>
-<td align="left">Augment to Yzl Node<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>a</strong>: <code>^a</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L7-7"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e+)">( !&gt; )</a>&#32;</td>
-<td align="left">Folded string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L9-9"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e%2b+)">( !&gt;+ )</a>&#32;</td>
-<td align="left">Folded keep string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L13-13"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left"><a href="#(+!%3e-+)">( !&gt;- )</a>&#32;</td>
-<td align="left">Folded strip string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-<td align="center"><a href="https://github.com/queil/yzl/tree/master/src/Operators.fs#L11-11"><img alt="Link to source code" src="https://queil.github.io/yzl/content/img/github.png" /></a>&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">)](#(+!%7c+))&#32;</td>
-<td align="center">Literal string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">+ )](#(+!%7c%2b+))&#32;</td>
-<td align="center">Literal keep string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-<tr>
-<td align="left">[( !</td>
-<td align="left">- )](#(+!%7c-+))&#32;</td>
-<td align="center">Literal strip string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br /><strong>value</strong>: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32;</td>
-</tr>
-</tbody>
-</table>
+                <h1 id="tutorial">Tutorial</h1>
+<p>You can play with Yzl in <code>dotnet fsi</code>.</p>
+<p>Run <code>dotnet fsi</code> and reference Yzl NuGet and open the <code>Yzl.Core</code> namespace:</p>
+<pre><code class="language-fsharp">#r &quot;nuget: Yzl&quot;; open Yzl.Core;;
+</code></pre>
+<h2 id="the-augmentation-operator">The augmentation operator</h2>
+<p>Yzl uses <code>!</code> as an operator that augments (or elevates) simple F# types to <code>Yzl.Node</code></p>
+<h2 id="scalar">Scalar</h2>
+<h3 id="yaml">Yaml</h3>
+<pre><code class="language-yaml">5
+</code></pre>
+<h3 id="yzl">Yzl</h3>
+<pre><code class="language-fsharp">! 5 |&gt; Yzl.render
+</code></pre>
+<h2 id="homogenous-sequence">Homogenous sequence</h2>
+<h3 id="yaml_1">YAML</h3>
+<pre><code class="language-yaml">- 1
+- 2
+- 3
+</code></pre>
+<h3 id="yzl_1">Yzl</h3>
+<p>Common F# lists are rendered as sequences.</p>
+<pre><code class="language-fsharp">! [1; 2; 3] |&gt; Yzl.render
+</code></pre>
+<h2 id="heterogenous-sequence">Heterogenous sequence</h2>
+<h3 id="yaml_2">YAML</h3>
+<pre><code class="language-yaml">- true
+- 2.0
+- three
+</code></pre>
+<h3 id="yzl_2">Yzl</h3>
+<p>To render a heterogenous sequence every element must be preceded by the augmentation operator (<code>!</code>)</p>
+<pre><code class="language-fsharp">! [ ! true; ! 2.0; ! &quot;three&quot;] |&gt; Yzl.render
+</code></pre>
+<h2 id="named-value-key-value-pair">Named value (key-value pair)</h2>
+<h3 id="yaml_3">YAML</h3>
+<pre><code class="language-yaml">language: F#
+</code></pre>
+<h3 id="yzl_3">Yzl</h3>
+<pre><code class="language-fsharp">let language (x:string) = Yzl.str &quot;language&quot; x;;
+! (language &quot;F#&quot; ) |&gt; Yzl.render;;
+</code></pre>
+<p>In a non-interactive context the first line of the above can be simplified to:</p>
+<pre><code class="language-fsharp">let language = Yzl.str &quot;language&quot;
+</code></pre>
                 
               
               
@@ -339,15 +442,15 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.0ac82a11.min.js"></script>
-      <script src="../../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.0ac82a11.min.js"></script>
+      <script src="../assets/javascripts/bundle.f81dfb4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
-          base: "../..",
+          base: "..",
           features: [],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.4ac00218.min.js"
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
