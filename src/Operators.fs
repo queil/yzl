@@ -4,7 +4,7 @@ namespace Yzl.Core
 module Operators =
 
   /// Augment to Yzl Node
-  let inline (!) (a:^a) = Yzl.augment a
+  let inline (!) (a:^a) : Yzl.Node = Yzl.augment a
   /// Folded string
   let (!>) (value:string) = Yzl.Folded value
   /// Folded strip string

@@ -171,12 +171,22 @@ module Core =
           "Rendering failed" |> Expect.equal (![ ! "x"; Yzl.NoNode; ! "y" ] |> Yzl.render)  "- x\n- y\n"
       }
       test "Should not render NoNode in map" {
-          let expected = 
+          let actual = 
             ![ 
                 Yzl.Named(Yzl.Name "name", ! "Value")
                 Yzl.none
                 Yzl.Named(Yzl.Name "name2", ! "Value2")
              ] |> Yzl.render
-          "Rendering failed" |> Expect.equal expected  "name: Value\nname2: Value2\n"
+          "Rendering failed" |> Expect.equal actual  "name: Value\nname2: Value2\n"
+      }
+      
+      test "Should render hybrid list" {
+        "Rendering failed" |> Expect.equal (! [ ! "2"; ! true; ! 4 ] |> Yzl.render)  "- 2\n- true\n- 4\n"
+      }
+
+      test "Should render plain F# lists as sequences" {
+        "Rendering failed" |> Expect.equal (! [ 2; 3; 4 ] |> Yzl.render)  "- 2\n- 3\n- 4\n"
+        "Rendering failed" |> Expect.equal (! [ true; false; true ] |> Yzl.render)  "- true\n- false\n- true\n"
+        "Rendering failed" |> Expect.equal (! [ "1"; "3"; "4" ] |> Yzl.render)  "- 1\n- 3\n- 4\n"
       }
     ]
