@@ -38,7 +38,7 @@ module Yzl =
      static member op_Implicit(source: Str) : Str = source
     
     /// Represents the key in a YAML key-value pair
-    type Name = | Name of string
+    type Name = | Name of name: string
 
     /// YAML node types
     type Node =
@@ -64,7 +64,7 @@ module Yzl =
       static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
     /// YAML key-value pair
     and NamedNode =
-      | Named of Name * Node
+      | Named of name: Name * node: Node
     /// YAML scalar types
     and Scalar =
       | Int of int
@@ -218,5 +218,8 @@ module Yzl =
         render Empty yaml NoNode
         builder.ToString()
 
-    /// Renders Yzl tree into YAML with the default RenderOptions
+    /// <summary>Renders Yzl tree into YAML with the default RenderOptions</summary>
+    /// <example>
+    /// Render an Yzl node: `! 5 |> Yzl.render `
+    /// </example>
     let render yaml = renderYaml {indentSpaces=2} yaml 
