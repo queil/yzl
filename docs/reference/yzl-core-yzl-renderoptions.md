@@ -17,6 +17,7 @@ YAML rendering options
 Record Field | Description | Source
 :--- | :--- | :---:
 [indentSpaces](#indentSpaces)&#32; | Specifies how many spaces are used as indentation in the output YAML<br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L111-111)&#32;
+[multiLineRelativeIndent](#multiLineRelativeIndent)&#32; | If set to true the indent of multi-line strings is calculated <br /> against the parent YAML node and excessive leading spaces get collapsed<br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L114-114)&#32;
 
 
 
