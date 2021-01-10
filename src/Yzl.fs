@@ -108,10 +108,16 @@ module Yzl =
     /// YAML rendering options
     type RenderOptions = { 
       /// Specifies how many spaces are used as indentation in the output YAML
+      ///
+      /// Default: `2`
       indentSpaces: int
       /// If set to true the indent of multi-line strings is calculated against the parent YAML node and excessive leading spaces get collapsed
+      ///
+      /// Default: `true`
       multiLineRelativeIndent: bool
-    }
+    } with
+       /// Default render options
+       static member Default = { indentSpaces = 2; multiLineRelativeIndent = true }
 
     [<Literal>]
     let private Empty = ""
@@ -226,4 +232,4 @@ module Yzl =
     /// <example>
     /// Render an Yzl node: `! 5 |> Yzl.render `
     /// </example>
-    let render yaml = renderYaml { indentSpaces = 2; multiLineRelativeIndent = true } yaml 
+    let render yaml = renderYaml RenderOptions.Default yaml 
