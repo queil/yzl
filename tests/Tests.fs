@@ -119,7 +119,7 @@ module Core =
             ! [ state [ code "OH" ]]
             ! [ state [ code "NO" ]]
            ]]]
-        "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
+        "Rendering failed" |> Expect.equal (Yzl.render yaml2) expected
       }
 
       test "Sequence of sequences" {
@@ -146,7 +146,7 @@ module Core =
               ]
            
            ]]]
-        "Rendering failed" |> Expect.equal (Yzl.renderYaml {indentSpaces=2} yaml2)  expected
+        "Rendering failed" |> Expect.equal (Yzl.render yaml2) expected
       }
 
       test "Bare sequence with one scalar" { 
