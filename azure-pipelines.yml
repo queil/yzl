@@ -29,7 +29,7 @@ steps:
 - task: PublishCodeCoverageResults@1
   inputs:
     summaryFileLocation: tests/coverage.xml
-
+    codeCoverageTool: cobertura
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack'
