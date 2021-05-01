@@ -22,9 +22,14 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: 'Test'
   inputs:
-    command: 'test'
-    projects: 'tests'
-    arguments: '-c Release'
+    command: test
+    projects: tests
+    arguments: '-c Release /p:AltCover=true /p:AltCoverCobertura=coverage.xml /p:AltCoverAssemblyFilter="FSharp.Core||yzl.tests.unit"'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    summaryFileLocation: tests/coverage.xml
+    codeCoverageTool: cobertura
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack'
