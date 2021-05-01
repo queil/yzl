@@ -1,4 +1,4 @@
-# Yzl.NamedNode Type
+## Yzl.NamedNode Type
 
 Namespace: [Yzl.Core](https://queil.github.io/yzl/reference/yzl-core)
 
@@ -16,7 +16,7 @@ YAML key-value pair
 
 Union case | Description | Source
 :--- | :--- | :---:
-[Named](#Named)&#32; | Parameters&#32;<br />&#32;&#32;<br />**name**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-name">Name</a></code>&#32;<br />**node**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L67-67)&#32;
+[<code><span>Named(<span>name,&#32;node</span>)</span></code>](#Named) | Parameters<br /><br />**name**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-name">Name</a></code><br />**node**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-node">Node</a></code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L68-68)
 
 
 

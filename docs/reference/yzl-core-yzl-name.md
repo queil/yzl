@@ -1,4 +1,4 @@
-# Yzl.Name Type
+## Yzl.Name Type
 
 Namespace: [Yzl.Core](https://queil.github.io/yzl/reference/yzl-core)
 
@@ -16,7 +16,7 @@ Represents the key in a YAML key-value pair
 
 Union case | Description | Source
 :--- | :--- | :---:
-[Name](#Name)&#32; | Parameters&#32;<br />&#32;&#32;<br />**name**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L41-41)&#32;
+[<code><span>Name&#32;name</span></code>](#Name) | Parameters<br /><br />**name**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L41-41)
 
 
 
