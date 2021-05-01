@@ -1,0 +1,22 @@
+multistring:
+- plain
+- >
+  folded
+    lorem ipsum
+- >-
+  folded strip
+    lorem ipsum
+- >+
+  folded keep
+    lorem ipsum
+- |
+  literal
+    lorem ipsum
+- |-
+  literal strip
+    lorem ipsum
+- |+
+  literal keep
+    lorem ipsum
+- "double-quoted"
+- 'single-quoted'

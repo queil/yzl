@@ -108,7 +108,35 @@ module Strings =
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
 
-      
+      test "Mixed-string seq" {
+        let expected = File.ReadAllText("./yaml/multi-string-seq.yaml")
+        let yaml = ![
+          Yzl.seq "multistring" [
+           ! "plain"
+           ! !> "
+              folded
+                lorem ipsum"
+           ! !>- "
+              folded strip
+                lorem ipsum"
+           ! !>+ "
+              folded keep
+                lorem ipsum"
+           ! !| "
+              literal
+                lorem ipsum"
+           ! !|- "
+              literal strip
+                lorem ipsum"
+           ! !|+ "
+              literal keep
+                lorem ipsum"
+           ! "\"double-quoted\""
+           ! "'single-quoted'"
+          ]
+        ]
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
+      }
       
 
       //TODO: add null strings tests
