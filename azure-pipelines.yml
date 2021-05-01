@@ -24,7 +24,7 @@ steps:
   inputs:
     command: test
     projects: tests
-    arguments: -c Release /p:AltCover=true /p:AltCoverCobertura=coverage.xml /p:AltCoverAssemblyExcludeFilter='^(?!(Yzl)).*$'
+    arguments: -c Release /p:AltCover=true /p:AltCoverCobertura=coverage.xml /p:AltCoverAssemblyFilter='^(?!(Yzl)).*$' /p:AltCoverAssemblyExcludeFilter='^(?!(Yzl)).*$'
 
 - task: PublishCodeCoverageResults@1
   inputs:
