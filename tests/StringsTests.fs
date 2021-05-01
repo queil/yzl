@@ -115,28 +115,22 @@ module Strings =
            ! "plain"
            ! !> "
               folded
-                lorem ipsum
-              "
+                lorem ipsum"
            ! !>- "
               folded strip
-                lorem ipsum
-              "
+                lorem ipsum"
            ! !>+ "
               folded keep
-                lorem ipsum
-              "
+                lorem ipsum"
            ! !| "
               literal
-                lorem ipsum
-              "
+                lorem ipsum"
            ! !|- "
               literal strip
-                lorem ipsum
-              "
+                lorem ipsum"
            ! !|+ "
               literal keep
-                lorem ipsum
-              "
+                lorem ipsum"
            ! "\"double-quoted\""
            ! "'single-quoted'"
           ]
