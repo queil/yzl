@@ -1,4 +1,4 @@
-# Yzl.RenderOptions Type
+## Yzl.RenderOptions Type
 
 Namespace: [Yzl.Core](https://queil.github.io/yzl/reference/yzl-core)
 
@@ -16,15 +16,15 @@ YAML rendering options
 
 Record Field | Description | Source
 :--- | :--- | :---:
-[indentSpaces](#indentSpaces)&#32; | Specifies how many spaces are used as indentation in the output YAML<br /><br /> Default: `2`<br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L113-113)&#32;
-[multiLineRelativeIndent](#multiLineRelativeIndent)&#32; | If set to true the indent of multi-line strings is calculated against the parent YAML node and excessive leading spaces get collapsed<br /><br /> Default: `true`<br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L117-117)&#32;
+[<code>indentSpaces</code>](#indentSpaces) | Specifies how many spaces are used as indentation in the output YAML<br /><br /> Default: `2`<br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L114-114)
+[<code>multiLineRelativeIndent</code>](#multiLineRelativeIndent) | If set to true the indent of multi-line strings is calculated against the parent YAML node and excessive leading spaces get collapsed<br /><br /> Default: `true`<br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L118-118)
 
 
 ### Static members
 
 Static member | Description | Source
 :--- | :--- | :---:
-[Default](#Default)&#32; | Default render options<br />&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-renderoptions">RenderOptions</a></code><br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L120-120)&#32;
+[<code><span>RenderOptions.Default</span></code>](#Default) | Default render options<br /><br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-renderoptions">RenderOptions</a></code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L121-121)
 
 
 

@@ -1,4 +1,4 @@
-# Yzl.Str Type
+## Yzl.Str Type
 
 Namespace: [Yzl.Core](https://queil.github.io/yzl/reference/yzl-core)
 
@@ -16,23 +16,23 @@ All Interfaces: <code><span><a href="https://docs.microsoft.com/dotnet/api/syste
 
 Union case | Description | Source
 :--- | :--- | :---:
-[DoubleQuoted](#DoubleQuoted)&#32; | YAML double-quoted string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L23-23)&#32;
-[Folded](#Folded)&#32; | YAML > string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L25-25)&#32;
-[FoldedKeep](#FoldedKeep)&#32; | YAML >+ string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L29-29)&#32;
-[FoldedStrip](#FoldedStrip)&#32; | YAML >- string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L27-27)&#32;
-[Literal](#Literal)&#32; | YAML &#124; string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L31-31)&#32;
-[LiteralKeep](#LiteralKeep)&#32; | YAML &#124;+ string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L35-35)&#32;
-[LiteralStrip](#LiteralStrip)&#32; | YAML &#124;- string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L33-33)&#32;
-[Plain](#Plain)&#32; | YAML plain string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L19-19)&#32;
-[SingleQuoted](#SingleQuoted)&#32; | YAML single-quoted string<br />&#32;<br />Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>string</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L21-21)&#32;
+[<code><span>DoubleQuoted&#32;string</span></code>](#DoubleQuoted) | YAML double-quoted string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L23-23)
+[<code><span>Folded&#32;string</span></code>](#Folded) | YAML > string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L25-25)
+[<code><span>FoldedKeep&#32;string</span></code>](#FoldedKeep) | YAML >+ string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L29-29)
+[<code><span>FoldedStrip&#32;string</span></code>](#FoldedStrip) | YAML >- string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L27-27)
+[<code><span>Literal&#32;string</span></code>](#Literal) | YAML &#124; string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L31-31)
+[<code><span>LiteralKeep&#32;string</span></code>](#LiteralKeep) | YAML &#124;+ string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L35-35)
+[<code><span>LiteralStrip&#32;string</span></code>](#LiteralStrip) | YAML &#124;- string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L33-33)
+[<code><span>Plain&#32;string</span></code>](#Plain) | YAML plain string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L19-19)
+[<code><span>SingleQuoted&#32;string</span></code>](#SingleQuoted) | YAML single-quoted string<br /><br />Parameters<br /><br />**Item**: <code>string</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L21-21)
 
 
 ### Static members
 
 Static member | Description | Source
 :--- | :--- | :---:
-[op_Implicit](#op_Implicit)&#32; | Parameters&#32;<br />&#32;&#32;<br />**source**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L38-38)&#32;
-[op_Implicit](#op_Implicit)&#32; | Parameters&#32;<br />&#32;&#32;<br />**source**: <code>string</code>&#32;<br />&#32;&#32;<br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br />&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L37-37)&#32;
+[<code><span>op_Implicit<span>source</span></span></code>](#op_Implicit) | Parameters<br /><br />**source**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br /><br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L38-38)
+[<code><span>op_Implicit<span>source</span></span></code>](#op_Implicit) | Parameters<br /><br />**source**: <code>string</code><br /><br />Returns: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L37-37)
 
 
 

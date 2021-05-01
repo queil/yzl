@@ -1,4 +1,4 @@
-# Yzl.Scalar Type
+## Yzl.Scalar Type
 
 Namespace: [Yzl.Core](https://queil.github.io/yzl/reference/yzl-core)
 
@@ -16,10 +16,10 @@ YAML scalar types
 
 Union case | Description | Source
 :--- | :--- | :---:
-[Bool](#Bool)&#32; | Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>bool</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L73-73)&#32;
-[Float](#Float)&#32; | Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>double</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L71-71)&#32;
-[Int](#Int)&#32; | Parameters&#32;<br />&#32;&#32;<br />**Item**: <code>int</code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L70-70)&#32;
-[Str](#Str)&#32; | Parameters&#32;<br />&#32;&#32;<br />**Item**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code>&#32;<br />&#32;&#32; | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L72-72)&#32;
+[<code><span>Bool&#32;bool</span></code>](#Bool) | Parameters<br /><br />**Item**: <code>bool</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L74-74)
+[<code><span>Float&#32;double</span></code>](#Float) | Parameters<br /><br />**Item**: <code>double</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L72-72)
+[<code><span>Int&#32;int</span></code>](#Int) | Parameters<br /><br />**Item**: <code>int</code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L71-71)
+[<code><span>Str&#32;<a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></span></code>](#Str) | Parameters<br /><br />**Item**: <code><a href="https://queil.github.io/yzl/reference/yzl-core-yzl-str">Str</a></code><br /> | [![Link to source code](https://queil.github.io/yzl/content/img/github.png)](https://github.com/queil/yzl/tree/master/src/Yzl.fs#L73-73)
 
 
 
