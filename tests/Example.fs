@@ -8,15 +8,33 @@ module Example =
 
   [<AutoOpen>]
   module Fields =
+
+    type LanguageLevel =
+     | Elite
+     | Lame
+
+    let elite = Elite
+    let lame = Lame
+
+    type Language =
+     | Python of level:LanguageLevel
+     | Perl of level:LanguageLevel
+     | Pascal of level:LanguageLevel
+     with member x.Deconstruct = 
+                 match x with
+                 | Python z -> ("python", z |> string)
+                 | Pascal z -> ("pascal", z |> string)
+                 | Perl z -> ("perl", z |> string)
+    let perl = Perl
+    let python = Python
+    let pascal = Pascal
+
     let name = Yzl.str "name"
     let job = Yzl.str "job"
     let skill = Yzl.str "skill"
     let employed = Yzl.boolean "employed"
     let foods = Yzl.seq "foods"
-    let languages = Yzl.map "languages"
-    let perl = Yzl.str "perl"
-    let python = Yzl.str "python"
-    let pascal = Yzl.str "pascal"
+    let languages (xs:Language list) = Yzl.map "languages" (xs |> List.map (fun x -> x.Deconstruct) |> List.map(fun (k,v) -> Yzl.str k v))
     let education = Yzl.str "education"
 
   [<Tests>]
@@ -36,9 +54,9 @@ module Example =
               ! "Strawberry"
               ! "Mango" ]
             languages [
-              perl "Elite"
-              python "Elite"
-              pascal "Lame" ]
+              perl elite
+              python elite
+              pascal lame ]
             education !|
               """
               4 GCSEs
