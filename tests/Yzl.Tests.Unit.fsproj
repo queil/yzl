@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Yzl.fsproj" />
+    <ProjectReference Include="../src/Yzl/Yzl.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

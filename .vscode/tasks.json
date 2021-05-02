@@ -9,7 +9,7 @@
       "type": "shell",
       "args": [
         "build",
-        "tests",
+        "src/Yzl.Bindings.Gen",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
