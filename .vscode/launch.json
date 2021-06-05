@@ -10,10 +10,10 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/src/Yzl.Bindings.Gen/bin/Debug/net5.0/Yzl.Bindings.Gen.dll",
-      "args": ["https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/kustomization.json"],
+      "args": ["src/Yzl.Bindings.Gen/kustomization.json"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
-      "console": "integratedTerminal"
+      "console": "internalConsole"
     },
     {
       "name": ".NET Core Launch (console)",

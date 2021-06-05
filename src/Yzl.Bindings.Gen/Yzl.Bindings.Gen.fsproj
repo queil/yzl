@@ -6,12 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="YzlGenerator.fs" />
+
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NJsonSchema.CodeGeneration" Version="10.4.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>
