@@ -2,6 +2,10 @@ open Newtonsoft.Json
 open System.IO
 open Newtonsoft.Json.Linq
 open System.Text.RegularExpressions
+open Newtonsoft.Json.Schema
+open System
+open System.Collections.Generic
+
 
 type UrlOrFilePath =
  | Path of string
@@ -19,15 +23,16 @@ let loadJson (url:UrlOrFilePath) =
     match url with 
     | Url url -> 
       failwithf "not supported yet"
-      return JObject() :> JToken
+      return JSchema.Parse("{}") 
     | Path file ->
       use sr = new StreamReader(file)
       use jr = new JsonTextReader(sr)
-      let! t = JToken.ReadFromAsync(jr, token) |> Async.AwaitTask
+      let settings = JSchemaReaderSettings(Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
+      let t = JSchema.Load(jr)
       return t
   }
 
-  
+
 
 
 [<EntryPoint>]
@@ -35,94 +40,92 @@ let main argv =
   let schemaUrl = UrlOrFilePath.ofString argv.[0]
   let schema = loadJson schemaUrl |> Async.RunSynchronously
 
+  printfn "#r \"nuget: Yzl\""
+  printfn "open Yzl.Core"
+  printfn ""
+  printf "type Kustomization = "
+  
+  let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
 
-  let (|JObject|_|) (token: JToken) =
-    match token.Type with
-    | JTokenType.Object -> Some(token :?> JObject)
-    | _ -> None
-
-  let (|JObjectChildOf|_|) (parentPath:string) (token: JToken) =
-    match token with
-    | x when x.Parent |> isNull -> None
-    | :? JObject as o when o.Parent.Path = parentPath -> Some o
-    | _ -> None
-
-
-  let (|JArray|_|) (token: JToken) =
-    match token.Type with
-    | JTokenType.Array -> Some(token :?> JArray)
-    | _ -> None
-
-  let (|JProperty|_|) (token: JToken) =
-    match token.Type with
-    | JTokenType.Property -> Some(token :?> JProperty)
+  let (|Typed|_|) (s:JSchema) =
+    match s with
+    | x when x.Type.HasValue -> Some (x.Type.Value, x)
     | _ -> None
 
 
-  let (|JStringChildOf|_|) (parentPathRegex:string) (token: JToken) =
-    match token with
-    | x when x.Parent |> isNull -> None
-    | :? JValue as o 
-      when o.Type = JTokenType.String && Regex.IsMatch(o.Parent.Path, parentPathRegex) 
-      -> Some((token :?> JValue).Value |> string)
+  let (|Properties|_|) (s:JSchema) =
+    match s.Properties |> Seq.toList with
+    | [] -> None
+    | xs -> Some (xs, s)
+
+  let (|Ref|_|) (s:JSchema) =
+    match s with
+    | x when x.Ref |> isNull |> not -> Some (x.Ref, x)
     | _ -> None
 
-  let (|JPropertyChildOf|_|) (parentPath:string) (token: JToken) =
-    match token with
-    | x when x.Parent |> isNull -> None
-    | :? JProperty as o when o.Parent.Path = parentPath -> Some o
-    | _ -> None
- 
-  let (|JPropertyAt|_|) (pathRegex:string) (token: JToken) =
-    match token with
-    | :? JProperty as o when Regex.IsMatch(o.Path, pathRegex) -> Some o
+  let (|OfType|_|) (schemaType:JSchemaType) (s:JSchema) =
+    match s with
+    | Typed (typ, o) when typ = schemaType -> Some o 
     | _ -> None
 
+  let (|OneOf|_|) (s:JSchema) =
+    match s.OneOf |> Seq.toList with
+    | [] -> None
+    | xs -> Some (xs, s)
 
-  let schemaVisitor (t:JToken) =
-    match t with
+  let (|Enum|_|) (s:JSchema) =
+    match s.Enum |> Seq.toList with
+    | [] -> None
+    | xs -> Some (xs, s)
 
-
-    //| JArray a -> printfn "%s" "array"
-   // | JProperty "$ref" p -> printfn "%s" p.Path
-   // | JObject o -> printfn "%s" "object"
-    //| JObjectChildOf "definitions" o -> printfn "OF YEAH -> %s" o.Path
-    | JPropertyChildOf "definitions" p ->
-      printfn "%s" p.Name
-    | JStringChildOf "^definitions\.[^.]*\.type$" s -> 
-      printfn "%A" s
-    | x -> printfn "  %s - (%A)" x.Path x.Type
-
-
-  let walk t (visit:JToken -> unit) =
-
-    let rec walk (t:JToken) =
-      match t with
-      | JObject o ->
-        visit o
-        o.Children<JProperty>() |> Seq.iter walk
-      | JArray a ->
-        visit a
-        a.Children() |> Seq.iter walk
-      | JProperty p -> 
-        visit p
-        walk p.Value 
-      | x -> visit x
-
-    walk t
-
-  walk schema schemaVisitor
+  let rec renderValue (x:JSchema) =
     
-          
+    let renderEnum x =
+      let Key = x |> string |> capitalize 
+      printf "\n | %s" Key
 
-  // let settings = YzlGeneratorSettings()
-  // let gen = YzlGenerator(schema, YzlTypeResolver(settings), settings)
-  // let tsGen = TypeScriptGenerator(schema, TypeScriptGeneratorSettings
-  //               (
-  //                   TypeStyle = TypeScriptTypeStyle.Interface,
-  //                   TypeScriptVersion = 1.8m
-  //               ))
-  // //let file = tsGen.GenerateFile()
-  // let file = gen.GenerateFile()
-  //printf "%s" file
+    let renderType (x:KeyValuePair<string,JSchema>) =
+      let Key = capitalize x.Key
+      
+      printf "\n | %s of %s" Key Key
+
+    let renderProperty (x:KeyValuePair<string,JSchema>) = 
+
+      let Key = capitalize x.Key
+      printfn "\n/// %s" x.Value.Description
+      printf "and %s = " Key
+      renderValue x.Value
+      printfn ""
+
+
+    match x with
+    | Ref (ref, s) ->
+      printfn "ref"
+    | OneOf (items, s) ->
+      items |> Seq.iter renderValue
+    | Enum (items, s) ->
+      items |> Seq.iter renderEnum
+    | OfType JSchemaType.String x -> printf "Yzl.Str"
+    | OfType JSchemaType.Boolean x -> printf "Yzl.Bool"
+    | OfType JSchemaType.Number x -> printf "Yzl.Float"
+    | OfType JSchemaType.Integer x -> printf "Yzl.Int"
+    | OfType JSchemaType.Array x ->
+      x.Items |> Seq.iter renderValue
+      printf " seq"
+    | Properties (items, x) ->
+      items |> Seq.iter (renderType)
+      items |> Seq.iter (renderProperty)
+    | OfType JSchemaType.Object x ->
+      printf "obj"
+    
+    | _ -> printf "unit"
+
+
+
+    
+    
+
+  schema |> renderValue
+  
+
   0
