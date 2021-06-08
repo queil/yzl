@@ -27,7 +27,7 @@ let loadJson (url:UrlOrFilePath) =
     | Path file ->
       use sr = new StreamReader(file)
       use jr = new JsonTextReader(sr)
-      let settings = JSchemaReaderSettings(Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
+      let settings = JSchemaReaderSettings(ResolveSchemaReferences = false, Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
       let t = JSchema.Load(jr)
       return t
   }
@@ -86,14 +86,17 @@ let main argv =
 
     let renderType (x:KeyValuePair<string,JSchema>) =
       let Key = capitalize x.Key
-      
-      printf "\n | %s of %s" Key Key
+      printf " | %s of %s" Key Key
+
+      match x.Value with
+      | OfType JSchemaType.Array _ ->
+        printf " seq"
+      | _ -> ()
 
     let renderProperty (x:KeyValuePair<string,JSchema>) = 
-
       let Key = capitalize x.Key
-      printfn "\n/// %s" x.Value.Description
-      printf "and %s = " Key
+      if x.Value.Description |> isNull |> not then printfn "\n/// %s" x.Value.Description
+      printfn "and %s = " Key
       renderValue x.Value
       printfn ""
 
@@ -111,9 +114,10 @@ let main argv =
     | OfType JSchemaType.Integer x -> printf "Yzl.Int"
     | OfType JSchemaType.Array x ->
       x.Items |> Seq.iter renderValue
-      printf " seq"
+      //printf " seq"
     | Properties (items, x) ->
       items |> Seq.iter (renderType)
+      printfn ""
       items |> Seq.iter (renderProperty)
     | OfType JSchemaType.Object x ->
       printf "obj"
@@ -122,7 +126,7 @@ let main argv =
 
 
 
-    
+  //Fantomas.CodeFormatter.FormatASTAsync
     
 
   schema |> renderValue
