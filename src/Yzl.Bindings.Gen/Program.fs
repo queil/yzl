@@ -50,7 +50,7 @@ let main argv =
   printfn "#r \"nuget: Yzl\""
   printfn "open Yzl.Core"
   printfn ""
-  printf "type Kustomization = "
+
   
   let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
 
@@ -117,7 +117,8 @@ let main argv =
         renderValue (Property(x.Key, x.Value, false))
         printfn ""
 
-    let renderz (parentKey:string option) (value:JSchema) =
+    let renderz (value:JSchema) =
+    
       match value with
       | Ref (ref, s) ->
         printfn "ref"
@@ -135,20 +136,30 @@ let main argv =
       | PatternProperties (items, k) ->
         printf "Yzl.NamedNode list"
       | Properties (items, x) ->
-        let key = parentKey |> Option.defaultValue ""
-        if key = "" || types.Add key then
-          printfn ""
-          items |> Seq.iter duCase
-          printfn ""
-          items |> Seq.iter renderProperty
+        //let key = parentKey |> Option.defaultValue ""
+        //if key = "" || types.Add key then
+          
+          items |> Seq.map (fun x -> Property(x.Key, x.Value, false )) |> Seq.iter (renderValue)
       | OfType JSchemaType.Object x ->
         printf "obj"
       
       | _ -> printf "unit"
 
     match x with
-    | Property (name, value, isRoot) -> renderz (Some name) value
-    | Other value -> renderz None value
+    | Property (name, value, isRoot) -> 
+      let Key = capitalize name
+      //if types.Add Key then
+      if value.Description |> isNull |> not then printfn "\n/// %s" value.Description
+      printf "%s %s = " (if isRoot then "type" else "and") Key
+      match value with
+      | Properties (items, _) ->
+        printfn ""
+        items |> Seq.iter duCase
+      |_ -> ()
+      //printfn ""
+   
+      renderz value
+    | Other value -> renderz value
 
 
   renderValue (Property ("kustomization", schema, true))
