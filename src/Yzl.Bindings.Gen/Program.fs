@@ -5,7 +5,11 @@ open System.Text.RegularExpressions
 open Newtonsoft.Json.Schema
 open System
 open System.Collections.Generic
-
+open FSharp.Compiler.SourceCodeServices
+open FSharp.Compiler.Text
+open FSharp.Compiler.SyntaxTree
+open FSharp.Compiler.SyntaxTree
+open Microsoft.FSharp.Quotations
 
 type UrlOrFilePath =
  | Path of string
@@ -33,7 +37,10 @@ let loadJson (url:UrlOrFilePath) =
   }
 
 
-
+type Node =
+ | Property of Property
+ | Other of JSchema
+and Property = string * JSchema * bool
 
 [<EntryPoint>]
 let main argv =
@@ -58,6 +65,11 @@ let main argv =
     | [] -> None
     | xs -> Some (xs, s)
 
+  let (|PatternProperties|_|) (s:JSchema) =
+    match s.PatternProperties |> Seq.toList with
+    | [] -> None
+    | xs -> Some (xs, s)
+
   let (|Ref|_|) (s:JSchema) =
     match s with
     | x when x.Ref |> isNull |> not -> Some (x.Ref, x)
@@ -78,13 +90,15 @@ let main argv =
     | [] -> None
     | xs -> Some (xs, s)
 
-  let rec renderValue (x:JSchema) =
+  let types = HashSet<string>()
+
+  let rec renderValue (x:Node) =
     
-    let renderEnum x =
+    let enum x =
       let Key = x |> string |> capitalize 
       printf "\n | %s" Key
 
-    let renderType (x:KeyValuePair<string,JSchema>) =
+    let duCase (x:KeyValuePair<string,JSchema>) =
       let Key = capitalize x.Key
       printf " | %s of %s" Key Key
 
@@ -92,44 +106,83 @@ let main argv =
       | OfType JSchemaType.Array _ ->
         printf " seq"
       | _ -> ()
-
-    let renderProperty (x:KeyValuePair<string,JSchema>) = 
-      let Key = capitalize x.Key
-      if x.Value.Description |> isNull |> not then printfn "\n/// %s" x.Value.Description
-      printfn "and %s = " Key
-      renderValue x.Value
       printfn ""
 
+    let renderProperty (x:KeyValuePair<string,JSchema>) =
+      
+      let Key = capitalize x.Key
+      if types.Add Key then
+        if x.Value.Description |> isNull |> not then printfn "\n/// %s" x.Value.Description
+        printf "and %s = " Key
+        renderValue (Property(x.Key, x.Value, false))
+        printfn ""
+
+    let renderz (parentKey:string option) (value:JSchema) =
+      match value with
+      | Ref (ref, s) ->
+        printfn "ref"
+      | OneOf (items, s) ->
+        items |> Seq.iter (Other >> renderValue)
+      | Enum (items, s) ->
+        items |> Seq.iter enum
+      | OfType JSchemaType.String x -> printf "string"
+      | OfType JSchemaType.Boolean x -> printf "bool"
+      | OfType JSchemaType.Number x -> printf "float"
+      | OfType JSchemaType.Integer x -> printf "int"
+      | OfType JSchemaType.Array x ->
+        x.Items |> Seq.iter (Other >> renderValue)
+        //printf " seq"
+      | PatternProperties (items, k) ->
+        printf "Yzl.NamedNode list"
+      | Properties (items, x) ->
+        let key = parentKey |> Option.defaultValue ""
+        if key = "" || types.Add key then
+          printfn ""
+          items |> Seq.iter duCase
+          printfn ""
+          items |> Seq.iter renderProperty
+      | OfType JSchemaType.Object x ->
+        printf "obj"
+      
+      | _ -> printf "unit"
 
     match x with
-    | Ref (ref, s) ->
-      printfn "ref"
-    | OneOf (items, s) ->
-      items |> Seq.iter renderValue
-    | Enum (items, s) ->
-      items |> Seq.iter renderEnum
-    | OfType JSchemaType.String x -> printf "Yzl.Str"
-    | OfType JSchemaType.Boolean x -> printf "Yzl.Bool"
-    | OfType JSchemaType.Number x -> printf "Yzl.Float"
-    | OfType JSchemaType.Integer x -> printf "Yzl.Int"
-    | OfType JSchemaType.Array x ->
-      x.Items |> Seq.iter renderValue
-      //printf " seq"
-    | Properties (items, x) ->
-      items |> Seq.iter (renderType)
-      printfn ""
-      items |> Seq.iter (renderProperty)
-    | OfType JSchemaType.Object x ->
-      printf "obj"
+    | Property (name, value, isRoot) -> renderz (Some name) value
+    | Other value -> renderz None value
+
+
+  renderValue (Property ("kustomization", schema, true))
+
+ 
+//   let formatAst = Fantomas.CodeFormatter.FormatASTAsync
     
-    | _ -> printf "unit"
+//   let checker = FSharpChecker.Create()
+//   let file = "/home/queil/code/yzl/src/Yzl.Bindings.Gen/out2.fsx"
+//   let opts = {
+//     FSharpParsingOptions.Default with
+//       SourceFiles = [|file|]
+//   }
+//   let text = """namespace Yzl.Bindings
 
+// open Yzl.Core
 
+// module Kustomize =
+//   type Kustomizaton =
+//    | Args of Args
+//   and Args = Yzl.Str
 
-  //Fantomas.CodeFormatter.FormatASTAsync
-    
+//   """
 
-  schema |> renderValue
+//   let x = checker.ParseFile (file, SourceText.ofString text, opts) |> Async.RunSynchronously
+  
+//   printfn "%A" x.ParseTree.Value
+  
+  
+
+//   let tree = ParsedInput.ImplFile (ParsedImplFileInput ("", false, QualifiedNameOfFile (Ident()), [], [], [], (true,true)))
+  
+//   let output = formatAst ( x.ParseTree.Value, "out2.fsx", [], None, Fantomas.FormatConfig.FormatConfig.Default) |> Async.RunSynchronously
+//   //schema |> renderValue
   
 
   0
