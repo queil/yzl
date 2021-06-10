@@ -65,6 +65,12 @@ let main argv =
     | [] -> None
     | xs -> Some (xs, s)
 
+  let (|Array|_|) (s:JSchema) =
+    match s.Items |> Seq.toList with
+    | [] -> None
+    | xs -> Some (xs, s)
+
+
   let (|PatternProperties|_|) (s:JSchema) =
     match s.PatternProperties |> Seq.toList with
     | [] -> None
@@ -97,16 +103,6 @@ let main argv =
     let enum x =
       let Key = x |> string |> capitalize 
       printf "\n | %s" Key
-
-    let duCase (x:KeyValuePair<string,JSchema>) =
-      let Key = capitalize x.Key
-      printf " | %s of %s" Key Key
-
-      match x.Value with
-      | OfType JSchemaType.Array _ ->
-        printf " seq"
-      | _ -> ()
-      printfn ""
 
     let renderProperty (x:KeyValuePair<string,JSchema>) =
       
@@ -151,14 +147,30 @@ let main argv =
       //if types.Add Key then
       if value.Description |> isNull |> not then printfn "\n/// %s" value.Description
       printf "%s %s = " (if isRoot then "type" else "and") Key
+
+      let rec renderDuCases =
+        function
+        | Properties (items, _) ->
+          printfn ""
+          items |> Seq.iter (fun x ->
+            let Key = capitalize x.Key
+            printf " | %s of %s" Key Key
+            match x.Value with
+            | Array _ ->
+              printf " seq"
+            | _ -> ()
+            printfn "")
+          renderz value
+        |_ -> renderz value
+
       match value with
-      | Properties (items, _) ->
-        printfn ""
-        items |> Seq.iter duCase
-      |_ -> ()
-      //printfn ""
+      | Properties _ as p -> renderDuCases p
+      | Array ([v], _) -> renderDuCases v
+      
+      |_ -> renderz value
+      printfn ""
    
-      renderz value
+      
     | Other value -> renderz value
 
 
