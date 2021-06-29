@@ -85,7 +85,7 @@ module Yzl =
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
     let inline liftMany (x:^a list) : ^b list = x |> List.map lift
 
-    let private named t node = Named(Name t, node)
+    let named t node = Named(Name t, node)
     
     /// Creates a named string scalar node
     let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> lift)))
@@ -103,7 +103,7 @@ module Yzl =
     let map name map =  MapNode(map) |> named name
     
     /// Creates a named sequence node
-    let seq name seq =  SeqNode(seq) |> named name
+    let inline seq name (seq:^a seq) = SeqNode(seq |> Seq.toList |> liftMany) |> named name
 
     /// Creates an empty node
     /// 
