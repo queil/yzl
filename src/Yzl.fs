@@ -57,6 +57,7 @@ module Yzl =
       static member op_Implicit(source: Str) : Node = Scalar(Str (source))
       static member op_Implicit(source: Node list) : Node = SeqNode(source)
       static member op_Implicit(source: NamedNode list) : Node = MapNode(source)
+      static member op_Implicit(source: NamedNode list list) : Node = SeqNode(source |> List.map MapNode)
       static member op_Implicit(source: int list) : Node = SeqNode( source |> List.map (Int >> Scalar))
       static member op_Implicit(source: double list) : Node = SeqNode( source |> List.map (Float >> Scalar))
       static member op_Implicit(source: bool list) : Node = SeqNode( source |> List.map (Bool >> Scalar))
@@ -74,17 +75,20 @@ module Yzl =
       | Bool of bool
 
     /// <summary>
-    /// Augments a given object to a <see cref="T:Node" />
+    /// Lifts a given object to a <see cref="T:Node" />
     /// </summary>
     /// <remarks>
-    /// *Possible augmentations are specified as implicit casts of the <see cref="T:Node" /> type*
+    /// *Possible mappings are specified as implicit casts of the <see cref="T:Node" /> type*
     /// </remarks>
+    let inline lift (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
+    [<Obsolete("Use lift instead")>]
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
+    let inline liftMany (x:^a list) : ^b list = x |> List.map lift
 
     let private named t node = Named(Name t, node)
     
     /// Creates a named string scalar node
-    let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> augment)))
+    let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> lift)))
     
     /// Creates a named integer scalar node
     let int name value =  Scalar(Int value) |> named name
@@ -231,6 +235,6 @@ module Yzl =
 
     /// <summary>Renders Yzl tree into YAML with the default RenderOptions</summary>
     /// <example>
-    /// Render an Yzl node: `! 5 |> Yzl.render `
+    /// Render an Yzl node: `! 5 |> Yzl.render`
     /// </example>
-    let render yaml = renderYaml RenderOptions.Default yaml 
+    let inline render (obj:^a) = renderYaml RenderOptions.Default (lift obj)

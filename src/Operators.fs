@@ -3,8 +3,10 @@ namespace Yzl.Core
 [<AutoOpen>]
 module Operators =
 
-  /// Augment to Yzl Node
-  let inline (!) (a:^a) : Yzl.Node = Yzl.augment a
+  /// Lift to Yzl Node
+  let inline (!) (a:^a) : Yzl.Node = Yzl.lift a
+  /// Lift to Yzl Node list
+  let inline (!!) (a:^a list) : Yzl.Node list = Yzl.liftMany a
   /// Folded string
   let (!>) (value:string) = Yzl.Folded value
   /// Folded strip string
