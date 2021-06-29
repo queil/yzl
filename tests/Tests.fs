@@ -10,6 +10,7 @@ module Core =
   let apiVersion = Yzl.str "apiVersion"
   let metadata x = Yzl.map "metadata" x
   let name = Yzl.str "name"
+  let value = Yzl.str "value"
   let labels x = Yzl.map "labels" x
   let app = Yzl.str "app"
   let spec x = Yzl.map "spec" x
@@ -188,5 +189,22 @@ module Core =
         "Rendering failed" |> Expect.equal (! [ 2; 3; 4 ] |> Yzl.render)  "- 2\n- 3\n- 4\n"
         "Rendering failed" |> Expect.equal (! [ true; false; true ] |> Yzl.render)  "- true\n- false\n- true\n"
         "Rendering failed" |> Expect.equal (! [ "1"; "3"; "4" ] |> Yzl.render)  "- 1\n- 3\n- 4\n"
+      }
+
+      test "Should render a list of NamedNode lists as a sequence of maps" {
+        let expected = File.ReadAllText("./yaml/sequence-of-maps-2.yaml")
+
+        let actual =
+          ! [
+            [
+              name "n7"
+              value "val7"
+            ]
+            [
+              name "n8"
+              value "val8"
+            ]
+          ]
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
       }
     ]
