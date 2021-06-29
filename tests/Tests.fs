@@ -207,13 +207,4 @@ module Core =
           ]
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
       }
-
-      test "Should auto-lift seq" {
-        let seq1 = Yzl.seq "seq1"
-        let actual = [
-          seq1 [1;2;3]
-          seq1 []
-        ]
-        "Rendering failed" |> Expect.equal (actual |> Yzl.render) "seq1:\n- 1\n- 2\n- 3\nseq1:\n"
-      }
     ]
