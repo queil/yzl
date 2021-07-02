@@ -1,8 +1,8 @@
-open Newtonsoft.Json
+
 open System.IO
 open Newtonsoft.Json.Linq
 open System.Text.RegularExpressions
-open Newtonsoft.Json.Schema
+
 open System
 open System.Collections.Generic
 open FSharp.Compiler.SourceCodeServices
@@ -10,6 +10,8 @@ open FSharp.Compiler.Text
 open FSharp.Compiler.SyntaxTree
 open FSharp.Compiler.SyntaxTree
 open Microsoft.FSharp.Quotations
+open NJsonSchema
+
 
 type UrlOrFilePath =
  | Path of string
@@ -27,185 +29,155 @@ let loadJson (url:UrlOrFilePath) =
     match url with 
     | Url url -> 
       failwithf "not supported yet"
-      return JSchema.Parse("{}") 
+      return NJsonSchema.JsonSchema.CreateAnySchema()
     | Path file ->
-      use sr = new StreamReader(file)
-      use jr = new JsonTextReader(sr)
-      let settings = JSchemaReaderSettings(ResolveSchemaReferences = false, Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
-      let t = JSchema.Load(jr)
-      return t
+      // use sr = new StreamReader(file)
+      // use jr = new JsonTextReader(sr)
+      // let settings = JSchemaReaderSettings(ResolveSchemaReferences = false, Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
+      // let t = JSchema.Load(jr, settings)
+      let! x =  (NJsonSchema.JsonSchema.FromFileAsync(file, token) |> Async.AwaitTask)
+      return x
   }
 
 
-type Node =
- | Property of Property
- | Other of JSchema
-and Property = string * JSchema * bool
+// type Node =
+//  | Property of Property
+//  | Other of JSchema
+// and Property = string * JSchema * bool
 
 [<EntryPoint>]
 let main argv =
   let schemaUrl = UrlOrFilePath.ofString argv.[0]
   let schema = loadJson schemaUrl |> Async.RunSynchronously
 
+
   printfn "#r \"nuget: Yzl\""
+  printfn "namespace rec Yzl.Bindings.Kustomize"
   printfn "open Yzl.Core"
   printfn ""
 
-  
+  let types = HashSet<string>()
   let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
 
-  let (|Typed|_|) (s:JSchema) =
-    match s with
-    | x when x.Type.HasValue -> Some (x.Type.Value, x)
-    | _ -> None
+  let matchNonEmpty =
+   function
+    | null -> None
+    | defs ->
+      match defs |> Seq.toList |> List.map (|KeyValue|) with
+      | [] -> None
+      | xs -> Some xs
 
+  let matchType (typ:JsonObjectType) (x:JsonSchema) =
+    match x with
+    | x when x.Type = typ -> Some x
+    | _ -> None 
 
-  let (|Properties|_|) (s:JSchema) =
-    match s.Properties |> Seq.toList with
-    | [] -> None
-    | xs -> Some (xs, s)
+  let (|Properties|_|) (s:JsonSchema) =
+    s.Properties |> matchNonEmpty
 
-  let (|Array|_|) (s:JSchema) =
+  let (|PatternProperties|_|) (s:JsonSchema) =
+    s.PatternProperties |> matchNonEmpty
+
+  let (|Array2|_|) (s:JsonSchema) =
     match s.Items |> Seq.toList with
     | [] -> None
-    | xs -> Some (xs, s)
+    | xs -> Some xs
 
-
-  let (|PatternProperties|_|) (s:JSchema) =
-    match s.PatternProperties |> Seq.toList with
-    | [] -> None
-    | xs -> Some (xs, s)
-
-  let (|Ref|_|) (s:JSchema) =
-    match s with
-    | x when x.Ref |> isNull |> not -> Some (x.Ref, x)
-    | _ -> None
-
-  let (|OfType|_|) (schemaType:JSchemaType) (s:JSchema) =
-    match s with
-    | Typed (typ, o) when typ = schemaType -> Some o 
-    | _ -> None
-
-  let (|OneOf|_|) (s:JSchema) =
+  let (|OneOf|_|) (s:JsonSchema) =
     match s.OneOf |> Seq.toList with
     | [] -> None
-    | xs -> Some (xs, s)
+    | xs -> Some xs
 
-  let (|Enum|_|) (s:JSchema) =
-    match s.Enum |> Seq.toList with
+  let (|Array|_|) (s:JsonSchema) =
+    match s.Item with
+    | null -> None
+    | v -> Some v
+
+  let (|Enum|_|) (s:JsonSchema) =
+    match s.Enumeration |> Seq.toList with
     | [] -> None
-    | xs -> Some (xs, s)
+    | v -> Some (v, s)
 
-  let types = HashSet<string>()
+  let (|String|_|) (s:JsonSchema) =
+   s |> matchType JsonObjectType.String
 
-  let rec renderValue (x:Node) =
-    
-    let enum x =
-      let Key = x |> string |> capitalize 
-      printf "\n | %s" Key
+  let (|Boolean|_|) (s:JsonSchema) =
+   s |> matchType JsonObjectType.Boolean
 
-    let renderProperty (x:KeyValuePair<string,JSchema>) =
-      
-      let Key = capitalize x.Key
-      if types.Add Key then
-        if x.Value.Description |> isNull |> not then printfn "\n/// %s" x.Value.Description
-        printf "and %s = " Key
-        renderValue (Property(x.Key, x.Value, false))
+  let (|Reference|_|) (s:JsonSchema) =
+    match s with
+    | x when x.Reference |> isNull |> not -> Some (x.Reference)
+    | _ -> None
+
+  let (|Definitions|_|) (s:JsonSchema) =
+    s.Definitions |> matchNonEmpty
+
+  let resolveDef ref = schema.Definitions |> Seq.find (fun (KeyValue(k,v)) -> v = ref)
+  
+  let enums = List<(string * string list)>()
+  
+  let nextIndex =
+    let mutable z = 0
+    fun () -> 
+      z <- z+1
+      z
+
+  let rec render (s:JsonSchema) =
+    match s with
+    | Definitions (def) ->
+      def |> Seq.iter (fun (k,v) ->
+        printfn "\n/// Definition: %s" k
+        printf "type %s = " k
+        render v
         printfn ""
-
-    let renderz (value:JSchema) =
-    
-      match value with
-      | Ref (ref, s) ->
-        printfn "ref"
-      | OneOf (items, s) ->
-        items |> Seq.iter (Other >> renderValue)
-      | Enum (items, s) ->
-        items |> Seq.iter enum
-      | OfType JSchemaType.String x -> printf "string"
-      | OfType JSchemaType.Boolean x -> printf "bool"
-      | OfType JSchemaType.Number x -> printf "float"
-      | OfType JSchemaType.Integer x -> printf "int"
-      | OfType JSchemaType.Array x ->
-        x.Items |> Seq.iter (Other >> renderValue)
-        //printf " seq"
-      | PatternProperties (items, k) ->
-        printf "Yzl.NamedNode list"
-      | Properties (items, x) ->
-        //let key = parentKey |> Option.defaultValue ""
-        //if key = "" || types.Add key then
-          
-          items |> Seq.map (fun x -> Property(x.Key, x.Value, false )) |> Seq.iter (renderValue)
-      | OfType JSchemaType.Object x ->
-        printf "obj"
+      )
+    | Reference (ref) ->
+      let def = resolveDef ref
+      printf "%s" def.Key
+    | Array x ->
+      render x
+      printf " seq"
+    | OneOf xs ->
+      //printf "/// oneof"
+      let key = "union"
+      let key = sprintf "%s%i" key  (nextIndex ()) |> capitalize
       
-      | _ -> printf "unit"
-
-    match x with
-    | Property (name, value, isRoot) -> 
-      let Key = capitalize name
-      //if types.Add Key then
-      if value.Description |> isNull |> not then printfn "\n/// %s" value.Description
-      printf "%s %s = " (if isRoot then "type" else "and") Key
-
-      let rec renderDuCases =
-        function
-        | Properties (items, _) ->
-          printfn ""
-          items |> Seq.iter (fun x ->
-            let Key = capitalize x.Key
-            printf " | %s of %s" Key Key
-            match x.Value with
-            | Array _ ->
-              printf " seq"
-            | _ -> ()
-            printfn "")
-          renderz value
-        |_ -> renderz value
-
-      match value with
-      | Properties _ as p -> renderDuCases p
-      | Array ([v], _) -> renderDuCases v
+      enums.Add((key, xs |> List.map (fun x -> 
+        let def = resolveDef x.Reference
+        def.Key
+      )))
+      printf "%s" key
+    | Array2 xs ->
+      printf "/// weird"
+    | Enum (xs,v) ->
+      let key =
+        match v with
+        | :? JsonSchemaProperty as p -> p.Name 
+        | _ -> "AnonymousEnum"
       
-      |_ -> renderz value
-      printfn ""
-   
-      
-    | Other value -> renderz value
-
-
-  renderValue (Property ("kustomization", schema, true))
-
- 
-//   let formatAst = Fantomas.CodeFormatter.FormatASTAsync
-    
-//   let checker = FSharpChecker.Create()
-//   let file = "/home/queil/code/yzl/src/Yzl.Bindings.Gen/out2.fsx"
-//   let opts = {
-//     FSharpParsingOptions.Default with
-//       SourceFiles = [|file|]
-//   }
-//   let text = """namespace Yzl.Bindings
-
-// open Yzl.Core
-
-// module Kustomize =
-//   type Kustomizaton =
-//    | Args of Args
-//   and Args = Yzl.Str
-
-//   """
-
-//   let x = checker.ParseFile (file, SourceText.ofString text, opts) |> Async.RunSynchronously
+      let key = sprintf "%s%i" key  (nextIndex ()) |> capitalize
+      enums.Add((key, xs |> List.map string))
+      printf "%s" key
+    | String x ->
+      printf "(string -> Yzl.Scalar)"
+    | Boolean x ->
+      printf "(bool -> Yzl.Scalar)"
+    | PatternProperties xs ->
+      xs |> Seq.iter (fun _ -> printf "Yzl.NamedNode list")
+    | Properties xs ->
+      xs |> Seq.iter (fun (k,v) -> 
+        let Key = capitalize k
+        printf "\n | %s of " Key
+        render v
+      )
+    | x -> failwithf "No idea what to do! %A" x
   
-//   printfn "%A" x.ParseTree.Value
-  
-  
+  render schema
 
-//   let tree = ParsedInput.ImplFile (ParsedImplFileInput ("", false, QualifiedNameOfFile (Ident()), [], [], [], (true,true)))
-  
-//   let output = formatAst ( x.ParseTree.Value, "out2.fsx", [], None, Fantomas.FormatConfig.FormatConfig.Default) |> Async.RunSynchronously
-//   //schema |> renderValue
+  enums |> Seq.iter (fun (key, values) -> 
+    printfn "type %s = %s" key (values |> Seq.map (capitalize >> (sprintf "| %s ")) |> String.concat "")
+  )
+
   
 
   0
