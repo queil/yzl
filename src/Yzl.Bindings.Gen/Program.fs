@@ -12,6 +12,19 @@ open FSharp.Compiler.SyntaxTree
 open Microsoft.FSharp.Quotations
 open NJsonSchema
 
+type Context =
+  {
+    Type: Type
+    Indent: int
+  }
+with
+  static
+    member Default = {Indent = 0; Type = Default}
+and Type =
+  | Default
+  | RecordDefinition
+  | DefaultRecord
+
 
 type UrlOrFilePath =
  | Path of string
@@ -122,25 +135,28 @@ let main argv =
       z <- z+1
       z
 
-  let rec render (s:JsonSchema) =
+  let rec render (s:JsonSchema) (ctx: Context) =
     match s with
     | Definitions (def) ->
       def |> Seq.iter (fun (k,v) ->
         printfn "\n/// Definition: %s" k
-        printf "type %s = " k
-        render v
-        printfn ""
+        printf "type %s = {" k
+        render v {ctx with Type = RecordDefinition}
+        printfn "\n}"
+        printf "with\n  static\n    member Default =\n    {"
+        render v { Type = DefaultRecord; Indent = ctx.Indent + 2 }
+        printfn "\n}"
       )
     | Reference (ref) ->
       let def = resolveDef ref
       printf "%s" def.Key
     | Array x ->
-      render x
-      printf " seq"
+      render x ctx
+      printf " list"
     | OneOf xs ->
       //printf "/// oneof"
       let key = "union"
-      let key = sprintf "%s%i" key  (nextIndex ()) |> capitalize
+      let key = sprintf "%s%i" key (nextIndex ()) |> capitalize
       
       enums.Add((key, xs |> List.map (fun x -> 
         let def = resolveDef x.Reference
@@ -159,20 +175,28 @@ let main argv =
       enums.Add((key, xs |> List.map string))
       printf "%s" key
     | String x ->
-      printf "(string -> Yzl.Scalar)"
+      printf "string"
     | Boolean x ->
-      printf "(bool -> Yzl.Scalar)"
+      printf "bool"
     | PatternProperties xs ->
       xs |> Seq.iter (fun _ -> printf "Yzl.NamedNode list")
     | Properties xs ->
       xs |> Seq.iter (fun (k,v) -> 
-        let Key = capitalize k
-        printf "\n | %s of " Key
-        render v
+        let key = capitalize k
+        //printf "\n | %s of " key
+        printfn ""
+        match ctx.Type with
+        | RecordDefinition ->
+          printf "  %s: " key
+          render v ctx
+          printf " option"
+        | DefaultRecord -> printf "      %s = None" key
+        | Default -> ()
       )
+
     | x -> failwithf "No idea what to do! %A" x
   
-  render schema
+  render schema Context.Default
 
   enums |> Seq.iter (fun (key, values) -> 
     printfn "type %s = %s" key (values |> Seq.map (capitalize >> (sprintf "| %s ")) |> String.concat "")
