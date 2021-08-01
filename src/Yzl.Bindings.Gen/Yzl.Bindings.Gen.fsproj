@@ -15,7 +15,11 @@
   <ItemGroup>
     <PackageReference Include="Fantomas" Version="4.4.0" />
     <PackageReference Include="NJsonSchema" Version="10.4.4" />
-    <PackageReference Include="Yzl" Version="1.3.0" />
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yzl\Yzl.fsproj" />
   </ItemGroup>
 
 </Project>

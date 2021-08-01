@@ -63,14 +63,13 @@ let main argv =
   let schemaUrl = UrlOrFilePath.ofString argv.[0]
   let schema = loadJson schemaUrl |> Async.RunSynchronously
 
-
-  printfn "#r \"nuget: Yzl\""
   printfn "namespace rec Yzl.Bindings.Kustomize"
   printfn "open Yzl.Core"
   printfn ""
 
   let types = HashSet<string>()
   let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
+  let camelize (x:string) = Char.ToLower(x.[0]).ToString() + x.[1..]
 
   let matchNonEmpty =
    function
@@ -140,19 +139,20 @@ let main argv =
     | Definitions (def) ->
       def |> Seq.iter (fun (k,v) ->
         printfn "\n/// Definition: %s" k
-        printf "type %s = {" k
+        printf "module %s = " k
         render v {ctx with Type = RecordDefinition}
-        printfn "\n}"
-        printf "with\n  static\n    member Default =\n    {"
-        render v { Type = DefaultRecord; Indent = ctx.Indent + 2 }
-        printfn "\n}"
+        //printfn "\n}"
+        // printf "with\n  static\n    member Default =\n    {"
+        // render v { Type = DefaultRecord; Indent = ctx.Indent + 2 }
+        // printfn "\n}"
       )
     | Reference (ref) ->
-      let def = resolveDef ref
-      printf "%s" def.Key
+      //let def = resolveDef ref
+      
+      printf "Yzl.map" //(camelize def.Key)
     | Array x ->
-      render x ctx
-      printf " list"
+      //render x ctx
+      printf "Yzl.seq"
     | OneOf xs ->
       //printf "/// oneof"
       let key = "union"
@@ -173,23 +173,40 @@ let main argv =
       
       let key = sprintf "%s%i" key  (nextIndex ()) |> capitalize
       enums.Add((key, xs |> List.map string))
-      printf "%s" key
+      printf "Yzl.str" //let's ignore type information for now
     | String x ->
-      printf "string"
+      printf "Yzl.str"
     | Boolean x ->
-      printf "bool"
+      printf "Yzl.boolean"
     | PatternProperties xs ->
-      xs |> Seq.iter (fun _ -> printf "Yzl.NamedNode list")
+      xs |> Seq.iter (fun _ -> printf "Yzl.map")
     | Properties xs ->
       xs |> Seq.iter (fun (k,v) -> 
-        let key = capitalize k
-        //printf "\n | %s of " key
+        let key = camelize k
+        
+        let annotation =
+          function
+          | String _ 
+          | Enum _
+            -> "string"
+          | Boolean _ -> "bool"
+          | Array _ -> "Yzl.Node list"
+          | PatternProperties _
+          | Reference _ -> "Yzl.NamedNode list"
+          | _ -> ""
+
         printfn ""
         match ctx.Type with
         | RecordDefinition ->
-          printf "  %s: " key
+          let escapedKey =
+            match key with
+            | "namespace" | "type" -> sprintf "``%s``" key
+            | _ -> key
+
+          printf """  let %s (value: %s) = """ escapedKey (annotation v)
           render v ctx
-          printf " option"
+          printf """ "%s" value""" key
+          //printf " option"
         | DefaultRecord -> printf "      %s = None" key
         | Default -> ()
       )
@@ -197,11 +214,11 @@ let main argv =
     | x -> failwithf "No idea what to do! %A" x
   
   render schema Context.Default
-
+  
+  printfn ""
   enums |> Seq.iter (fun (key, values) -> 
     printfn "type %s = %s" key (values |> Seq.map (capitalize >> (sprintf "| %s ")) |> String.concat "")
   )
 
-  
 
   0
