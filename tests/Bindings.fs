@@ -48,7 +48,7 @@ configMapGenerator:
           ]]
           y.patchesJson6902 <| fun y -> [
           [
-            y.path "./paches/ingress.yaml"
+            y.path "./patches/ingress.yaml"
             y.target <| fun y -> [
               y.group "networking.k8s.io"
               y.version "v1"
