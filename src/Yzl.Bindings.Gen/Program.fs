@@ -42,11 +42,6 @@ let main argv =
   let schemaUrl = UrlOrFilePath.ofString argv.[0]
   let schema = loadJson schemaUrl |> Async.RunSynchronously
 
-  printfn "namespace rec Yzl.Bindings.Kustomize"
-  printfn "open Yzl.Core"
-  printfn ""
-
-  let types = HashSet<string>()
   let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
   let camelize (x:string) = Char.ToLower(x.[0]).ToString() + x.[1..]
 
@@ -117,7 +112,11 @@ let main argv =
     match s with
     | Definitions (def) ->
       def |> Seq.iter (fun (k,v) ->
-        printfn "\n/// Definition: %s" k
+        let desc =
+          match v.Description with
+          | d when d |> String.IsNullOrWhiteSpace -> ""
+          | d -> sprintf " - %s" d
+        printfn "\n/// %s%s" k desc
         printf "type %s() = " k
         render v {ctx with Type = RecordDefinition}
         printfn ""
@@ -199,7 +198,10 @@ let main argv =
             match key with
             | "namespace" | "type" -> sprintf "``%s``" key
             | _ -> key
-
+          
+          match v.Description with
+          | d when d |> String.IsNullOrWhiteSpace -> ()
+          | d -> printfn "  /// %s" d
           printf """  member _.%s (value: %s) = """ escapedKey (annotation v)
           render v ctx
           printf """ "%s" %s""" key (value v)
@@ -210,12 +212,19 @@ let main argv =
 
     | x -> failwithf "No idea what to do! %A" x
   
-  render schema Context.Default
-  
+  //TODO: obvs the namespace should be a parameter
+  printfn "namespace rec Yzl.Bindings.Kustomize"
+  printfn "open Yzl.Core"
   printfn ""
-  enums |> Seq.iter (fun (key, values) -> 
-    printfn "type %s = %s" key (values |> Seq.map (capitalize >> (sprintf "| %s ")) |> String.concat "")
-  )
+
+  //TODO: the context is not used atm
+  render schema Context.Default
+
+  //TODO: this is not needed atm
+  // printfn ""
+  // enums |> Seq.iter (fun (key, values) -> 
+  //   printfn "type %s = %s" key (values |> Seq.map (capitalize >> (sprintf "| %s ")) |> String.concat "")
+  // )
 
 
   0
