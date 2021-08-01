@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../src/Yzl/Yzl.fsproj" />
+    <ProjectReference Include="../src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
