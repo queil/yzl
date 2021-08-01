@@ -15,7 +15,6 @@ and Type =
   | RecordDefinition
   | DefaultRecord
 
-
 type UrlOrFilePath =
  | Path of string
  | Url of string
@@ -34,19 +33,9 @@ let loadJson (url:UrlOrFilePath) =
       failwithf "not supported yet"
       return NJsonSchema.JsonSchema.CreateAnySchema()
     | Path file ->
-      // use sr = new StreamReader(file)
-      // use jr = new JsonTextReader(sr)
-      // let settings = JSchemaReaderSettings(ResolveSchemaReferences = false, Resolver = JSchemaUrlResolver(), BaseUri = Uri("https://json.schemastore.org/kustomization.json"))
-      // let t = JSchema.Load(jr, settings)
       let! x =  (NJsonSchema.JsonSchema.FromFileAsync(file, token) |> Async.AwaitTask)
       return x
   }
-
-
-// type Node =
-//  | Property of Property
-//  | Other of JSchema
-// and Property = string * JSchema * bool
 
 [<EntryPoint>]
 let main argv =
