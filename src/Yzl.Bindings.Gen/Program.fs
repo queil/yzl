@@ -1,15 +1,5 @@
-
-open System.IO
-open Newtonsoft.Json.Linq
-open System.Text.RegularExpressions
-
 open System
 open System.Collections.Generic
-open FSharp.Compiler.SourceCodeServices
-open FSharp.Compiler.Text
-open FSharp.Compiler.SyntaxTree
-open FSharp.Compiler.SyntaxTree
-open Microsoft.FSharp.Quotations
 open NJsonSchema
 
 type Context =
@@ -139,12 +129,11 @@ let main argv =
     | Definitions (def) ->
       def |> Seq.iter (fun (k,v) ->
         printfn "\n/// Definition: %s" k
-        printf "module %s = " k
+        printf "type %s() = " k
         render v {ctx with Type = RecordDefinition}
-        //printfn "\n}"
-        // printf "with\n  static\n    member Default =\n    {"
-        // render v { Type = DefaultRecord; Indent = ctx.Indent + 2 }
-        // printfn "\n}"
+        printfn ""
+        printfn "  static member Default = %s()" k
+        printfn "  static member New (creator:%s -> Yzl.NamedNode list) : Yzl.Node = creator %s.Default |> Yzl.lift" k k
       )
     | Reference (ref) ->
       //let def = resolveDef ref
@@ -184,16 +173,35 @@ let main argv =
       xs |> Seq.iter (fun (k,v) -> 
         let key = camelize k
         
-        let annotation =
+        let rec annotation =
           function
           | String _ 
           | Enum _
             -> "string"
           | Boolean _ -> "bool"
-          | Array _ -> "Yzl.Node list"
-          | PatternProperties _
-          | Reference _ -> "Yzl.NamedNode list"
-          | _ -> ""
+          | Array a -> 
+            let nested = annotation a
+            sprintf "%s list" nested
+          | PatternProperties _ -> "Yzl.NamedNode list"
+          
+          | Reference ref -> 
+            let def = resolveDef ref 
+            sprintf "%s -> Yzl.NamedNode list" (def.Key)
+          | _ -> "Yzl.Node" 
+
+        let value =
+          function
+          | Reference ref -> 
+            let def = resolveDef ref 
+            sprintf"(value %s.Default)" (def.Key)
+          | Array a ->
+            match a with
+            | Reference ref ->
+              let def = resolveDef ref 
+              sprintf"(value %s.Default |> Yzl.liftMany)" (def.Key)
+            | _ -> "(value |> Yzl.liftMany)"
+            
+          |_ -> "value"
 
         printfn ""
         match ctx.Type with
@@ -203,10 +211,10 @@ let main argv =
             | "namespace" | "type" -> sprintf "``%s``" key
             | _ -> key
 
-          printf """  let %s (value: %s) = """ escapedKey (annotation v)
+          printf """  member _.%s (value: %s) = """ escapedKey (annotation v)
           render v ctx
-          printf """ "%s" value""" key
-          //printf " option"
+          printf """ "%s" %s""" key (value v)
+
         | DefaultRecord -> printf "      %s = None" key
         | Default -> ()
       )
