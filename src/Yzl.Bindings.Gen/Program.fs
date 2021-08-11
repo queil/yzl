@@ -216,6 +216,14 @@ let main argv =
   printfn "open Yzl.Core"
   printfn ""
 
+  // common - this must be generated too - this is a temp workaround
+  printfn """type Common() =
+  static member inline name (value: ^a) (_:'b) = Yzl.str "name" value
+  static member inline kind (value: ^a) (_:'b) = Yzl.str "kind" value
+  static member inline apiVersion (value: ^a) (_:'b) = Yzl.str "apiVersion" value
+  static member inline _namespace (value: ^a) (_:'b) = Yzl.str "namespace" value
+  """
+
   //TODO: the context is not used atm
   render schema {EntryModuleName = "Kustomization"; ParentKey = ""}
 

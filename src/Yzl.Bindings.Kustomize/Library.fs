@@ -1,6 +1,12 @@
 namespace rec Yzl.Bindings.Kustomize
 open Yzl.Core
 
+type Common() =
+  static member inline name (value: ^a) (_:'b) = Yzl.str "name" value
+  static member inline kind (value: ^a) (_:'b) = Yzl.str "kind" value
+  static member inline apiVersion (value: ^a) (_:'b) = Yzl.str "apiVersion" value
+  static member inline _namespace (value: ^a) (_:'b) = Yzl.str "namespace" value
+  
 
 /// ConfigMapArgs - ConfigMapArgs contains the metadata of how to generate a configmap
 type ConfigMapArgs() = 

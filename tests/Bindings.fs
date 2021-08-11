@@ -11,6 +11,7 @@ module Bindings =
   open type Yzl.Bindings.Kustomize.Image
   open type Yzl.Bindings.Kustomize.ConfigMapArgs 
   open type Yzl.Bindings.Kustomize.Kustomization
+  open type Yzl.Bindings.Kustomize.Common
   
 
 
@@ -49,11 +50,11 @@ configMapGenerator:
           apiVersion "kustomize.config.k8s.io"
           images [
             [
-              Image.name "busybox"
+              name "busybox"
               newName "queil/busybox"
             ]
             [
-              Image.name "nginx"
+              name "nginx"
               newTag "queil/nginx"
             ]
           ]
@@ -63,9 +64,9 @@ configMapGenerator:
               target [
                 group "networking.k8s.io"
                 version "v1"
-                PatchTarget.kind "Ingress"
-                PatchTarget.name "ingress-app-1"
-                PatchTarget.``namespace`` "app-1"
+                kind "Ingress"
+                name "ingress-app-1"
+                _namespace "app-1"
               ]
             ]
           ]
@@ -79,34 +80,7 @@ configMapGenerator:
               name "cm"
             ]
           ]
-
         ]
-
-
-
-          // apiVersion "kustomize.config.k8s.io"
-          // resources [
-          //   "../resource"
-          //   "ddd"
-          //   "dmknnw"
-          // ]
-          // configMapGenerator [
-          //   [
-          //     behavior "merge"
-          //     envs [
-          //       "one.env"
-          //       "two.env"
-          //     ]
-          //     name "cm"
-          //   ]
-          // ]
-          // secretGenerator [
-          //   [
-              
-          //   ]
-          // ]
-
-        
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected  
       }
