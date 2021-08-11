@@ -66,7 +66,7 @@ configMapGenerator:
                 version "v1"
                 kind "Ingress"
                 name "ingress-app-1"
-                _namespace "app-1"
+                ``namespace`` "app-1"
               ]
             ]
           ]
