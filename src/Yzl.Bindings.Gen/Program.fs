@@ -4,16 +4,9 @@ open NJsonSchema
 
 type Context =
   {
-    Type: Type
-    Indent: int
+    EntryModuleName: string
+    ParentKey: string
   }
-with
-  static
-    member Default = {Indent = 0; Type = Default}
-and Type =
-  | Default
-  | RecordDefinition
-  | DefaultRecord
 
 type UrlOrFilePath =
  | Path of string
@@ -117,11 +110,14 @@ let main argv =
           | d when d |> String.IsNullOrWhiteSpace -> ""
           | d -> sprintf " - %s" d
         printfn "\n/// %s%s" k desc
+        // if ctx.EntryModuleName = k 
+        //   then printfn "[<AutoOpen>]"
+        //   else ()
         printf "type %s() = " k
-        render v {ctx with Type = RecordDefinition}
+        render v { ctx with ParentKey = k }
         printfn ""
         printfn "  static member Default = %s()" k
-        printfn "  static member New (creator:%s -> Yzl.NamedNode list) : Yzl.Node = creator %s.Default |> Yzl.lift" k k
+        printfn "  static member yzl (build:(%s -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f %s.Default) |> Yzl.lift" k k
       )
     | Reference (ref) ->
       //let def = resolveDef ref
@@ -163,51 +159,54 @@ let main argv =
         
         let rec annotation =
           function
-          | String _ 
-          | Enum _
-            -> "string"
+          | String _ -> "^a"
+          | Enum _ -> "string"
           | Boolean _ -> "bool"
           | Array a -> 
             let nested = annotation a
             sprintf "%s list" nested
           | PatternProperties _ -> "Yzl.NamedNode list"
           
-          | Reference ref -> 
-            let def = resolveDef ref 
-            sprintf "%s -> Yzl.NamedNode list" (def.Key)
+          //| Reference ref -> 
+            //let def = resolveDef ref 
+            //sprintf "%s -> Yzl.NamedNode list" (def.Key)
+            //sprintf ""
+          | Reference ref ->
+            let def = resolveDef ref
+            sprintf "(%s -> Yzl.NamedNode) list" (def.Key)
           | _ -> "Yzl.Node" 
 
         let value =
           function
           | Reference ref -> 
-            let def = resolveDef ref 
-            sprintf"(value %s.Default)" (def.Key)
+             let def = resolveDef ref 
+             sprintf"(value |> List.map (fun f -> f %s.Default))" (def.Key)
           | Array a ->
             match a with
             | Reference ref ->
               let def = resolveDef ref 
-              sprintf"(value %s.Default |> Yzl.liftMany)" (def.Key)
+              sprintf"(value |> List.map (fun v -> v |> List.map (fun f -> f %s.Default)) |> Yzl.liftMany)" (def.Key)
             | _ -> "(value |> Yzl.liftMany)"
-            
+
           |_ -> "value"
 
         printfn ""
-        match ctx.Type with
-        | RecordDefinition ->
-          let escapedKey =
-            match key with
-            | "namespace" | "type" -> sprintf "``%s``" key
-            | _ -> key
-          
-          match v.Description with
-          | d when d |> String.IsNullOrWhiteSpace -> ()
-          | d -> printfn "  /// %s" d
-          printf """  member _.%s (value: %s) = """ escapedKey (annotation v)
-          render v ctx
-          printf """ "%s" %s""" key (value v)
+        // match ctx.Type with
+        // | RecordDefinition ->
+        let escapedKey =
+          match key with
+          | "namespace" | "type" -> sprintf "``%s``" key
+          | _ -> key
+        
+        match v.Description with
+        | d when d |> String.IsNullOrWhiteSpace -> ()
+        | d -> printfn "  /// %s" d
+        printf """  static member inline %s (value: %s) (_:%s) = """ escapedKey (annotation v) ctx.ParentKey
+        render v ctx
+        printf """ "%s" %s""" key (value v)
 
-        | DefaultRecord -> printf "      %s = None" key
-        | Default -> ()
+        // | DefaultRecord -> printf "      %s = None" key
+        // | Default -> ()
       )
 
     | x -> failwithf "No idea what to do! %A" x
@@ -218,7 +217,7 @@ let main argv =
   printfn ""
 
   //TODO: the context is not used atm
-  render schema Context.Default
+  render schema {EntryModuleName = "Kustomization"; ParentKey = ""}
 
   //TODO: this is not needed atm
   // printfn ""

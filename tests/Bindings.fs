@@ -6,6 +6,14 @@ module Bindings =
   open Yzl.Core
   open Yzl.Bindings.Kustomize
 
+  open type Yzl.Bindings.Kustomize.PatchJson6902
+  open type Yzl.Bindings.Kustomize.PatchTarget
+  open type Yzl.Bindings.Kustomize.Image
+  open type Yzl.Bindings.Kustomize.ConfigMapArgs 
+  open type Yzl.Bindings.Kustomize.Kustomization
+  
+
+
   [<Tests>]
   let tests =
     testList "Bindings" [
@@ -21,7 +29,7 @@ images:
 - name: nginx
   newTag: queil/nginx
 patchesJson6902:
-- path: ./paches/ingress.yaml
+- path: ./patches/ingress.yaml
   target:
     group: networking.k8s.io
     version: v1
@@ -36,36 +44,70 @@ configMapGenerator:
   name: cm
 """
 
-        let yaml = Kustomization.New <| fun y -> [
-          y.kind "Kustomization"
-          y.apiVersion "kustomize.config.k8s.io"
-          y.images <| fun y -> [
-          [ y.name "busybox"
-            y.newName "queil/busybox"
-          ]
-          [ y.name "nginx"
-            y.newTag "queil/nginx"
-          ]]
-          y.patchesJson6902 <| fun y -> [
-          [
-            y.path "./patches/ingress.yaml"
-            y.target <| fun y -> [
-              y.group "networking.k8s.io"
-              y.version "v1"
-              y.kind "Ingress"
-              y.name "ingress-app-1"
-              y.``namespace`` "app-1"
-            ]
-          ]]
-          y.configMapGenerator <| fun y -> [
+        let yaml = Kustomization.yzl [
+          kind "Kustomization"
+          apiVersion "kustomize.config.k8s.io"
+          images [
             [
-              y.behavior "merge"
-              y.envs ["one.env"; "two.env"]
-              y.name "cm"
+              Image.name "busybox"
+              newName "queil/busybox"
+            ]
+            [
+              Image.name "nginx"
+              newTag "queil/nginx"
             ]
           ]
+          patchesJson6902 [
+            [
+              path "./patches/ingress.yaml"
+              target [
+                group "networking.k8s.io"
+                version "v1"
+                PatchTarget.kind "Ingress"
+                PatchTarget.name "ingress-app-1"
+                PatchTarget.``namespace`` "app-1"
+              ]
+            ]
+          ]
+          configMapGenerator [
+            [
+              behavior "merge"
+              envs [
+                "one.env"
+                "two.env"
+              ]
+              name "cm"
+            ]
+          ]
+
         ]
 
-        "Rendering failed" |> Expect.equal (! yaml |> Yzl.render) expected  
+
+
+          // apiVersion "kustomize.config.k8s.io"
+          // resources [
+          //   "../resource"
+          //   "ddd"
+          //   "dmknnw"
+          // ]
+          // configMapGenerator [
+          //   [
+          //     behavior "merge"
+          //     envs [
+          //       "one.env"
+          //       "two.env"
+          //     ]
+          //     name "cm"
+          //   ]
+          // ]
+          // secretGenerator [
+          //   [
+              
+          //   ]
+          // ]
+
+        
+
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected  
       }
     ]
