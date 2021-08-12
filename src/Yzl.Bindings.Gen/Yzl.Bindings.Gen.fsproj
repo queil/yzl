@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,13 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fantomas" Version="4.4.0" />
     <PackageReference Include="NJsonSchema" Version="10.4.4" />
-    
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Yzl\Yzl.fsproj" />
+    <PackageReference Include="Yzl" Version="1.4.0-alpha.1" />
   </ItemGroup>
 
 </Project>
