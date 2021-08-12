@@ -30,8 +30,7 @@ images:
 - name: nginx
   newTag: queil/nginx
 patchesJson6902:
-- path: ./patches/ingress.yaml
-  target:
+- target:
     group: networking.k8s.io
     version: v1
     kind: Ingress
@@ -60,7 +59,6 @@ configMapGenerator:
           ]
           patchesJson6902 [
             [
-              path "./patches/ingress.yaml"
               target [
                 group "networking.k8s.io"
                 version "v1"

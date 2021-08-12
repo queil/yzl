@@ -8,6 +8,7 @@ type Common() =
   static member inline group (value: ^a) (_: 'b) = Yzl.str "group" value
   static member inline apiVersion (value: ^a) (_: 'b) = Yzl.str "apiVersion" value
   static member inline ``type`` (value: ^a) (_: 'b) = Yzl.str "type" value
+  static member inline options (value: (GeneratorOptions -> Yzl.NamedNode) list) (_: 'b) = Yzl.map "options" (value |> List.map (fun f -> f GeneratorOptions.Default))
   static member inline ``namespace`` (value: ^a) (_: 'b) = Yzl.str "namespace" value
   static member inline literals (value: ^a list) (_: 'b) = Yzl.seq "literals" (value |> Yzl.liftMany)
   static member inline files (value: ^a list) (_: 'b) = Yzl.seq "files" (value |> Yzl.liftMany)
@@ -16,7 +17,6 @@ type Common() =
   static member inline behavior (value: string) (_: 'b) = Yzl.str "behavior" value
   static member inline KVSources (value: (KVSource -> Yzl.NamedNode) list list) (_: 'b) = Yzl.seq "KVSources" (value |> List.map (fun fs -> fs |> List.map(fun f -> f KVSource.Default)) |> Yzl.liftMany)
   static member inline target (value: (PatchTargetOptional -> Yzl.NamedNode) list) (_: 'b) = Yzl.map "target" (value |> List.map (fun f -> f PatchTargetOptional.Default))
-  static member inline path (value: ^a) (_: 'b) = Yzl.str "path" value
   static member Default = Common()
   static member yzl (build:(Common -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f Common.Default) |> Yzl.lift
 /// Represents a variable whose value will be sourced from a field in a Kubernetes object.
@@ -34,11 +34,16 @@ type Target() =
 type SecretArgs() =
   static member Default = SecretArgs()
   static member yzl (build:(SecretArgs -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f SecretArgs.Default) |> Yzl.lift
+type Replicas() =
+  static member inline count (value: float) (_: Replicas) = Yzl.float "count" value
+  static member Default = Replicas()
+  static member yzl (build:(Replicas -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f Replicas.Default) |> Yzl.lift
 type PatchesInlinePatch() =
   static member inline patch (value: ^a) (_: PatchesInlinePatch) = Yzl.str "patch" value
   static member Default = PatchesInlinePatch()
   static member yzl (build:(PatchesInlinePatch -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f PatchesInlinePatch.Default) |> Yzl.lift
 type PatchesPatchPath() =
+  static member inline path (value: ^a) (_: PatchesPatchPath) = Yzl.str "path" value
   static member Default = PatchesPatchPath()
   static member yzl (build:(PatchesPatchPath -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f PatchesPatchPath.Default) |> Yzl.lift
 type PatchTargetOptional() =
@@ -50,8 +55,6 @@ type PatchTarget() =
   static member Default = PatchTarget()
   static member yzl (build:(PatchTarget -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f PatchTarget.Default) |> Yzl.lift
 type PatchJson6902() =
-  /// Refers to a Kubernetes object that the json patch will be applied to. It must refer to a Kubernetes resource under the purview of this kustomization
-  static member inline target (value: (PatchTarget -> Yzl.NamedNode) list) (_: PatchJson6902) = Yzl.map "target" (value |> List.map (fun f -> f PatchTarget.Default))
   static member Default = PatchJson6902()
   static member yzl (build:(PatchJson6902 -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f PatchJson6902.Default) |> Yzl.lift
 type NameArgs() =
@@ -68,6 +71,8 @@ type Kustomization() =
   static member inline components (value: ^a list) (_: Kustomization) = Yzl.seq "components" (value |> Yzl.liftMany)
   /// Resources specifies relative paths to files holding YAML representations of kubernetes API objects. URLs and globs not supported.
   static member inline resources (value: ^a list) (_: Kustomization) = Yzl.seq "resources" (value |> Yzl.liftMany)
+  /// Replicas is a list of (resource name, count) for changing number of replicas for a resources. It will match any group and kind that has a matching name and that is one of: Deployment, ReplicationController, Replicaset, Statefulset.
+  static member inline replicas (value: (Replicas -> Yzl.NamedNode) list list) (_: Kustomization) = Yzl.seq "replicas" (value |> List.map (fun fs -> fs |> List.map(fun f -> f Replicas.Default)) |> Yzl.liftMany)
   ///  PatchesStrategicMerge specifies the relative path to a file containing a strategic merge patch. URLs and globs are not supported
   static member inline patchesStrategicMerge (value: ^a list) (_: Kustomization) = Yzl.seq "patchesStrategicMerge" (value |> Yzl.liftMany)
   /// JSONPatches is a list of JSONPatch for applying JSON patch. See http://jsonpatch.com

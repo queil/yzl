@@ -7,7 +7,7 @@
 
   <ItemGroup>
 
-    <!-- <Compile Include="out3.fs" /> -->
+    <Compile Include="Patterns.fs" />
     <Compile Include="Program.fs" />
     
   </ItemGroup>

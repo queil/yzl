@@ -1,11 +1,8 @@
 open System
-open System.Collections.Generic
 open NJsonSchema
+open Yzl.Bindings.Gen
 
-type YzlMetadata = {
-  AllTypes: YzlType list
-  AllFunctions: YzlFunc list
-} and YzlType = {
+type YzlType = {
   Name: string
   Description: string option
   Functions: YzlFunc list
@@ -62,79 +59,12 @@ let loadJson (url:UrlOrFilePath) =
 let main argv =
   let schemaUrl = UrlOrFilePath.ofString argv.[0]
   let schema = loadJson schemaUrl |> Async.RunSynchronously
-  let resolveDef ref = schema.Definitions |> Seq.find (fun (KeyValue(_,v)) -> v = ref)
-
-  let capitalize (x:string) = Char.ToUpper(x.[0]).ToString() + x.[1..]
-  let camelize (x:string) = Char.ToLower(x.[0]).ToString() + x.[1..]
-
-  let matchNonEmpty =
-   function
-    | null -> None
-    | defs ->
-      match defs |> Seq.toList |> List.map (|KeyValue|) with
-      | [] -> None
-      | xs -> Some xs
-
-  let matchType (typ:JsonObjectType) (x:JsonSchema) =
-    match x with
-    | x when x.Type = typ -> Some x
-    | _ -> None 
-
-  let (|Properties|_|) (s:JsonSchema) =
-    s.Properties |> matchNonEmpty
-
-  let (|PatternProperties|_|) (s:JsonSchema) =
-    s.PatternProperties |> matchNonEmpty
-
-  let (|Array2|_|) (s:JsonSchema) =
-    match s.Items |> Seq.toList with
-    | [] -> None
-    | xs -> Some xs
-
-  let (|OneOf|_|) (s:JsonSchema) =
-    match s.OneOf |> Seq.toList with
-    | [] -> None
-    | xs -> Some xs
-
-  let (|Array|_|) (s:JsonSchema) =
-    match s.Item with
-    | null -> None
-    | v -> Some v
-
-  let (|Enum|_|) (s:JsonSchema) =
-    match s.Enumeration |> Seq.toList with
-    | [] -> None
-    | v -> Some (v, s)
-
-  let (|String|_|) (s:JsonSchema) =
-   s |> matchType JsonObjectType.String
-
-  let (|Boolean|_|) (s:JsonSchema) =
-   s |> matchType JsonObjectType.Boolean
-
-  let (|Reference|_|) (s:JsonSchema) =
-    match s with
-    | x when x.Reference |> isNull |> not -> Some (x.Reference, x.Reference |> resolveDef)
-    | _ -> None
-
-  let (|Definitions|_|) (s:JsonSchema) =
-    s.Definitions |> matchNonEmpty
-
-
-  
-  let enums = List<(string * string list)>()
-  
-  let nextIndex =
-    let mutable z = 0
-    fun () -> 
-      z <- z+1
-      z
 
   let rec metadata (s:JsonSchema) (ctx: Context) =
     let toOption = function | d when String.IsNullOrWhiteSpace d -> None | d -> Some d
 
     match s with
-    | Definitions defs ->
+    | Patterns.Definitions defs ->
       defs |> Seq.fold (fun ctx (k,s) ->
         
         let yzlType = {
@@ -150,18 +80,22 @@ let main argv =
         }
       ) ctx
 
-    | Properties xs ->
+    | Patterns.Properties xs ->
      
        xs |> Seq.fold (fun ctx (k, s) -> 
         
         let rec dataType (s':JsonSchema) =
           match s' with
-          | String _ -> String
-          | Enum _ -> Enum
-          | Boolean _ -> Boolean
-          | Array x -> Seq (dataType x)
-          | PatternProperties _ -> NamedNodeList
-          | Reference (_, def) -> NamedNodeFuncList def.Key
+          | Patterns.Integer _ -> Int
+          | Patterns.Number _ -> Float
+          | Patterns.String _ -> String
+          | Patterns.Enum _ -> Enum
+          | Patterns.Boolean _ -> Boolean
+          | Patterns.Array x -> Seq (dataType x)
+          | Patterns.PatternProperties _ -> NamedNodeList
+          | Patterns.Reference ref -> 
+            let def = schema.Definitions |> Seq.find (fun (KeyValue(_,v)) -> v = ref)
+            NamedNodeFuncList def.Key
           | _ -> Node
          
         let yzlFunc =
@@ -215,6 +149,8 @@ let main argv =
     let renderTypeAnnotation (f:YzlFunc) =
       let rec kindToType =
         function
+        | YzlKind.Int -> "int"
+        | YzlKind.Float -> "float"
         | YzlKind.String -> "^a"
         | YzlKind.Enum -> "string"
         | YzlKind.Boolean -> "bool"
@@ -226,13 +162,15 @@ let main argv =
 
     let yzlFunc (f: YzlFunc) =
       match f.Kind with
+      | YzlKind.Int -> "Yzl.int"
+      | YzlKind.Float -> "Yzl.float"
       | YzlKind.String _ -> "Yzl.str"
       | YzlKind.Enum _ -> "Yzl.str"
       | YzlKind.Seq _ -> "Yzl.seq"
       | YzlKind.Boolean _ -> "Yzl.boolean"
       | YzlKind.NamedNodeFuncList _
       | YzlKind.NamedNodeList -> "Yzl.map"
-      | _ -> "Yzl.booom"
+      | k -> failwithf "Cannot handle kind: %A" k
 
     let renderImpl (f: YzlFunc) =
       let rec kindToImpl =
