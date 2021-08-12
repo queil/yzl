@@ -9,16 +9,16 @@ type YzlType = {
 } and YzlFunc = {
   Name: string
   Description: string option
-  Kind: YzlKind
+  Kind: SchemaKind
   Parent: YzlType option
-} and YzlKind = 
+} and SchemaKind = 
   | String
   | Int
   | Float
   | Node
-  | NamedNodeFuncList of name: string
-  | NamedNodeList
-  | Seq of YzlKind
+  | Reference of name: string
+  | PatternProperties
+  | Seq of SchemaKind
   | Boolean
   | Enum
 
@@ -92,10 +92,10 @@ let main argv =
           | Patterns.Enum _ -> Enum
           | Patterns.Boolean _ -> Boolean
           | Patterns.Array x -> Seq (dataType x)
-          | Patterns.PatternProperties _ -> NamedNodeList
+          | Patterns.PatternProperties _ -> PatternProperties
           | Patterns.Reference ref -> 
             let def = schema.Definitions |> Seq.find (fun (KeyValue(_,v)) -> v = ref)
-            NamedNodeFuncList def.Key
+            Reference def.Key
           | _ -> Node
          
         let yzlFunc =
@@ -149,37 +149,37 @@ let main argv =
     let renderTypeAnnotation (f:YzlFunc) =
       let rec kindToType =
         function
-        | YzlKind.Int -> "int"
-        | YzlKind.Float -> "float"
-        | YzlKind.String -> "^a"
-        | YzlKind.Enum -> "string"
-        | YzlKind.Boolean -> "bool"
-        | YzlKind.Seq kind -> sprintf "%s list" <| kindToType kind
-        | YzlKind.NamedNodeList -> "Yzl.NamedNode list"
-        | YzlKind.NamedNodeFuncList key -> sprintf "(%s -> Yzl.NamedNode) list" key
+        | SchemaKind.Int -> "int"
+        | SchemaKind.Float -> "float"
+        | SchemaKind.String -> "string"
+        | SchemaKind.Enum -> "string"
+        | SchemaKind.Boolean -> "bool"
+        | SchemaKind.Seq kind -> sprintf "%s list" <| kindToType kind
+        | SchemaKind.PatternProperties -> "Yzl.NamedNode list"
+        | SchemaKind.Reference key -> "Yzl.NamedNode list"
         | _ -> "Yzl.Node"
       kindToType f.Kind
 
     let yzlFunc (f: YzlFunc) =
       match f.Kind with
-      | YzlKind.Int -> "Yzl.int"
-      | YzlKind.Float -> "Yzl.float"
-      | YzlKind.String _ -> "Yzl.str"
-      | YzlKind.Enum _ -> "Yzl.str"
-      | YzlKind.Seq _ -> "Yzl.seq"
-      | YzlKind.Boolean _ -> "Yzl.boolean"
-      | YzlKind.NamedNodeFuncList _
-      | YzlKind.NamedNodeList -> "Yzl.map"
+      | SchemaKind.Int -> "Yzl.int"
+      | SchemaKind.Float -> "Yzl.float"
+      | SchemaKind.String _ -> "Yzl.str"
+      | SchemaKind.Enum _ -> "Yzl.str"
+      | SchemaKind.Seq _ -> "Yzl.seq"
+      | SchemaKind.Boolean _ -> "Yzl.boolean"
+      | SchemaKind.Reference _
+      | SchemaKind.PatternProperties -> "Yzl.map"
       | k -> failwithf "Cannot handle kind: %A" k
 
     let renderImpl (f: YzlFunc) =
       let rec kindToImpl =
         function
-        | NamedNodeFuncList key -> sprintf "(value |> List.map (fun f -> f %s.Default))" key
+        | Reference key -> "value"
         | Seq kind -> 
           sprintf "(%s |> Yzl.liftMany)"
             <| match kind with
-               | NamedNodeFuncList name -> sprintf "value |> List.map (fun fs -> fs |> List.map(fun f -> f %s.Default))" name
+               | Reference name -> "value"
                | _ -> kindToImpl kind
         |_ -> "value"
       kindToImpl f.Kind
@@ -187,10 +187,29 @@ let main argv =
     let renderAdditionalMembers (t: YzlType) = [
       "  static member Default = "; t.Name ;"()"
       newLine
-      "  static member yzl (build:("; t.Name; " -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f "; t.Name; ".Default) |> Yzl.lift"
+      "  static member yzl (build:Yzl.NamedNode list) : Yzl.Node = build |> Yzl.lift"
       newLine
     ]
     
+    let renderFunc (f: YzlFunc) =
+      let render (typeAnnotation:YzlFunc -> string) =
+        [
+          newLine
+          yield! match f.Description with | Some d -> ["  /// "; d; newLine] |_ -> []
+          "  static member inline "
+          f.Name |> escapeFSharpKeywords; " "
+          "(value: "; typeAnnotation f; ") "
+          //"(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
+          " = "
+          yzlFunc f; " \""; f.Name; "\""
+          " "
+          renderImpl f
+        ]
+      [
+        yield! render renderTypeAnnotation
+        match f.Kind with | String -> yield! render (fun _ -> "Yzl.Str") |_ -> ()
+      ]
+
     let allStrings =
       x.AllTypes |> Seq.collect (fun t -> 
 
@@ -202,20 +221,7 @@ let main argv =
             |> match t.Name with 
                | CommonTypeName -> Seq.map id
                | _ -> Seq.filter (fun f -> commonFuncs |> Seq.exists (fun (k, _) -> k.Name = f.Name && k.Kind = f.Kind ) |> not)
-            |> Seq.collect (fun f -> 
-            [
-              newLine
-              yield! match f.Description with | Some d -> ["  /// "; d; newLine] |_ -> []
-              "  static member inline "
-              f.Name |> escapeFSharpKeywords; " "
-              "(value: "; renderTypeAnnotation f; ") "
-              "(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
-              " = "
-              yzlFunc f; " \""; f.Name; "\""
-              " "
-              renderImpl f
-            ]
-          )
+            |> Seq.collect renderFunc
           newLine
           yield! renderAdditionalMembers t
         ]
