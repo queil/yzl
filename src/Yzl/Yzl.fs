@@ -84,12 +84,6 @@ module Yzl =
     [<Obsolete("Use lift instead")>]
     let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
     let inline liftMany (x:^a list) : ^b list = x |> List.map lift
-    let inline convertSeqBinding (xs: (^a -> NamedNode) list list) =
-      [
-        for fs in xs do
-          for f in fs do
-            f (^a : (static member Default: ^a) ())
-      ]
 
     let private named t node = Named(Name t, node)
     

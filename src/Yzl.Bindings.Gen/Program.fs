@@ -1,7 +1,6 @@
 open System
 open System.Collections.Generic
 open NJsonSchema
-open System.Text
 
 type YzlMetadata = {
   AllTypes: YzlType list
@@ -26,12 +25,6 @@ type YzlMetadata = {
   | Boolean
   | Enum
 
-
-
-// type Ctx2() =
-//   member _.Types : List<YzlType> = List<YzlType>()
-//   member _.
-
 type Context =
   {
     EntryModuleName: string
@@ -39,6 +32,9 @@ type Context =
     AllTypes: YzlType list
     AllFuncs: YzlFunc list
   }
+
+[<Literal>]
+let CommonTypeName = "Common"
 
 type UrlOrFilePath =
  | Path of string
@@ -134,123 +130,11 @@ let main argv =
       z <- z+1
       z
 
-  // let rec render (s:JsonSchema) (ctx: Context) =
-  //   match s with
-  //   | Definitions (def) ->
-  //     def |> Seq.iter (fun (k,v) ->
-  //       let desc =
-  //         match v.Description with
-  //         | d when d |> String.IsNullOrWhiteSpace -> ""
-  //         | d -> sprintf " - %s" d
-  //       printfn "\n/// %s%s" k desc
-  //       // if ctx.EntryModuleName = k 
-  //       //   then printfn "[<AutoOpen>]"
-  //       //   else ()
-  //       printf "type %s() = " k
-  //       render v { ctx with ParentKey = k }
-  //       printfn ""
-  //       printfn "  static member Default = %s()" k
-  //       printfn "  static member yzl (build:(%s -> Yzl.NamedNode) list) : Yzl.Node = build |> List.map (fun f -> f %s.Default) |> Yzl.lift" k k
-  //     )
-  //   | Reference (ref) ->
-  //     //let def = resolveDef ref
-      
-  //     printf "Yzl.map" //(camelize def.Key)
-  //   | Array x ->
-  //     //render x ctx
-  //     printf "Yzl.seq"
-  //   | OneOf xs ->
-  //     //printf "/// oneof"
-  //     let key = "union"
-  //     let key = sprintf "%s%i" key (nextIndex ()) |> capitalize
-      
-  //     enums.Add((key, xs |> List.map (fun x -> 
-  //       let def = resolveDef x.Reference
-  //       def.Key
-  //     )))
-  //     printf "%s" key
-  //   | Array2 xs ->
-  //     printf "/// weird"
-  //   | Enum (xs,v) ->
-  //     let key =
-  //       match v with
-  //       | :? JsonSchemaProperty as p -> p.Name 
-  //       | _ -> "AnonymousEnum"
-      
-  //     let key = sprintf "%s%i" key  (nextIndex ()) |> capitalize
-  //     enums.Add((key, xs |> List.map string))
-  //     printf "Yzl.str" //let's ignore type information for now
-  //   | String x ->
-  //     printf "Yzl.str"
-  //   | Boolean x ->
-  //     printf "Yzl.boolean"
-  //   | PatternProperties xs ->
-  //     xs |> Seq.iter (fun _ -> printf "Yzl.map")
-  //   | Properties xs ->
-  //     xs |> Seq.iter (fun (k,v) -> 
-  //       let key = camelize k
-        
-  //       let rec annotation =
-  //         function
-  //         | String _ -> "^a"
-  //         | Enum _ -> "string"
-  //         | Boolean _ -> "bool"
-  //         | Array a -> 
-  //           let nested = annotation a
-  //           sprintf "%s list" nested
-  //         | PatternProperties _ -> "Yzl.NamedNode list"
-          
-  //         //| Reference ref -> 
-  //           //let def = resolveDef ref 
-  //           //sprintf "%s -> Yzl.NamedNode list" (def.Key)
-  //           //sprintf ""
-  //         | Reference ref ->
-  //           let def = resolveDef ref
-  //           sprintf "(%s -> Yzl.NamedNode) list" (def.Key)
-  //         | _ -> "Yzl.Node" 
-
-  //       let value =
-  //         function
-  //         | Reference ref -> 
-  //            let def = resolveDef ref 
-  //            sprintf"(value |> List.map (fun f -> f %s.Default))" (def.Key)
-  //         | Array a ->
-  //           match a with
-  //           | Reference ref ->
-  //             let def = resolveDef ref 
-  //             sprintf"(value |> List.map (fun v -> v |> List.map (fun f -> f %s.Default)) |> Yzl.liftMany)" (def.Key)
-  //           | _ -> "(value |> Yzl.liftMany)"
-
-  //         |_ -> "value"
-
-  //       printfn ""
-  //       // match ctx.Type with
-  //       // | RecordDefinition ->
-  //       let escapedKey =
-  //         match key with
-  //         | "namespace" | "type" -> sprintf "``%s``" key
-  //         | _ -> key
-        
-  //       match v.Description with
-  //       | d when d |> String.IsNullOrWhiteSpace -> ()
-  //       | d -> printfn "  /// %s" d
-  //       printf """  static member inline %s (value: %s) (_:%s) = """ escapedKey (annotation v) ctx.ParentKey
-  //       render v ctx
-  //       printf """ "%s" %s""" key (value v)
-
-  //       // | DefaultRecord -> printf "      %s = None" key
-  //       // | Default -> ()
-  //     )
-
-  //   | x -> failwithf "No idea what to do! %A" x
-  
-  
   let rec metadata (s:JsonSchema) (ctx: Context) =
     let toOption = function | d when String.IsNullOrWhiteSpace d -> None | d -> Some d
 
     match s with
     | Definitions defs ->
-      
       defs |> Seq.fold (fun ctx (k,s) ->
         
         let yzlType = {
@@ -259,15 +143,10 @@ let main argv =
           Functions = []
         }
 
-        let ctx = metadata s {
-          ctx 
-            with 
-              ParentType = Some yzlType
-          }
+        let ctx = metadata s { ctx with ParentType = Some yzlType }
 
         {
-          ctx with
-            AllTypes = match ctx.ParentType with | None -> ctx.AllTypes | Some t -> t::ctx.AllTypes
+          ctx with AllTypes = match ctx.ParentType with | None -> ctx.AllTypes | Some t -> t::ctx.AllTypes
         }
       ) ctx
 
@@ -286,30 +165,43 @@ let main argv =
           | _ -> Node
          
         let yzlFunc =
-           {
-             Name = k
-             Description = s.Description |> toOption
-             Kind = dataType s
-             Parent = ctx.ParentType
-           }
+          {
+            Name = k
+            Description = s.Description |> toOption
+            Kind = dataType s
+            Parent = ctx.ParentType
+          }
         {
-            ctx with 
-              AllFuncs = yzlFunc::ctx.AllFuncs
-              ParentType = 
-                match ctx.ParentType with
-                | None -> None
-                | Some t -> Some { 
-                  t with Functions = yzlFunc::t.Functions
-                }
+          ctx with 
+            AllFuncs = yzlFunc::ctx.AllFuncs
+            ParentType = 
+              match ctx.ParentType with
+              | None -> None
+              | Some t -> Some { 
+                t with Functions = yzlFunc::t.Functions
+              }
         }
-       
        ) ctx
-
     |_ -> ctx
 
+  let ctx = metadata schema {ParentType = None; AllFuncs = []; AllTypes = []; EntryModuleName = ""}
 
-  let ctx = metadata schema {ParentType = None; AllFuncs =[]; AllTypes = []; EntryModuleName = ""}
-  
+  let commonType = {
+    Name = CommonTypeName
+    Description = Some "Common tags"
+    Functions = []
+  } 
+
+  let commonFuncs = 
+    ctx.AllFuncs 
+    |> List.groupBy (fun x -> {Name=x.Name; Kind=x.Kind; Parent = Some commonType; Description = None} )
+    |> List.filter (fun (_, v) -> v.Length > 1)
+
+  let commonType =
+    {
+      commonType with
+        Functions = commonFuncs |> List.map (fun (k,_) -> k)
+    }
 
   let render (x:Context) =
 
@@ -349,7 +241,7 @@ let main argv =
         | Seq kind -> 
           sprintf "(%s |> Yzl.liftMany)"
             <| match kind with
-               | NamedNodeFuncList _ -> sprintf "value |> Yzl.convertSeqBinding"
+               | NamedNodeFuncList name -> sprintf "value |> List.map (fun fs -> fs |> List.map(fun f -> f %s.Default))" name
                | _ -> kindToImpl kind
         |_ -> "value"
       kindToImpl f.Kind
@@ -368,14 +260,18 @@ let main argv =
           yield! match t.Description with | Some d -> ["/// "; d; newLine] |_ -> []
           "type "; t.Name; "() ="; 
 
-          yield! t.Functions |> Seq.collect (fun f -> 
+          yield! t.Functions
+            |> match t.Name with 
+               | CommonTypeName -> Seq.map id
+               | _ -> Seq.filter (fun f -> commonFuncs |> Seq.exists (fun (k, _) -> k.Name = f.Name && k.Kind = f.Kind ) |> not)
+            |> Seq.collect (fun f -> 
             [
               newLine
               yield! match f.Description with | Some d -> ["  /// "; d; newLine] |_ -> []
               "  static member inline "
               f.Name |> escapeFSharpKeywords; " "
               "(value: "; renderTypeAnnotation f; ") "
-              "(_: "; t.Name ;")"
+              "(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
               " = "
               yzlFunc f; " \""; f.Name; "\""
               " "
@@ -391,6 +287,6 @@ let main argv =
 
   printfn "namespace rec Yzl.Bindings.Kustomize"
   printfn "open Yzl.Core"
-  ctx |> render
+  {ctx with AllTypes = commonType::ctx.AllTypes} |> render
   
   0
