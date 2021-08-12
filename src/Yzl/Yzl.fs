@@ -74,6 +74,28 @@ module Yzl =
       | Str of Str
       | Bool of bool
 
+
+    type Builder() =
+      static let named t node = Named(Name t, node)
+      /// Creates a named string scalar node from F# string
+      static member str (value:string) = fun name -> Named(Name name, Scalar(Str (Plain value)))
+      /// Creates a named string scalar node from Str
+      static member str (value:Str) = fun name -> Named(Name name, Scalar(Str value))
+      /// Creates a named integer scalar node
+      static member int (value:int) = fun name -> Scalar(Int value) |> named name
+      /// Creates a named float scalar node
+      static member float (value:float) = fun name -> Scalar(Float value) |> named name
+      /// Creates a named boolean scalar node
+      static member boolean (value:bool) = fun name -> Scalar(Bool value) |> named name
+      /// Creates a named map node
+      static member map (value:NamedNode list) = fun name -> MapNode(value) |> named name
+      /// Creates a named sequence node
+      static member seq (seq: Node list) =  fun name -> SeqNode(seq) |> named name
+      /// Creates an empty node
+      /// 
+      /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
+      static member none = Named(Name "", NoNode)
+
     /// <summary>
     /// Lifts a given object to a <see cref="T:Node" />
     /// </summary>
@@ -88,26 +110,33 @@ module Yzl =
     let private named t node = Named(Name t, node)
     
     /// Creates a named string scalar node
+    [<Obsolete("Use Yzl.Builder.str")>]
     let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> lift)))
     
     /// Creates a named integer scalar node
+    [<Obsolete("Use Yzl.Builder.int")>]
     let int name value =  Scalar(Int value) |> named name
     
     /// Creates a named float scalar node
+    [<Obsolete("Use Yzl.Builder.float")>]
     let float name value = Scalar(Float value) |> named name
     
     /// Creates a named boolean scalar node
+    [<Obsolete("Use Yzl.Builder.boolean")>]
     let boolean name value = Scalar(Bool value) |> named name
     
     /// Creates a named map node
+    [<Obsolete("Use Yzl.Builder.map")>]
     let map name map =  MapNode(map) |> named name
     
     /// Creates a named sequence node
+    [<Obsolete("Use Yzl.Builder.seq")>]
     let seq name seq =  SeqNode(seq) |> named name
 
     /// Creates an empty node
     /// 
     /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
+    [<Obsolete("Use Yzl.Builder.none")>]
     let none = Named(Name "", NoNode)
 
     /// YAML rendering options
