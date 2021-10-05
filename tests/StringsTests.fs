@@ -8,13 +8,13 @@ module Strings =
 
   [<Tests>]
   let tests =
-    let myText =  Yzl.str "myText"
+    let myText (value: Yzl.Str) =  Yzl.Builder.str value "myText"
     testList "generate" [
       
       test "Literal dash" {
         let expected = File.ReadAllText("./yaml/literal-dash.yaml")
         let yaml = ![
-          Yzl.map "parent" [
+          "parent"|> Yzl.Builder.map [
             myText !|-
   // START: this space is left here purposely - do not remove
                                              """
@@ -34,7 +34,7 @@ module Strings =
         let expected = File.ReadAllText("./yaml/literal.yaml")
 
         let yaml = ![
-          Yzl.map "parent" [
+          "parent" |> Yzl.Builder.map [
            myText !|
   // START: this space is left here purposely - do not remove
                """
@@ -54,7 +54,7 @@ module Strings =
       test "Folded dash" {
         let expected = File.ReadAllText("./yaml/folded-dash.yaml")
         let yaml = ![
-          Yzl.map "parent" [
+          "parent" |> Yzl.Builder.map [
            myText !>-
   // START: this space is left here purposely - do not remove
                                              """
@@ -75,7 +75,7 @@ module Strings =
         let expected = File.ReadAllText("./yaml/folded.yaml")
 
         let yaml = ![
-          Yzl.map "parent" [
+          "parent" |> Yzl.Builder.map [
            myText !>
   // START: this space is left here purposely - do not remove
                   """
@@ -100,7 +100,7 @@ module Strings =
         let expected = File.ReadAllText("./yaml/folded-null.yaml")
 
         let yaml = ![
-          Yzl.map "parent" [
+          "parent" |> Yzl.Builder.map [
            myText !> null
           ]
         ]
@@ -111,7 +111,7 @@ module Strings =
       test "Mixed-string seq" {
         let expected = File.ReadAllText("./yaml/multi-string-seq.yaml")
         let yaml = ![
-          Yzl.seq "multistring" [
+          "multistring" |> Yzl.Builder.seq [
            ! "plain"
            ! !> "
               folded
