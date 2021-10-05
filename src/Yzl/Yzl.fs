@@ -231,7 +231,9 @@ module Yzl =
                  | SeqNode _ -> Eol
                  | _ -> Empty
               maybeEol |> append
-              qs |> Seq.iter seqElem
+              match qs with
+              | [] -> "[]" |> append
+              | qs' -> qs' |> Seq.iter seqElem
 
             let renderMap ms =
               let mapElem i m =

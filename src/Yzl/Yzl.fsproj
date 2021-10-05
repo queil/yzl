@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>queil</Authors>
     <Description>F# DSL for YAML</Description>
-    <Copyright>2020 © queil</Copyright>
+    <Copyright>2020-2021 © queil</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/queil/yzl</RepositoryUrl>
     <FsDocsSourceRepository>https://github.com/queil/yzl/tree/master</FsDocsSourceRepository>

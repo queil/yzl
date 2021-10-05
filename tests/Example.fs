@@ -29,13 +29,13 @@ module Example =
     let python = Python
     let pascal = Pascal
 
-    let name = Yzl.str "name"
-    let job = Yzl.str "job"
-    let skill = Yzl.str "skill"
-    let employed = Yzl.boolean "employed"
-    let foods = Yzl.seq "foods"
-    let languages (xs:Language list) = Yzl.map "languages" (xs |> List.map (fun x -> x.Deconstruct) |> List.map(fun (k,v) -> Yzl.str k v))
-    let education = Yzl.str "education"
+    let name (x:string) = Yzl.Builder.str x "name"
+    let job (x:string)= Yzl.Builder.str x "job"
+    let skill (x:string)= Yzl.Builder.str x "skill"
+    let employed x = Yzl.Builder.boolean x "employed"
+    let foods x = Yzl.Builder.seq x "foods"
+    let languages (xs:Language list) = "languages" |> Yzl.Builder.map (xs |> List.map (fun x -> x.Deconstruct) |> List.map(fun (k,v) -> Yzl.str k v))
+    let education (x:Yzl.Str) = Yzl.Builder.str x "education"
 
   [<Tests>]
   let tests =
