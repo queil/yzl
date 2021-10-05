@@ -162,14 +162,14 @@ let main argv =
 
     let yzlFunc (f: YzlFunc) =
       match f.Kind with
-      | SchemaKind.Int -> "Yzl.int"
-      | SchemaKind.Float -> "Yzl.float"
-      | SchemaKind.String _ -> "Yzl.str"
-      | SchemaKind.Enum _ -> "Yzl.str"
-      | SchemaKind.Seq _ -> "Yzl.seq"
-      | SchemaKind.Boolean _ -> "Yzl.boolean"
+      | SchemaKind.Int -> "Yzl.Builder.int"
+      | SchemaKind.Float -> "Yzl.Builder.float"
+      | SchemaKind.String _ -> "Yzl.Builder.str"
+      | SchemaKind.Enum _ -> "Yzl.Builder.str"
+      | SchemaKind.Seq _ -> "Yzl.Builder.seq"
+      | SchemaKind.Boolean _ -> "Yzl.Builder.boolean"
       | SchemaKind.Reference _
-      | SchemaKind.PatternProperties -> "Yzl.map"
+      | SchemaKind.PatternProperties -> "Yzl.Builder.map"
       | k -> failwithf "Cannot handle kind: %A" k
 
     let renderImpl (f: YzlFunc) =
@@ -196,14 +196,13 @@ let main argv =
         [
           newLine
           yield! match f.Description with | Some d -> ["  /// "; d; newLine] |_ -> []
-          "  static member inline "
+          "  static member "
           f.Name |> escapeFSharpKeywords; " "
           "(value: "; typeAnnotation f; ") "
           //"(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
           " = "
-          yzlFunc f; " \""; f.Name; "\""
-          " "
-          renderImpl f
+          yzlFunc f; " "; renderImpl f
+          " \""; f.Name; "\""
         ]
       [
         yield! render renderTypeAnnotation
