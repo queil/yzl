@@ -59,5 +59,10 @@ module Patterns =
     | x when x.Reference |> isNull |> not -> Some x.Reference
     | _ -> None
 
+  let (|Object|_|) (s:JsonSchema) =
+    match s with
+    | x when x.IsObject -> Some x
+    | _ -> None
+
   let (|Definitions|_|) (s:JsonSchema) =
     s.Definitions |> matchNonEmpty

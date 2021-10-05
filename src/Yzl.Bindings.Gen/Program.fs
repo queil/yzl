@@ -21,6 +21,7 @@ type YzlType = {
   | Seq of SchemaKind
   | Boolean
   | Enum
+  | InlineObject
 
 type Context =
   {
@@ -96,7 +97,10 @@ let main argv =
           | Patterns.Reference ref -> 
             let def = schema.Definitions |> Seq.find (fun (KeyValue(_,v)) -> v = ref)
             Reference def.Key
-          | _ -> Node
+          | Patterns.Object o -> InlineObject
+          | x -> 
+            //printfn "%A" x.Type
+            Node
          
         let yzlFunc =
           {
@@ -156,7 +160,8 @@ let main argv =
         | SchemaKind.Boolean -> "bool"
         | SchemaKind.Seq kind -> sprintf "%s list" <| kindToType kind
         | SchemaKind.PatternProperties -> "Yzl.NamedNode list"
-        | SchemaKind.Reference key -> "Yzl.NamedNode list"
+        | SchemaKind.Reference _ -> "Yzl.NamedNode list"
+        | SchemaKind.InlineObject -> "Yzl.NamedNode list"
         | _ -> "Yzl.Node"
       kindToType f.Kind
 
@@ -169,17 +174,18 @@ let main argv =
       | SchemaKind.Seq _ -> "Yzl.Builder.seq"
       | SchemaKind.Boolean _ -> "Yzl.Builder.boolean"
       | SchemaKind.Reference _
-      | SchemaKind.PatternProperties -> "Yzl.Builder.map"
-      | k -> failwithf "Cannot handle kind: %A" k
+      | SchemaKind.PatternProperties
+      | SchemaKind.InlineObject -> "Yzl.Builder.map"
+      | _ -> "Yzl.Builder.node"
 
     let renderImpl (f: YzlFunc) =
       let rec kindToImpl =
         function
-        | Reference key -> "value"
+        | Reference _ -> "value"
         | Seq kind -> 
           sprintf "(%s |> Yzl.liftMany)"
             <| match kind with
-               | Reference name -> "value"
+               | Reference _ -> "value"
                | _ -> kindToImpl kind
         |_ -> "value"
       kindToImpl f.Kind
