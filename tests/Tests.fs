@@ -192,24 +192,32 @@ module Core =
       }
 
       test "Should render empty sequence" {
-        "Rendering failed" |> Expect.equal (([]: string list) |> Yzl.render)  "[]"
+        "Rendering failed" |> Expect.equal (([]: string list) |> Yzl.render)  "[]\n"
       }
 
-      //TODO: fix this
-      // test "Should render a list of NamedNode lists as a sequence of maps" {
-      //   let expected = File.ReadAllText("./yaml/sequence-of-maps-2.yaml")
+      test "Should render empty named sequence in-line" {
+        let testSeq v = "testSeq" |> Yzl.Builder.seq v
+        let testSeq2 (v:int list) = "testSeq2" |> Yzl.Builder.seq (v |> Yzl.liftMany)
+        "Rendering failed" |> Expect.equal ([
+          testSeq []
+          testSeq2 [1;2;3]
+          ] |> Yzl.render)  "testSeq: []\ntestSeq2:\n- 1\n- 2\n- 3\n"
+      }
 
-      //   let actual =
-      //     ! [
-      //       [
-      //         name "n7"
-      //         value "val7"
-      //       ]
-      //       [
-      //         name "n8"
-      //         value "val8"
-      //       ]
-      //     ]
-      //   "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
-      // }
+      test "Should render a list of NamedNode lists as a sequence of maps" {
+        let expected = File.ReadAllText("./yaml/sequence-of-maps-2.yaml")
+
+        let actual =
+          ! [
+            [
+              name "n7"
+              value "val7"
+            ]
+            [
+              name "n8"
+              value "val8"
+            ]
+          ]
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
+      }
     ]

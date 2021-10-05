@@ -34,7 +34,7 @@ module Example =
     let skill (x:string)= Yzl.Builder.str x "skill"
     let employed x = Yzl.Builder.boolean x "employed"
     let foods x = Yzl.Builder.seq x "foods"
-    let languages (xs:Language list) = "languages" |> Yzl.Builder.map (xs |> List.map (fun x -> x.Deconstruct) |> List.map(fun (k,v) -> Yzl.str k v))
+    let languages (xs:Language list) = "languages" |> Yzl.Builder.map (xs |> List.map ((fun x -> x.Deconstruct) >> (fun (k,v) -> k |> Yzl.Builder.str v)))
     let education (x:Yzl.Str) = Yzl.Builder.str x "education"
 
   [<Tests>]

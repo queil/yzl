@@ -232,13 +232,13 @@ module Yzl =
                  | _ -> Empty
               maybeEol |> append
               match qs with
-              | [] -> "[]" |> append
+              | [] -> "[]\n" |> append
               | qs' -> qs' |> Seq.iter seqElem
 
             let renderMap ms =
               let mapElem i m =
                 let (Named (Name t, c)) = m
-                let whitespace = function | Scalar _ -> Space | _ -> Eol
+                let eolOrSpace = function | Scalar _ -> Space | SeqNode [] -> Space | _ -> Eol
                 let increment = function | MapNode _ -> tab | _ -> Empty
                 let mapIndent =
                   match parent with
@@ -250,7 +250,7 @@ module Yzl =
               
                 match (t, c) with
                  | Empty, NoNode -> ()
-                 | _ -> sprintf "%s%s:%s" mapIndent t (whitespace c) |> append
+                 | _ -> sprintf "%s%s:%s" mapIndent t (eolOrSpace c) |> append
                 render (indent + increment c) c this
 
               ms |> Seq.iteri mapElem
