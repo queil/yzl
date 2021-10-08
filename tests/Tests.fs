@@ -220,4 +220,31 @@ module Core =
           ]
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
       }
+
+      test "Should render ad-hoc map" {
+        let expected = """my: 44
+very: 55
+simple: |-
+  66
+map: true
+seq:
+- a
+- b
+- c
+"""
+        let actual = ! [
+          "my" @ 44
+          "very" @ "55"
+          "simple" @ !|- "66"
+          "map" @ true
+          "seq" @ [
+            "a"
+            "b"
+            "c"
+          ]
+        ]
+        
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
+
+      }
     ]

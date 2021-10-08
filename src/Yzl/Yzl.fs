@@ -63,7 +63,7 @@ module Yzl =
       static member op_Implicit(source: bool list) : Node = SeqNode( source |> List.map (Bool >> Scalar))
       static member op_Implicit(source: string list) : Node = SeqNode( source |> List.map (Plain >> Str >> Scalar))
       static member op_Implicit(source: Node) : Node = source
-      static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
+      static member op_Implicit(source: NamedNode) : Node = MapNode([source])
     /// YAML key-value pair
     and NamedNode =
       | Named of name: Name * node: Node
@@ -73,24 +73,22 @@ module Yzl =
       | Float of double
       | Str of Str
       | Bool of bool
-
-
-    type Builder() =
-      static let named t node = Named(Name t, node)
+    and Builder() =
+      static member named (name:string) (node:Node) = Named(Name name, node)
       /// Creates a named string scalar node from F# string
-      static member str (value:string) = fun name -> Named(Name name, Scalar(Str (Plain value)))
+      static member str (value:string) : string -> NamedNode = fun name -> Named(Name name, Scalar(Str (Plain value)))
       /// Creates a named string scalar node from Str
       static member str (value:Str) = fun name -> Named(Name name, Scalar(Str value))
       /// Creates a named integer scalar node
-      static member int (value:int) = fun name -> Scalar(Int value) |> named name
+      static member int (value:int) = fun name -> Scalar(Int value) |> Builder.named name
       /// Creates a named float scalar node
-      static member float (value:float) = fun name -> Scalar(Float value) |> named name
+      static member float (value:float) = fun name -> Scalar(Float value) |> Builder.named name
       /// Creates a named boolean scalar node
-      static member boolean (value:bool) = fun name -> Scalar(Bool value) |> named name
+      static member boolean (value:bool) = fun name -> Scalar(Bool value) |> Builder.named name
       /// Creates a named map node
-      static member map (value:NamedNode list) = fun name -> MapNode(value) |> named name
+      static member map (value:NamedNode list) = fun name -> MapNode(value) |> Builder.named name
       /// Creates a named sequence node
-      static member seq (seq: Node list) =  fun name -> SeqNode(seq) |> named name
+      static member seq (seq: Node list) =  fun name -> SeqNode(seq) |> Builder.named name
       /// Creates an empty node
       /// 
       /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
