@@ -233,11 +233,11 @@ seq:
 - c
 """
         let actual = ! [
-          "my" @ 44
-          "very" @ "55"
-          "simple" @ !|- "66"
-          "map" @ true
-          "seq" @ [
+          "my" .= 44
+          "very" .= "55"
+          "simple" .= !|- "66"
+          "map" .= true
+          "seq" .= [
             "a"
             "b"
             "c"
