@@ -63,6 +63,6 @@ jobs:
   - script: pip install mkdocs-material
     displayName: Install MkDocs Material Theme
   - script: |
-    pip install mkdocs
-    mkdocs gh-deploy --force
+      pip install mkdocs
+      mkdocs gh-deploy --force
     displayName: Publish docs
