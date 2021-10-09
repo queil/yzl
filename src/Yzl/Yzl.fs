@@ -63,7 +63,7 @@ module Yzl =
       static member op_Implicit(source: bool list) : Node = SeqNode( source |> List.map (Bool >> Scalar))
       static member op_Implicit(source: string list) : Node = SeqNode( source |> List.map (Plain >> Str >> Scalar))
       static member op_Implicit(source: Node) : Node = source
-      static member op_Implicit(source: NamedNode) : Node = MapNode([source]) 
+      static member op_Implicit(source: NamedNode) : Node = MapNode([source])
     /// YAML key-value pair
     and NamedNode =
       | Named of name: Name * node: Node
@@ -73,6 +73,26 @@ module Yzl =
       | Float of double
       | Str of Str
       | Bool of bool
+    and Builder() =
+      static member named (name:string) (node:Node) = Named(Name name, node)
+      /// Creates a named string scalar node from F# string
+      static member str (value:string) : string -> NamedNode = fun name -> Named(Name name, Scalar(Str (Plain value)))
+      /// Creates a named string scalar node from Str
+      static member str (value:Str) = fun name -> Named(Name name, Scalar(Str value))
+      /// Creates a named integer scalar node
+      static member int (value:int) = fun name -> Scalar(Int value) |> Builder.named name
+      /// Creates a named float scalar node
+      static member float (value:float) = fun name -> Scalar(Float value) |> Builder.named name
+      /// Creates a named boolean scalar node
+      static member boolean (value:bool) = fun name -> Scalar(Bool value) |> Builder.named name
+      /// Creates a named map node
+      static member map (value:NamedNode list) = fun name -> MapNode(value) |> Builder.named name
+      /// Creates a named sequence node
+      static member seq (seq: Node list) =  fun name -> SeqNode(seq) |> Builder.named name
+      /// Creates an empty node
+      /// 
+      /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
+      static member none = Named(Name "", NoNode)
 
     /// <summary>
     /// Lifts a given object to a <see cref="T:Node" />
@@ -88,26 +108,33 @@ module Yzl =
     let private named t node = Named(Name t, node)
     
     /// Creates a named string scalar node
+    [<Obsolete("Use Yzl.Builder.str")>]
     let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> lift)))
     
     /// Creates a named integer scalar node
+    [<Obsolete("Use Yzl.Builder.int")>]
     let int name value =  Scalar(Int value) |> named name
     
     /// Creates a named float scalar node
+    [<Obsolete("Use Yzl.Builder.float")>]
     let float name value = Scalar(Float value) |> named name
     
     /// Creates a named boolean scalar node
+    [<Obsolete("Use Yzl.Builder.boolean")>]
     let boolean name value = Scalar(Bool value) |> named name
     
     /// Creates a named map node
+    [<Obsolete("Use Yzl.Builder.map")>]
     let map name map =  MapNode(map) |> named name
     
     /// Creates a named sequence node
+    [<Obsolete("Use Yzl.Builder.seq")>]
     let seq name seq =  SeqNode(seq) |> named name
 
     /// Creates an empty node
     /// 
     /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
+    [<Obsolete("Use Yzl.Builder.none")>]
     let none = Named(Name "", NoNode)
 
     /// YAML rendering options
@@ -202,12 +229,14 @@ module Yzl =
                  | SeqNode _ -> Eol
                  | _ -> Empty
               maybeEol |> append
-              qs |> Seq.iter seqElem
+              match qs with
+              | [] -> "[]\n" |> append
+              | qs' -> qs' |> Seq.iter seqElem
 
             let renderMap ms =
               let mapElem i m =
                 let (Named (Name t, c)) = m
-                let whitespace = function | Scalar _ -> Space | _ -> Eol
+                let eolOrSpace = function | Scalar _ -> Space | SeqNode [] -> Space | _ -> Eol
                 let increment = function | MapNode _ -> tab | _ -> Empty
                 let mapIndent =
                   match parent with
@@ -219,7 +248,7 @@ module Yzl =
               
                 match (t, c) with
                  | Empty, NoNode -> ()
-                 | _ -> sprintf "%s%s:%s" mapIndent t (whitespace c) |> append
+                 | _ -> sprintf "%s%s:%s" mapIndent t (eolOrSpace c) |> append
                 render (indent + increment c) c this
 
               ms |> Seq.iteri mapElem

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--<Compile Include="Bindings.fs" />-->
     <Compile Include="Example.fs" />
     <Compile Include="StringsTests.fs" />
     <Compile Include="Tests.fs" />
@@ -22,7 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Yzl.fsproj" />
+    <ProjectReference Include="../src/Yzl/Yzl.fsproj" />
+    <!--<ProjectReference Include="../src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />-->
   </ItemGroup>
 
   <ItemGroup>

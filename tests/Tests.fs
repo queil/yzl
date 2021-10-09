@@ -6,26 +6,26 @@ module Core =
   open Yzl.Core
   open System.IO
 
-  let kind = Yzl.str "kind"
-  let apiVersion = Yzl.str "apiVersion"
-  let metadata x = Yzl.map "metadata" x
-  let name = Yzl.str "name"
-  let value = Yzl.str "value"
-  let labels x = Yzl.map "labels" x
-  let app = Yzl.str "app"
-  let spec x = Yzl.map "spec" x
-  let replicas = Yzl.int "replicas"
-  let selector x = Yzl.map "selector" x
-  let matchLabels x = Yzl.map "matchLabels" x
-  let template x = Yzl.map "template" x
-  let containers x = Yzl.seq "containers" x
-  let image = Yzl.str "image"
-  let ports x = Yzl.seq "ports" x
-  let containerPort = Yzl.int "containerPort"
+  let kind (value:string) = Yzl.Builder.str value "kind"
+  let apiVersion (value:string) = Yzl.Builder.str value "apiVersion"
+  let metadata x = Yzl.Builder.map x "metadata"
+  let name (value:string) = Yzl.Builder.str value "name"
+  let value (str:string) = Yzl.Builder.str str "value"
+  let labels x = Yzl.Builder.map x "labels"
+  let app (value:string) = Yzl.Builder.str value "app"
+  let spec x = Yzl.Builder.map x "spec"
+  let replicas x = Yzl.Builder.int x "replicas"
+  let selector x = Yzl.Builder.map x "selector"
+  let matchLabels x = Yzl.Builder.map x "matchLabels"
+  let template x = Yzl.Builder.map x "template"
+  let containers x = Yzl.Builder.seq x "containers"
+  let image (x:string) = Yzl.Builder.str x "image"
+  let ports x = Yzl.Builder.seq x "ports"
+  let containerPort x = Yzl.Builder.int x "containerPort"
 
-  let objref x = Yzl.map "objref" x
-  let fieldref x = Yzl.map "fieldref" x
-  let fieldpath = Yzl.str "fieldpath"
+  let objref x = Yzl.Builder.map x "objref"
+  let fieldref x = Yzl.Builder.map x "fieldref"
+  let fieldpath (value:string) = Yzl.Builder.str value "fieldpath"
 
   [<Tests>]
   let tests =
@@ -109,9 +109,9 @@ module Core =
 
       test "Sequence of maps" {
 
-        let states x = Yzl.seq "states" x
-        let state x = Yzl.map "state" x
-        let code x = Yzl.str "code" x
+        let states x = Yzl.Builder.seq x "states"
+        let state x = Yzl.Builder.map x "state"
+        let code (x:string) = Yzl.Builder.str x "code"
         let expected = File.ReadAllText("./yaml/sequence-of-maps.yaml")
   
         let yaml2 = ! [
@@ -125,9 +125,9 @@ module Core =
 
       test "Sequence of sequences" {
 
-        let states x = Yzl.seq "states" x
-        let state x = Yzl.map "state" x
-        let code x = Yzl.str "code" x
+        let states x = Yzl.Builder.seq x "states"
+        let state x = Yzl.Builder.map x "state"
+        let code x = Yzl.Builder.str (x:string) "code"
 
         let expected = File.ReadAllText("./yaml/sequence-of-sequences.yaml")
         let yaml2 = ! [
@@ -175,7 +175,7 @@ module Core =
           let actual = 
             ![ 
                 Yzl.Named(Yzl.Name "name", ! "Value")
-                Yzl.none
+                Yzl.Builder.none
                 Yzl.Named(Yzl.Name "name2", ! "Value2")
              ] |> Yzl.render
           "Rendering failed" |> Expect.equal actual  "name: Value\nname2: Value2\n"
@@ -189,6 +189,19 @@ module Core =
         "Rendering failed" |> Expect.equal (! [ 2; 3; 4 ] |> Yzl.render)  "- 2\n- 3\n- 4\n"
         "Rendering failed" |> Expect.equal (! [ true; false; true ] |> Yzl.render)  "- true\n- false\n- true\n"
         "Rendering failed" |> Expect.equal (! [ "1"; "3"; "4" ] |> Yzl.render)  "- 1\n- 3\n- 4\n"
+      }
+
+      test "Should render empty sequence" {
+        "Rendering failed" |> Expect.equal (([]: string list) |> Yzl.render)  "[]\n"
+      }
+
+      test "Should render empty named sequence in-line" {
+        let testSeq v = "testSeq" |> Yzl.Builder.seq v
+        let testSeq2 (v:int list) = "testSeq2" |> Yzl.Builder.seq (v |> Yzl.liftMany)
+        "Rendering failed" |> Expect.equal ([
+          testSeq []
+          testSeq2 [1;2;3]
+          ] |> Yzl.render)  "testSeq: []\ntestSeq2:\n- 1\n- 2\n- 3\n"
       }
 
       test "Should render a list of NamedNode lists as a sequence of maps" {
@@ -205,6 +218,32 @@ module Core =
               value "val8"
             ]
           ]
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
+      }
+
+      test "Should render ad-hoc map" {
+        let expected = """my: 44
+very: 55
+simple: |-
+  66
+map: true
+seq:
+- a
+- b
+- c
+"""
+        let actual = ! [
+          "my" .= 44
+          "very" .= "55"
+          "simple" .= !|- "66"
+          "map" .= true
+          "seq" .= [
+            "a"
+            "b"
+            "c"
+          ]
+        ]
+        
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
       }
     ]
