@@ -118,7 +118,7 @@ let map = [
   "three", 3
 ]
 
-! [
+[
   for (k, v) in map do
     k .= v
 ] |> Yzl.render
