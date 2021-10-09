@@ -45,19 +45,19 @@ stages:
       displayName: 'Push'
       condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
 
-  - job: Publish_docs
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.7'
-        addToPath: true
-        architecture: 'x64'
-    - script: python -m pip install --upgrade pip setuptools wheel
-      displayName: 'Install tools'
-    - script: pip install mkdocs-material
-      displayName: Install MkDocs Material Theme
-    - script: |
-        pip install mkdocs
-        mkdocs gh-deploy --force
-      displayName: Publish docs
+  # - job: Publish_docs
+  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  #   steps:
+  #   - task: UsePythonVersion@0
+  #     inputs:
+  #       versionSpec: '3.7'
+  #       addToPath: true
+  #       architecture: 'x64'
+  #   - script: python -m pip install --upgrade pip setuptools wheel
+  #     displayName: 'Install tools'
+  #   - script: pip install mkdocs-material
+  #     displayName: Install MkDocs Material Theme
+  #   - script: |
+  #       pip install mkdocs
+  #       mkdocs gh-deploy --force
+  #     displayName: Publish docs
