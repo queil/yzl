@@ -44,9 +44,9 @@ stages:
     - bash: dotnet nuget push -s  https://api.nuget.org/v3/index.json -k $(nuget-api-key) $(Build.ArtifactStagingDirectory)/*.nupkg
       displayName: 'Push'
       condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-      
+
   - job: Publish_docs
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'main'))
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     steps:
     - task: UsePythonVersion@0
       inputs:
