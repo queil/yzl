@@ -2,5 +2,6 @@
 
 ## Available Namespaces
 
-[Yzl.Core](https://queil.github.io/yzl/reference/yzl-core) - Yzl core modules
+[Yzl.Bindings.Kustomize](http://localhost:8089/reference/yzl-bindings-kustomize) - 
+[Yzl.Core](http://localhost:8089/reference/yzl-core) - Yzl core modules
 

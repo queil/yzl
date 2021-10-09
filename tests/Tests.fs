@@ -245,6 +245,5 @@ seq:
         ]
         
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
-
       }
     ]
