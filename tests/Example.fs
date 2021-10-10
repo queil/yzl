@@ -16,26 +16,13 @@ module Example =
     let elite = Elite
     let lame = Lame
 
-    type Language =
-     | Python of level:LanguageLevel
-     | Perl of level:LanguageLevel
-     | Pascal of level:LanguageLevel
-     with member x.Deconstruct = 
-                 match x with
-                 | Python z -> ("python", z |> string)
-                 | Pascal z -> ("pascal", z |> string)
-                 | Perl z -> ("perl", z |> string)
-    let perl = Perl
-    let python = Python
-    let pascal = Pascal
-
-    let name (x:string) = Yzl.Builder.str x "name"
-    let job (x:string)= Yzl.Builder.str x "job"
-    let skill (x:string)= Yzl.Builder.str x "skill"
-    let employed x = Yzl.Builder.boolean x "employed"
-    let foods x = Yzl.Builder.seq x "foods"
-    let languages (xs:Language list) = "languages" |> Yzl.Builder.map (xs |> List.map ((fun x -> x.Deconstruct) >> (fun (k,v) -> k |> Yzl.Builder.str v)))
-    let education (x:Yzl.Str) = Yzl.Builder.str x "education"
+    let name = Yzl.str "name"
+    let job = Yzl.str "job"
+    let skill = Yzl.str "skill"
+    let employed = Yzl.boolean "employed"
+    let foods = Yzl.liftMany >> Yzl.seq "foods"
+    let languages = Yzl.map "languages"
+    let education = Yzl.strYaml "education"
 
   [<Tests>]
   let tests =
@@ -49,14 +36,14 @@ module Example =
             skill "Elite"
             employed true
             foods [
-              ! "Apple"
-              ! "Orange"
-              ! "Strawberry"
-              ! "Mango" ]
+              "Apple"
+              "Orange"
+              "Strawberry"
+              "Mango" ]
             languages [
-              perl elite
-              python elite
-              pascal lame ]
+              "perl" .= "Elite"
+              "python" .= "Elite"
+              "pascal" .= "Lame"]
             education !|
               """
               4 GCSEs
