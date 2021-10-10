@@ -17,7 +17,7 @@ title: "Yzl - YAML Zero-Language - F# DSL for YAML"
 ``` fsharp
 open Yzl.Core
 
-let test (value:bool) = "test" .= value
+let test = Yzl.boolean "test"
 
 [ test true ] |> Yzl.render
 ```
@@ -41,7 +41,7 @@ test: true
 #### Nesting
 
 ```fsharp
-let rootMap (value: Yzl.NamedNode list) = "rootMap" .= value
+let rootMap = Yzl.map "rootMap"
 [
   rootMap [
     test false
@@ -86,7 +86,7 @@ Yzl supports different kinds of YAML strings via a [set of operators](reference/
 The convention here is that all the special kinds of strings are prefixed with `!`.
 
 ```f#
-let myString (value:Yzl.Str) = "myString" .= value
+let myString = Yzl.strYaml "myString"
 
 [
   myString !|-
