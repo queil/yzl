@@ -101,41 +101,36 @@ module Yzl =
     /// *Possible mappings are specified as implicit casts of the <see cref="T:Node" /> type*
     /// </remarks>
     let inline lift (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
-    [<Obsolete("Use lift instead")>]
-    let inline augment (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
     let inline liftMany (x:^a list) : ^b list = x |> List.map lift
 
     let private named t node = Named(Name t, node)
+    let private flip (func: 'b -> 'a -> 'c) = fun name value -> func value name
+
+    /// Creates a named plain string scalar node
+    let str : string -> string -> NamedNode = flip Builder.str
     
-    /// Creates a named string scalar node
-    [<Obsolete("Use Yzl.Builder.str")>]
-    let inline str name (node:^a) = Named(Name name, Scalar(Str (node |> lift)))
+    /// Creates a named YAML (folder, literal, etc) string scalar node
+    let strYaml : string -> Str -> NamedNode = flip Builder.str
     
     /// Creates a named integer scalar node
-    [<Obsolete("Use Yzl.Builder.int")>]
-    let int name value =  Scalar(Int value) |> named name
-    
+    let int = flip Builder.int
+
     /// Creates a named float scalar node
-    [<Obsolete("Use Yzl.Builder.float")>]
-    let float name value = Scalar(Float value) |> named name
+    let float = flip Builder.float
     
     /// Creates a named boolean scalar node
-    [<Obsolete("Use Yzl.Builder.boolean")>]
-    let boolean name value = Scalar(Bool value) |> named name
+    let boolean = flip Builder.boolean
     
     /// Creates a named map node
-    [<Obsolete("Use Yzl.Builder.map")>]
-    let map name map =  MapNode(map) |> named name
+    let map = flip Builder.map
     
     /// Creates a named sequence node
-    [<Obsolete("Use Yzl.Builder.seq")>]
-    let seq name seq =  SeqNode(seq) |> named name
+    let seq = flip Builder.seq
 
     /// Creates an empty node
     /// 
     /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*
-    [<Obsolete("Use Yzl.Builder.none")>]
-    let none = Named(Name "", NoNode)
+    let none = Builder.none
 
     /// YAML rendering options
     type RenderOptions = { 
@@ -236,7 +231,7 @@ module Yzl =
             let renderMap ms =
               let mapElem i m =
                 let (Named (Name t, c)) = m
-                let eolOrSpace = function | Scalar _ -> Space | SeqNode [] -> Space | _ -> Eol
+                let eolOrSpace = function | Scalar _ -> Space | MapNode [] -> Space | SeqNode [] -> Space | _ -> Eol
                 let increment = function | MapNode _ -> tab | _ -> Empty
                 let mapIndent =
                   match parent with
@@ -251,7 +246,9 @@ module Yzl =
                  | _ -> sprintf "%s%s:%s" mapIndent t (eolOrSpace c) |> append
                 render (indent + increment c) c this
 
-              ms |> Seq.iteri mapElem
+              match ms with
+              | [] -> "{}\n" |> append
+              | ms' -> ms' |> Seq.iteri mapElem
 
             match this with
              | Scalar a -> a |> (stringify >> stringScalar) |> append

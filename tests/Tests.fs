@@ -6,26 +6,26 @@ module Core =
   open Yzl.Core
   open System.IO
 
-  let kind (value:string) = Yzl.Builder.str value "kind"
-  let apiVersion (value:string) = Yzl.Builder.str value "apiVersion"
-  let metadata x = Yzl.Builder.map x "metadata"
-  let name (value:string) = Yzl.Builder.str value "name"
-  let value (str:string) = Yzl.Builder.str str "value"
-  let labels x = Yzl.Builder.map x "labels"
-  let app (value:string) = Yzl.Builder.str value "app"
-  let spec x = Yzl.Builder.map x "spec"
-  let replicas x = Yzl.Builder.int x "replicas"
-  let selector x = Yzl.Builder.map x "selector"
-  let matchLabels x = Yzl.Builder.map x "matchLabels"
-  let template x = Yzl.Builder.map x "template"
-  let containers x = Yzl.Builder.seq x "containers"
-  let image (x:string) = Yzl.Builder.str x "image"
-  let ports x = Yzl.Builder.seq x "ports"
-  let containerPort x = Yzl.Builder.int x "containerPort"
+  let kind = Yzl.str "kind"
+  let apiVersion = Yzl.str "apiVersion"
+  let metadata = Yzl.map "metadata"
+  let name = Yzl.str "name"
+  let value = Yzl.str "value"
+  let labels = Yzl.map "labels"
+  let app = Yzl.str "app"
+  let spec = Yzl.map "spec"
+  let replicas = Yzl.int "replicas"
+  let selector = Yzl.map "selector"
+  let matchLabels = Yzl.map "matchLabels"
+  let template = Yzl.map "template"
+  let containers = Yzl.seq "containers"
+  let image = Yzl.str "image"
+  let ports = Yzl.seq "ports"
+  let containerPort = Yzl.int "containerPort"
 
-  let objref x = Yzl.Builder.map x "objref"
-  let fieldref x = Yzl.Builder.map x "fieldref"
-  let fieldpath (value:string) = Yzl.Builder.str value "fieldpath"
+  let objref = Yzl.map "objref"
+  let fieldref = Yzl.map "fieldref"
+  let fieldpath = Yzl.str "fieldpath"
 
   [<Tests>]
   let tests =
@@ -109,9 +109,9 @@ module Core =
 
       test "Sequence of maps" {
 
-        let states x = Yzl.Builder.seq x "states"
-        let state x = Yzl.Builder.map x "state"
-        let code (x:string) = Yzl.Builder.str x "code"
+        let states = Yzl.seq "states"
+        let state = Yzl.map "state"
+        let code = Yzl.str "code"
         let expected = File.ReadAllText("./yaml/sequence-of-maps.yaml")
   
         let yaml2 = ! [
@@ -125,9 +125,9 @@ module Core =
 
       test "Sequence of sequences" {
 
-        let states x = Yzl.Builder.seq x "states"
-        let state x = Yzl.Builder.map x "state"
-        let code x = Yzl.Builder.str (x:string) "code"
+        let states = Yzl.seq "states"
+        let state = Yzl.map "state"
+        let code = Yzl.str "code"
 
         let expected = File.ReadAllText("./yaml/sequence-of-sequences.yaml")
         let yaml2 = ! [
@@ -175,7 +175,7 @@ module Core =
           let actual = 
             ![ 
                 Yzl.Named(Yzl.Name "name", ! "Value")
-                Yzl.Builder.none
+                Yzl.none
                 Yzl.Named(Yzl.Name "name2", ! "Value2")
              ] |> Yzl.render
           "Rendering failed" |> Expect.equal actual  "name: Value\nname2: Value2\n"
@@ -196,8 +196,8 @@ module Core =
       }
 
       test "Should render empty named sequence in-line" {
-        let testSeq v = "testSeq" |> Yzl.Builder.seq v
-        let testSeq2 (v:int list) = "testSeq2" |> Yzl.Builder.seq (v |> Yzl.liftMany)
+        let testSeq = Yzl.seq "testSeq"
+        let testSeq2 =  Yzl.liftMany >> Yzl.seq "testSeq2"
         "Rendering failed" |> Expect.equal ([
           testSeq []
           testSeq2 [1;2;3]
@@ -232,7 +232,7 @@ seq:
 - b
 - c
 """
-        let actual = ! [
+        let actual = [
           "my" .= 44
           "very" .= "55"
           "simple" .= !|- "66"
@@ -246,4 +246,18 @@ seq:
         
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) expected
       }
+
+      test "Should render empty map as {}" {
+        let empty = Yzl.map "empty"
+        let empty2 = Yzl.map "empty2"
+
+        let actual = [
+          empty []
+          "non-empty" .= [
+            "some-other" .= "value"
+          ]
+        ]
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) "empty: {}\nnon-empty:\n  some-other: value\n"
+      }
+
     ]
