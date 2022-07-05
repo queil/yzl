@@ -138,6 +138,15 @@ module Strings =
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
       
+      test "Empty string multiline" {
+        let expected = "test: |
+
+"
+        let yaml = ! [
+          "test" .= !| ""
+        ]
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
+      }
 
       //TODO: add null strings tests
     ]

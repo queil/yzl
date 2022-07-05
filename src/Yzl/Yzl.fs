@@ -12,7 +12,7 @@ open System
 
 [<RequireQualifiedAccessAttribute>]
 module Yzl =
-    
+
     /// [YAML string types](https://yaml-multiline.info/)
     type Str = 
      /// YAML plain string
@@ -108,22 +108,22 @@ module Yzl =
 
     /// Creates a named plain string scalar node
     let str : string -> string -> NamedNode = flip Builder.str
-    
+
     /// Creates a named YAML (folder, literal, etc) string scalar node
     let strYaml : string -> Str -> NamedNode = flip Builder.str
-    
+
     /// Creates a named integer scalar node
     let int = flip Builder.int
 
     /// Creates a named float scalar node
     let float = flip Builder.float
-    
+
     /// Creates a named boolean scalar node
     let boolean = flip Builder.boolean
-    
+
     /// Creates a named map node
     let map = flip Builder.map
-    
+
     /// Creates a named sequence node
     let seq = flip Builder.seq
 
@@ -177,18 +177,19 @@ module Yzl =
                    | _ -> z
                 s.Split('\n') |> Seq.toList |> fixFirst |> fixLast
               let requiredIndent = indent + tab
-              let existingIndent (z:string) = z.[0..z.IndexOf(z.TrimStart()) - 1]
-              let indentBase = lines |> Seq.head |> existingIndent
+              let existingIndent (z:string option) =
+                match z with | None -> Empty | Some z -> z.[0..z.IndexOf(z.TrimStart()) - 1]
+              let indentBase = lines |> Seq.tryHead |> existingIndent
 
               System.String.Join(Eol,
                 lines |> Seq.map (function
                  | s when s = Empty -> s
                  | s when String.IsNullOrWhiteSpace(s) -> requiredIndent
-                 | s when (existingIndent s) = Empty -> requiredIndent + s
+                 | s when (existingIndent (Some s)) = Empty -> requiredIndent + s
                  | s -> requiredIndent + s.[indentBase.Length..s.Length - 1]))
-            
+
             let nullOr = function | null -> "null" | z -> z
-                 
+
             let stringScalar = function
              | Plain z -> sprintf "%s\n" (nullOr z)
              | SingleQuoted z -> sprintf "'%s'\n" (nullOr z)
@@ -200,7 +201,7 @@ module Yzl =
              | LiteralStrip z -> sprintf "|-\n%s\n" (nullOr z |> normalizeIndent)
              | LiteralKeep z -> sprintf "|+\n%s\n" (nullOr z |> normalizeIndent)
 
-            let stringify = function 
+            let stringify = function
              | Int v -> Plain (v |> string)
              | Bool v -> Plain ((v |> string).ToLowerInvariant())
              | Float v -> Plain (v |> string)
@@ -240,7 +241,7 @@ module Yzl =
                        | 0 -> Empty
                        |_ -> indent
                    | _ -> indent
-              
+
                 match (t, c) with
                  | Empty, NoNode -> ()
                  | _ -> sprintf "%s%s:%s" mapIndent t (eolOrSpace c) |> append
@@ -255,7 +256,7 @@ module Yzl =
              | SeqNode qs -> qs |> renderSeq
              | MapNode ms -> ms |> renderMap
              | NoNode -> ()
-                 
+
         render Empty yaml NoNode
         builder.ToString()
 
