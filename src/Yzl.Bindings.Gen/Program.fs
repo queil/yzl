@@ -159,41 +159,36 @@ let main argv =
         | SchemaKind.Enum -> "string"
         | SchemaKind.Boolean -> "bool"
         | SchemaKind.Seq kind -> sprintf "%s list" <| kindToType kind
-        | SchemaKind.PatternProperties -> "Yzl.NamedNode list"
-        | SchemaKind.Reference _ -> "Yzl.NamedNode list"
-        | SchemaKind.InlineObject -> "Yzl.NamedNode list"
-        | _ -> "Yzl.Node"
+        | SchemaKind.PatternProperties -> "NamedNode list"
+        | SchemaKind.Reference _ -> "NamedNode list"
+        | SchemaKind.InlineObject -> "NamedNode list"
+        | _ -> "Node"
       kindToType f.Kind
 
     let yzlFunc (f: YzlFunc) =
       match f.Kind with
-      | SchemaKind.Int -> "Yzl.Builder.int"
-      | SchemaKind.Float -> "Yzl.Builder.float"
-      | SchemaKind.String _ -> "Yzl.Builder.str"
-      | SchemaKind.Enum _ -> "Yzl.Builder.str"
-      | SchemaKind.Seq _ -> "Yzl.Builder.seq"
-      | SchemaKind.Boolean _ -> "Yzl.Builder.boolean"
+      | SchemaKind.Int -> "Yzl.int"
+      | SchemaKind.Float -> "Yzl.float"
+      | SchemaKind.String _ -> "Yzl.str"
+      | SchemaKind.Enum _ -> "Yzl.str"
+      | SchemaKind.Seq _ -> "Yzl.seq"
+      | SchemaKind.Boolean _ -> "Yzl.boolean"
       | SchemaKind.Reference _
       | SchemaKind.PatternProperties
-      | SchemaKind.InlineObject -> "Yzl.Builder.map"
-      | _ -> "Yzl.Builder.node"
+      | SchemaKind.InlineObject -> "Yzl.map"
+      | _ -> "Yzl.node"
 
     let renderImpl (f: YzlFunc) =
       let rec kindToImpl =
         function
         | Reference _ -> "value"
-        | Seq kind -> 
-          sprintf "(%s |> Yzl.liftMany)"
-            <| match kind with
-               | Reference _ -> "value"
-               | _ -> kindToImpl kind
         |_ -> "value"
       kindToImpl f.Kind
     
     let renderAdditionalMembers (t: YzlType) = [
       "  static member Default = "; t.Name ;"()"
       newLine
-      "  static member yzl (build:Yzl.NamedNode list) : Yzl.Node = build |> Yzl.lift"
+      "  static member yzl (build:NamedNode list) : Node = build |> lift"
       newLine
     ]
     
@@ -207,12 +202,12 @@ let main argv =
           "(value: "; typeAnnotation f; ") "
           //"(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
           " = "
-          yzlFunc f; " "; renderImpl f
-          " \""; f.Name; "\""
+          yzlFunc f; "("; renderImpl f
+          ", \""; f.Name; "\")"
         ]
       [
         yield! render renderTypeAnnotation
-        match f.Kind with | String -> yield! render (fun _ -> "Yzl.Str") |_ -> ()
+        match f.Kind with | String -> yield! render (fun _ -> "Str") |_ -> ()
       ]
 
     let allStrings =
