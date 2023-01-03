@@ -3,29 +3,43 @@ namespace Yzl.Tests.Unit
 module Core =
 
   open Expecto
-  open Yzl.Core
+  open Yzl
   open System.IO
 
-  let kind = Yzl.str "kind"
-  let apiVersion = Yzl.str "apiVersion"
-  let metadata = Yzl.map "metadata"
-  let name = Yzl.str "name"
-  let value = Yzl.str "value"
-  let labels = Yzl.map "labels"
-  let app = Yzl.str "app"
-  let spec = Yzl.map "spec"
-  let replicas = Yzl.int "replicas"
-  let selector = Yzl.map "selector"
-  let matchLabels = Yzl.map "matchLabels"
-  let template = Yzl.map "template"
-  let containers = Yzl.seq "containers"
-  let image = Yzl.str "image"
-  let ports = Yzl.seq "ports"
-  let containerPort = Yzl.int "containerPort"
+  let kind = Yzl.str
+  let apiVersion = Yzl.str
+  let metadata = Yzl.map
+  let name = Yzl.str
+  let value = Yzl.str
+  let labels = Yzl.map
+  let app = Yzl.str
+  let spec = Yzl.map
+  let replicas = Yzl.int
+  let selector = Yzl.map
+  let matchLabels = Yzl.map
+  let template = Yzl.map
+  let containers = Yzl.seq
+  let image = Yzl.str
+  let ports = Yzl.seq
+  let containerPort = Yzl.int
 
-  let objref = Yzl.map "objref"
-  let fieldref = Yzl.map "fieldref"
-  let fieldpath = Yzl.str "fieldpath"
+  let objref = Yzl.map
+  let fieldref = Yzl.map
+  let fieldpath = Yzl.str
+
+  let myMap = Yzl.map
+  let otherMap = Yzl.map
+  let aSeq = Yzl.seq
+
+  let empty = Yzl.map
+  let empty2 = Yzl.map
+
+  let testSeq = Yzl.seq<int>
+  let testSeq2 = Yzl.seq
+
+  let states = Yzl.seq
+  let state = Yzl.map
+  let code = Yzl.str
 
   [<Tests>]
   let tests =
@@ -62,15 +76,15 @@ module Core =
                     name "nginx"
                     image "nginx:1.7.9"
                     ports [
-                      ! [containerPort 80]
+                      [containerPort 80]
                     ]
                   ]
                   ! [
                     name "busybox"
                     image "busybox:1.0.0"
                     ports [
-                      ! [containerPort 701]
-                      ! [containerPort 901]
+                      [containerPort 701]
+                      [containerPort 901]
                     ]
                   ]
                 ]
@@ -84,7 +98,7 @@ module Core =
       test "Top-level sequence" {
         let expected = File.ReadAllText("./yaml/top-level-sequence.yaml")
           
-        let single x = ! [
+        let single x = [
           name x
           objref [
             kind "ConfigMap"
@@ -96,7 +110,7 @@ module Core =
           ]
         ]
 
-        let yaml = ! [
+        let yaml = [
           single "A"
           single "B"
           single "C"
@@ -109,12 +123,9 @@ module Core =
 
       test "Sequence of maps" {
 
-        let states = Yzl.seq "states"
-        let state = Yzl.map "state"
-        let code = Yzl.str "code"
         let expected = File.ReadAllText("./yaml/sequence-of-maps.yaml")
   
-        let yaml2 = ! [
+        let yaml2 = [
           ! [
             states [
             ! [ state [ code "OH" ]]
@@ -125,13 +136,9 @@ module Core =
 
       test "Sequence of sequences" {
 
-        let states = Yzl.seq "states"
-        let state = Yzl.map "state"
-        let code = Yzl.str "code"
-
         let expected = File.ReadAllText("./yaml/sequence-of-sequences.yaml")
-        let yaml2 = ! [
-          ! [
+        let yaml2 = [
+          [
             states [
               ! [
                 states [
@@ -161,22 +168,22 @@ module Core =
       }
 
       test "Should render true in lowercase" {
-          "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool true) |> Yzl.render)  "true\n"
+          "Rendering failed" |> Expect.equal (Scalar(Bool true) |> Yzl.render)  "true\n"
       }
 
       test "Should render false in lowercase" {
-          "Rendering failed" |> Expect.equal (Yzl.Scalar(Yzl.Bool false) |> Yzl.render)  "false\n"
+          "Rendering failed" |> Expect.equal (Scalar(Bool false) |> Yzl.render)  "false\n"
       }
 
       test "Should not render NoNode in seq" {
-          "Rendering failed" |> Expect.equal (![ ! "x"; Yzl.NoNode; ! "y" ] |> Yzl.render)  "- x\n- y\n"
+          "Rendering failed" |> Expect.equal (![ ! "x"; NoNode; ! "y" ] |> Yzl.render)  "- x\n- y\n"
       }
       test "Should not render NoNode in map" {
           let actual = 
             ![ 
-                Yzl.Named(Yzl.Name "name", ! "Value")
+                "name" .= "Value"
                 Yzl.none
-                Yzl.Named(Yzl.Name "name2", ! "Value2")
+                "name2" .= "Value2"
              ] |> Yzl.render
           "Rendering failed" |> Expect.equal actual  "name: Value\nname2: Value2\n"
       }
@@ -196,8 +203,7 @@ module Core =
       }
 
       test "Should render empty named sequence in-line" {
-        let testSeq = Yzl.seq "testSeq"
-        let testSeq2 =  Yzl.liftMany >> Yzl.seq "testSeq2"
+
         "Rendering failed" |> Expect.equal ([
           testSeq []
           testSeq2 [1;2;3]
@@ -248,8 +254,6 @@ seq:
       }
 
       test "Should render empty map as {}" {
-        let empty = Yzl.map "empty"
-        let empty2 = Yzl.map "empty2"
 
         let actual = [
           empty []
@@ -258,6 +262,23 @@ seq:
           ]
         ]
         "Rendering failed" |> Expect.equal (actual |> Yzl.render) "empty: {}\nnon-empty:\n  some-other: value\n"
+      }
+  
+      test "Automatic builder" {
+
+        /// Caller Member Name seems to fail if the functions are declared here
+        /// It uses `tests` as the name instead
+        let actual = 
+          myMap [
+            otherMap [
+              aSeq [
+                99
+                2
+                3
+              ]
+            ]
+          ]
+        "Rendering failed" |> Expect.equal (actual |> Yzl.render) "myMap:\n  otherMap:\n    aSeq:\n    - 99\n    - 2\n    - 3\n"
       }
 
     ]

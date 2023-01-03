@@ -3,7 +3,7 @@ namespace Yzl.Tests.Unit
 module Example =
 
   open Expecto
-  open Yzl.Core
+  open Yzl
   open System.IO
 
   [<AutoOpen>]
@@ -16,13 +16,13 @@ module Example =
     let elite = Elite
     let lame = Lame
 
-    let name = Yzl.str "name"
-    let job = Yzl.str "job"
-    let skill = Yzl.str "skill"
-    let employed = Yzl.boolean "employed"
-    let foods = Yzl.liftMany >> Yzl.seq "foods"
-    let languages = Yzl.map "languages"
-    let education = Yzl.strYaml "education"
+    let name = Yzl.str
+    let job = Yzl.str
+    let skill = Yzl.str
+    let employed = Yzl.boolean
+    let foods = Yzl.seq
+    let languages = Yzl.map
+    let education = Yzl.str
 
   [<Tests>]
   let tests =
@@ -30,7 +30,7 @@ module Example =
       
       test "Example" {
         let expected = File.ReadAllText("./yaml/example.yaml")
-        let yaml = ! [
+        let yaml = [
             name "Martin D'vloper"
             job "Developer"
             skill "Elite"

@@ -3,19 +3,24 @@ namespace Yzl.Tests.Unit
 module Strings =
 
   open Expecto
-  open Yzl.Core
+  open Yzl
   open System.IO
+
+
+  let myText = Yzl.str
+
+  let multistring = Yzl.seq
 
   [<Tests>]
   let tests =
-    let myText (value: Yzl.Str) =  Yzl.Builder.str value "myText"
+
     testList "generate" [
       
       test "Literal dash" {
         let expected = File.ReadAllText("./yaml/literal-dash.yaml")
         let yaml = ![
-          "parent"|> Yzl.Builder.map [
-            myText !|-
+          "parent" .= [
+             myText !|-
   // START: this space is left here purposely - do not remove
                                              """
                                              some
@@ -33,8 +38,8 @@ module Strings =
       test "Literal" {
         let expected = File.ReadAllText("./yaml/literal.yaml")
 
-        let yaml = ![
-          "parent" |> Yzl.Builder.map [
+        let yaml = [
+          "parent" .= [
            myText !|
   // START: this space is left here purposely - do not remove
                """
@@ -53,8 +58,8 @@ module Strings =
 
       test "Folded dash" {
         let expected = File.ReadAllText("./yaml/folded-dash.yaml")
-        let yaml = ![
-          "parent" |> Yzl.Builder.map [
+        let yaml = [
+          "parent" .= [
            myText !>-
   // START: this space is left here purposely - do not remove
                                              """
@@ -74,8 +79,8 @@ module Strings =
       test "Folded" {
         let expected = File.ReadAllText("./yaml/folded.yaml")
 
-        let yaml = ![
-          "parent" |> Yzl.Builder.map [
+        let yaml = [
+          "parent" .= [
            myText !>
   // START: this space is left here purposely - do not remove
                   """
@@ -99,19 +104,21 @@ module Strings =
       test "Folded null" {
         let expected = File.ReadAllText("./yaml/folded-null.yaml")
 
-        let yaml = ![
-          "parent" |> Yzl.Builder.map [
-           myText !> null
+        let yaml = [
+          "parent" .= [
+            myText !> null
           ]
         ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
-
+      
       test "Mixed-string seq" {
         let expected = File.ReadAllText("./yaml/multi-string-seq.yaml")
-        let yaml = ![
-          "multistring" |> Yzl.Builder.seq [
+         
+
+        let yaml = [
+           multistring [
            ! "plain"
            ! !> "
               folded
@@ -142,7 +149,7 @@ module Strings =
         let expected = "test: |
 
 "
-        let yaml = ! [
+        let yaml = [
           "test" .= !| ""
         ]
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
