@@ -3,7 +3,7 @@ namespace Yzl.Tests.Unit
 module Bindings =
 
   open Expecto
-  open Yzl.Core
+  open Yzl
   open Yzl.Bindings.Kustomize
 
   open type Yzl.Bindings.Kustomize.PatchJson6902
