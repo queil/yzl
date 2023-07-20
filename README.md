@@ -4,6 +4,10 @@ yzl /ˈiːz(ə)l/ - YAML Zero-Language - F# DSL for YAML
 
 Yzl is a DSL alternative for templating YAML. It was inspired by [Suave HTML View Engine](https://github.com/SuaveIO/suave/blob/master/src/Suave.Experimental/Html.fs).
 
+## Docs
+
+https://queil.github.io/yzl/
+
 ## Example
 
 [Full code here](tests/Example.fs) 

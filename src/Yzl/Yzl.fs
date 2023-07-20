@@ -85,27 +85,27 @@ module Core =
     and
       [<AbstractClass; Sealed>]
       Yzl =
-        static member named (name:string) (node:Node) = Named(Name name, node)
+        static member named(value: Node, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) = Named(Name name, value)
         /// Creates a named string scalar node from F# string or Yzl.Str
         static member inline str< ^T when ( ^T or Str) : (static member ToYzlString:  ^T ->  Str) >(value: ^T, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) =
           let str : Str = liftString value 
           let yzl = lift str
-          Yzl.named name yzl
+          Yzl.named(yzl, name)
         /// Creates a named integer scalar node
         static member int(value: int, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) =
-          Scalar(Int value) |> Yzl.named name
+          Yzl.named(Scalar(Int value), name)
         /// Creates a named float scalar node
         static member float(value: float, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) =
-          Scalar(Float value) |> Yzl.named name
+          Yzl.named(Scalar(Float value), name)
         /// Creates a named boolean scalar node
         static member boolean(value: bool, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) =
-          Scalar(Bool value) |> Yzl.named name
+          Yzl.named(Scalar(Bool value), name)
         // Creates a named map node
         static member map(value: NamedNode list, [<CallerMemberName;  Optional; DefaultParameterValue("")>] name: string) =
-          MapNode value |> Yzl.named name
+          Yzl.named(MapNode value, name)
         /// Creates a named sequence node
         static member inline seq< 'T when ( 'T or Node) : (static member ToYzl:  'T -> Node)> (value: 'T list, [<CallerMemberName;  Optional; DefaultParameterValue("")>]  name: string) =
-          SeqNode(liftMany value) |> Yzl.named name
+          Yzl.named(SeqNode(liftMany value), name)
         /// Creates an empty node
         /// 
         /// *Typically used when generating YAML tree conditionally to indicate no node should be generated*

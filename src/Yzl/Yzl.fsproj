@@ -3,18 +3,23 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>queil</Authors>
     <Description>F# DSL for YAML</Description>
-    <Copyright>2020-2022 © queil</Copyright>
+    <Copyright>2020-2023 © queil</Copyright>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/queil/yzl</RepositoryUrl>
     <FsDocsSourceRepository>https://github.com/queil/yzl/tree/master</FsDocsSourceRepository>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeSymbols>true</IncludeSymbols>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Yzl.fs" />
     <Compile Include="Operators.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 </Project>

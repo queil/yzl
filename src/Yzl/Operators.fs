@@ -7,7 +7,7 @@ module Operators =
   /// Lift to Yzl Node
   let inline (!) (a:^a) : Node = lift a
   /// Operator for ad-hoc maps creation.
-  let inline (.=) (name: string) (value:^a) : NamedNode = Yzl.named name (value |> lift)
+  let inline (.=) (name: string) (value:^a) : NamedNode = Yzl.named(lift value, name)
   /// Folded string
   let (!>) (value:string) = Folded value
   /// Folded strip string
