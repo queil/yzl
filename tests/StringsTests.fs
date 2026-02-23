@@ -7,7 +7,8 @@ module Strings =
   open System.IO
 
 
-  let myText = Yzl.str
+  let inline myText x = Yzl.str x
+  let inline myText2 x = Yzl.str x
 
   let multistring = Yzl.seq
 
@@ -15,22 +16,23 @@ module Strings =
   let tests =
 
     testList "generate" [
-      
+
       test "Literal dash" {
         let expected = File.ReadAllText("./yaml/literal-dash.yaml")
-        let yaml = ![
-          "parent" .= [
-             myText !|-
-  // START: this space is left here purposely - do not remove
-                                             """
+
+        let yaml =
+          ![ "parent"
+             .= [ myText
+                    !|-
+                    // START: this space is left here purposely - do not remove
+                    """
                                              some
                                              - text should
                                              - have 
                                                  the indentation adjusted to the parent node
                                              """
-  // END: this space is left here purposely - do not remove
-          ]
-        ]
+                  // END: this space is left here purposely - do not remove
+                  ] ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
@@ -38,40 +40,41 @@ module Strings =
       test "Literal" {
         let expected = File.ReadAllText("./yaml/literal.yaml")
 
-        let yaml = [
-          "parent" .= [
-           myText !|
-  // START: this space is left here purposely - do not remove
-               """
+        let yaml =
+          [ "parent"
+            .= [ myText
+                   !|
+                   // START: this space is left here purposely - do not remove
+                   """
                some
                - text should : everything is allowed in here
                other-things 
                    - the indentation adjusted to the parent node
                    - 1
                """
-  // END: this space is left here purposely - do not remove
-          ]
-        ]
+                 // END: this space is left here purposely - do not remove
+                 ] ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
 
       test "Folded dash" {
         let expected = File.ReadAllText("./yaml/folded-dash.yaml")
-        let yaml = [
-          "parent" .= [
-           myText !>-
-  // START: this space is left here purposely - do not remove
-                                             """
+
+        let yaml =
+          [ "parent"
+            .= [ myText
+                   !>-
+                   // START: this space is left here purposely - do not remove
+                   """
                                              rg             
                                                szf    
                                                  szgszdafsesf
                                                awe             
                                              ffe        
                                              """
-  // END: this space is left here purposely - do not remove
-          ]
-        ]
+                 // END: this space is left here purposely - do not remove
+                 ] ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
@@ -79,11 +82,12 @@ module Strings =
       test "Folded" {
         let expected = File.ReadAllText("./yaml/folded.yaml")
 
-        let yaml = [
-          "parent" .= [
-           myText !>
-  // START: this space is left here purposely - do not remove
-                  """
+        let yaml =
+          [ "parent"
+            .= [ myText
+                   !>
+                   // START: this space is left here purposely - do not remove
+                   """
                   lorem ipsum      
                   does not make that     
                       much of a sense i   
@@ -94,9 +98,8 @@ module Strings =
 
                   
                   """
-  // END: this space is left here purposely - do not remove
-          ]
-        ]
+                 // END: this space is left here purposely - do not remove
+                 ] ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
@@ -104,56 +107,72 @@ module Strings =
       test "Folded null" {
         let expected = File.ReadAllText("./yaml/folded-null.yaml")
 
-        let yaml = [
-          "parent" .= [
-            myText !> null
-          ]
-        ]
+        let yaml = [ "parent" .= [ myText !>null ] ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
-      
+
       test "Mixed-string seq" {
         let expected = File.ReadAllText("./yaml/multi-string-seq.yaml")
-         
 
-        let yaml = [
-           multistring [
-           ! "plain"
-           ! !> "
+
+        let yaml =
+          [ multistring [
+              !"plain"
+              ! !>"
               folded
                 lorem ipsum"
-           ! !>- "
+              ! !>-"
               folded strip
                 lorem ipsum"
-           ! !>+ "
+              ! !>+"
               folded keep
                 lorem ipsum"
-           ! !| "
+              ! !|"
               literal
                 lorem ipsum"
-           ! !|- "
+              ! !|-"
               literal strip
                 lorem ipsum"
-           ! !|+ "
+              ! !|+"
               literal keep
                 lorem ipsum"
-           ! "\"double-quoted\""
-           ! "'single-quoted'"
-          ]
-        ]
+              !"\"double-quoted\""
+              !"'single-quoted'"
+            ] ]
+
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
-      
+
       test "Empty string multiline" {
-        let expected = "test: |
+        let expected =
+          "test: |
 
 "
-        let yaml = [
-          "test" .= !| ""
-        ]
+
+        let yaml = [ "test" .= !|"" ]
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
 
-      //TODO: add null strings tests
+      test "Should wrap ambiguous values in single-quotes when cast from F# string" {
+        let expected = File.ReadAllText("./yaml/string-ambiguous.yaml")
+
+        let floatString x = Yzl.str (x, "floatString")
+        let intString x = Yzl.str (x, "intString")
+
+        let yaml =
+          [ "parent"
+            .= [ myText "true"
+                 myText2 "false"
+                 "adHoc" .= "true"
+                 "adHocNo" .= "no"
+                 floatString "1.80"
+                 intString "100"
+                 "floatStringAdHoc" .= "1.80"
+                 "intStringAdHoc" .= "100" ] ]
+
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
+      }
+
+    //TODO: add null strings tests
     ]

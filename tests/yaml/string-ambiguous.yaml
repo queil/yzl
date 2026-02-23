@@ -1,0 +1,9 @@
+parent:
+  myText: 'true'
+  myText2: 'false'
+  adHoc: 'true'
+  adHocNo: 'no'
+  floatString: '1.80'
+  intString: '100'
+  floatStringAdHoc: '1.80'
+  intStringAdHoc: '100'

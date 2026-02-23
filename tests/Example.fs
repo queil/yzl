@@ -10,8 +10,8 @@ module Example =
   module Fields =
 
     type LanguageLevel =
-     | Elite
-     | Lame
+      | Elite
+      | Lame
 
     let elite = Elite
     let lame = Lame
@@ -27,11 +27,12 @@ module Example =
   [<Tests>]
   let tests =
     testList "Generate" [
-      
+
       test "Example" {
         let expected = File.ReadAllText("./yaml/example.yaml")
-        let yaml = [
-            name "Martin D'vloper"
+
+        let yaml =
+          [ name "Martin D'vloper"
             job "Developer"
             skill "Elite"
             employed true
@@ -39,18 +40,19 @@ module Example =
               "Apple"
               "Orange"
               "Strawberry"
-              "Mango" ]
+              "Mango"
+            ]
             languages [
               "perl" .= "Elite"
               "python" .= "Elite"
-              "pascal" .= "Lame"]
-            education !|
-              """
+              "pascal" .= "Lame"
+            ]
+            education
+              !|"""
               4 GCSEs
               3 A-Levels
               BSc in the Internet of Things
-              """
-          ]
+              """ ]
 
         "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
       }
