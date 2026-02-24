@@ -51,7 +51,7 @@ module Core =
 
         static member ToYzlString(source: string) : Str =
             match source with
-            | s when Int64.TryParse(s) |> fst -> SingleQuoted s
+            | s when Int64.TryParse s |> fst -> SingleQuoted s
             | s when Double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture) |> fst -> SingleQuoted s
             | IsYamlBool s -> SingleQuoted s
             | s -> Plain s
@@ -82,12 +82,13 @@ module Core =
         | NoNode
 
         static member ToYzl(source: int) : Node = Scalar(Int source)
+        static member ToYzl(source: float32) : Node = Scalar(Float(float source))
         static member ToYzl(source: double) : Node = Scalar(Float source)
         static member ToYzl(source: bool) : Node = Scalar(Bool source)
-        static member ToYzl(source: string) : Node = Scalar(Str(Str.ToYzlString(source)))
-        static member ToYzl(source: Str) : Node = Scalar(Str(source))
-        static member ToYzl(source: Node list) : Node = SeqNode(source)
-        static member ToYzl(source: NamedNode list) : Node = MapNode(source)
+        static member ToYzl(source: string) : Node = Scalar(Str(Str.ToYzlString source))
+        static member ToYzl(source: Str) : Node = Scalar(Str source)
+        static member ToYzl(source: Node list) : Node = SeqNode source
+        static member ToYzl(source: NamedNode list) : Node = MapNode source
         static member ToYzl(source: NamedNode list list) : Node = SeqNode(source |> List.map MapNode)
 
         static member ToYzl(source: int list) : Node =
@@ -102,7 +103,7 @@ module Core =
         static member ToYzl(source: string list) : Node = SeqNode(source |> List.map Node.ToYzl)
 
         static member ToYzl(source: Node) : Node = source
-        static member ToYzl(source: NamedNode) : Node = MapNode([ source ])
+        static member ToYzl(source: NamedNode) : Node = MapNode [ source ]
 
     /// YAML key-value pair
     and NamedNode = Named of name: Name * node: Node
