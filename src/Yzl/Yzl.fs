@@ -256,7 +256,7 @@ module Render =
                     function
                     | Int v -> Plain(v |> string)
                     | Bool v -> Plain((v |> string).ToLowerInvariant())
-                    | Float v -> Plain(v |> string)
+                    | Float v -> Plain(v.ToString("0.0##############", CultureInfo.InvariantCulture))
                     | Str s -> s
 
                 let renderSeq qs =
