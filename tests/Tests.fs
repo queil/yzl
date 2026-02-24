@@ -150,6 +150,15 @@ module Core =
           "- \n  - true\n  - true\n  - true\n"
       }
 
+      test "Should render float 1.0 with decimal point" {
+        "Rendering failed" |> Expect.equal (Scalar(Float 1.0) |> Yzl.render) "1.0\n"
+        "Rendering failed" |> Expect.equal (Scalar(Float 0.0) |> Yzl.render) "0.0\n"
+        "Rendering failed" |> Expect.equal (Scalar(Float -1.0) |> Yzl.render) "-1.0\n"
+        "Rendering failed" |> Expect.equal (Scalar(Float 1.5) |> Yzl.render) "1.5\n"
+        "Rendering failed" |> Expect.equal (Scalar(Float 1.123456789) |> Yzl.render) "1.123456789\n"
+        "Rendering failed" |> Expect.equal ([ "myFloat" .= 1.0 ] |> Yzl.render) "myFloat: 1.0\n"
+      }
+
       test "Should render true in lowercase" {
         "Rendering failed" |> Expect.equal (Scalar(Bool true) |> Yzl.render) "true\n"
       }
