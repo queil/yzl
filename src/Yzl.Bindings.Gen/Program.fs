@@ -1,6 +1,9 @@
 open System
+open System.IO
+open System.Net.Http
 open NJsonSchema
 open Yzl.Bindings.Gen
+open Argu
 
 type YzlType =
     { Name: string
@@ -43,23 +46,68 @@ type UrlOrFilePath =
         | x when x.StartsWith("https://") || x.StartsWith("http://") -> Url x
         | _ -> Path value
 
+/// Derive a valid F# type identifier from a potentially dotted name.
+/// e.g. "io.k8s.api.apps.v1.Deployment" -> "Deployment"
+/// Strips leading non-identifier characters and replaces others with underscores.
+let toTypeName (name: string) =
+    let last = name.Split([| '.' |]) |> Array.last
+    let stripped = last.TrimStart([| for c in last do if not (Char.IsLetter c || c = '_') then yield c |])
+    let sanitized = stripped |> String.map (fun c -> if Char.IsLetterOrDigit c || c = '_' then c else '_')
+    if sanitized = "" then "_" else sanitized
+
 let loadJson (url: UrlOrFilePath) =
     async {
         let! token = Async.CancellationToken
 
         match url with
         | Url url ->
-            failwithf "not supported yet"
-            return NJsonSchema.JsonSchema.CreateAnySchema()
+            use client = new HttpClient()
+            let! json = client.GetStringAsync(url) |> Async.AwaitTask
+            let! x = JsonSchema.FromJsonAsync(json) |> Async.AwaitTask
+            return x
         | Path file ->
-            let! x = (NJsonSchema.JsonSchema.FromFileAsync(file, token) |> Async.AwaitTask)
+            let! x = JsonSchema.FromFileAsync(file, token) |> Async.AwaitTask
             return x
     }
 
+type Args =
+    | [<MainCommand; ExactlyOnce>] Schema of schema: string
+    | [<AltCommandLine("-n")>] Namespace of ``namespace``: string
+    | [<AltCommandLine("-o")>] Output of file: string
+    | [<AltCommandLine("-f")>] Filter of prefix: string
+
+    interface IArgParserTemplate with
+        member s.Usage =
+            match s with
+            | Schema _ -> "URL or file path to JSON schema"
+            | Namespace _ -> "F# namespace for generated code (default: Yzl.Bindings)"
+            | Output _ -> "Output file path (default: stdout)"
+            | Filter _ -> "Only generate types whose definition name starts with <prefix>, e.g. io.k8s.api.apps.v1"
+
 [<EntryPoint>]
 let main argv =
-    let schemaUrl = UrlOrFilePath.ofString argv.[0]
-    let schema = loadJson schemaUrl |> Async.RunSynchronously
+    let parser = ArgumentParser.Create<Args>(programName = "yzl-gen")
+
+    let results =
+        try
+            parser.ParseCommandLine(argv) |> Some
+        with :? ArguParseException as ex ->
+            match ex.ErrorCode with
+            | ErrorCode.HelpText -> exit 0
+            | _ ->
+                eprintfn "%s" ex.Message
+                None
+
+    match results with
+    | None -> 1
+    | Some results ->
+
+    let schemaPath = results.GetResult Schema
+    let namespaceName = results.GetResult(Namespace, defaultValue = "Yzl.Bindings")
+    let outputFile = results.TryGetResult Output
+    let filterPrefix = results.TryGetResult Filter
+
+    let schema = loadJson (UrlOrFilePath.ofString schemaPath) |> Async.RunSynchronously
 
     let rec metadata (s: JsonSchema) (ctx: Context) =
         let toOption =
@@ -70,11 +118,15 @@ let main argv =
         match s with
         | Patterns.Definitions defs ->
             defs
+            |> Seq.filter (fun (k, _) ->
+                match filterPrefix with
+                | Some prefix -> k.StartsWith(prefix)
+                | None -> true)
             |> Seq.fold
                 (fun ctx (k, s) ->
 
                     let yzlType =
-                        { Name = k
+                        { Name = toTypeName k
                           Description = s.Description |> toOption
                           Functions = [] }
 
@@ -103,12 +155,15 @@ let main argv =
                         | Patterns.Array x -> Seq(dataType x)
                         | Patterns.PatternProperties _ -> PatternProperties
                         | Patterns.Reference ref ->
-                            let def = schema.Definitions |> Seq.find (fun (KeyValue(_, v)) -> v = ref)
-                            Reference def.Key
-                        | Patterns.Object o -> InlineObject
-                        | x ->
-                            //printfn "%A" x.Type
-                            Node
+                            let def =
+                                schema.Definitions
+                                |> Seq.tryFind (fun (KeyValue(_, v)) -> v = ref)
+
+                            match def with
+                            | Some d -> Reference(toTypeName d.Key)
+                            | None -> Node
+                        | Patterns.Object _ -> InlineObject
+                        | _ -> Node
 
                     let yzlFunc =
                         { Name = k
@@ -161,7 +216,48 @@ let main argv =
         let escapeFSharpKeywords =
             function
             | "namespace"
-            | "type" as s -> sprintf "``%s``" s
+            | "type"
+            | "default"
+            | "when"
+            | "inherit"
+            | "interface"
+            | "abstract"
+            | "override"
+            | "member"
+            | "module"
+            | "open"
+            | "begin"
+            | "end"
+            | "in"
+            | "let"
+            | "do"
+            | "new"
+            | "base"
+            | "val"
+            | "rec"
+            | "and"
+            | "match"
+            | "with"
+            | "for"
+            | "while"
+            | "try"
+            | "finally"
+            | "use"
+            | "if"
+            | "then"
+            | "else"
+            | "fun"
+            | "function"
+            | "return"
+            | "yield"
+            | "static"
+            | "class"
+            | "struct"
+            | "true"
+            | "false"
+            | "not"
+            | "or"
+            | "parallel" as s -> sprintf "``%s``" s
             | s -> s
 
         let renderTypeAnnotation (f: YzlFunc) =
@@ -184,14 +280,14 @@ let main argv =
             match f.Kind with
             | SchemaKind.Int -> "Yzl.int"
             | SchemaKind.Float -> "Yzl.float"
-            | SchemaKind.String _ -> "Yzl.str"
-            | SchemaKind.Enum _ -> "Yzl.str"
+            | SchemaKind.String -> "Yzl.str"
+            | SchemaKind.Enum -> "Yzl.str"
             | SchemaKind.Seq _ -> "Yzl.seq"
-            | SchemaKind.Boolean _ -> "Yzl.boolean"
+            | SchemaKind.Boolean -> "Yzl.boolean"
             | SchemaKind.Reference _
             | SchemaKind.PatternProperties
             | SchemaKind.InlineObject -> "Yzl.map"
-            | _ -> "Yzl.node"
+            | _ -> "Yzl.named"
 
         let renderImpl (f: YzlFunc) =
             let rec kindToImpl =
@@ -203,7 +299,7 @@ let main argv =
 
         let renderAdditionalMembers (t: YzlType) =
             [ "  static member Default = "
-              t.Name
+              t.Name |> escapeFSharpKeywords
               "()"
               newLine
               "  static member yzl (build:NamedNode list) : Node = build |> lift"
@@ -222,7 +318,6 @@ let main argv =
                   "(value: "
                   typeAnnotation f
                   ") "
-                  //"(_: "; (match t.Name with | CommonTypeName -> "'b" | _ -> t.Name); ")"
                   " = "
                   yzlFunc f
                   "("
@@ -245,7 +340,7 @@ let main argv =
                       | Some d -> [ "/// "; d; newLine ]
                       | _ -> []
                   "type "
-                  t.Name
+                  t.Name |> escapeFSharpKeywords
                   "() ="
 
                   yield!
@@ -261,14 +356,55 @@ let main argv =
                   newLine
                   yield! renderAdditionalMembers t ])
 
-        (allStrings |> String.concat "") |> printfn "%s"
+        let renderAutoOpenModule () =
+            let allFuncs =
+                x.AllTypes
+                |> List.collect (fun t -> t.Functions)
+                |> List.groupBy (fun f -> f.Name)
+                |> List.choose (fun (_, funcs) ->
+                    match funcs |> List.distinctBy (fun f -> f.Kind) with
+                    | [ f ] -> Some f
+                    | _ -> None)
 
+            let renderLetBinding (f: YzlFunc) =
+                let isInline =
+                    match f.Kind with
+                    | String | Seq _ -> true
+                    | _ -> false
 
-    printfn "namespace rec Yzl.Bindings.Kustomize"
-    printfn "open Yzl.Core"
+                let letKw = if isInline then "let inline " else "let "
+                let escapedName = f.Name |> escapeFSharpKeywords
 
-    { ctx with
-        AllTypes = commonType :: ctx.AllTypes }
-    |> render
+                [ "  "
+                  letKw
+                  escapedName
+                  " value = "
+                  yzlFunc f
+                  "(value, \""
+                  f.Name
+                  "\")"
+                  newLine ]
+
+            [ newLine
+              "[<AutoOpen>]"
+              newLine
+              "module Builders ="
+              newLine
+              yield! allFuncs |> List.collect renderLetBinding ]
+
+        Seq.append allStrings (renderAutoOpenModule ()) |> String.concat ""
+
+    let header = $"namespace rec {namespaceName}\nopen Yzl.Core\n\n"
+
+    let body =
+        { ctx with
+            AllTypes = commonType :: ctx.AllTypes }
+        |> render
+
+    let output = header + body
+
+    match outputFile with
+    | Some path -> File.WriteAllText(path, output)
+    | None -> printf "%s" output
 
     0
