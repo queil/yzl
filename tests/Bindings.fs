@@ -6,13 +6,6 @@ module Bindings =
   open Yzl
   open Yzl.Bindings.Kustomize
 
-  open type Yzl.Bindings.Kustomize.PatchJson6902
-  open type Yzl.Bindings.Kustomize.PatchTarget
-  open type Yzl.Bindings.Kustomize.Image
-  open type Yzl.Bindings.Kustomize.ConfigMapArgs
-  open type Yzl.Bindings.Kustomize.Kustomization
-  open type Yzl.Bindings.Kustomize.Common
-
 
 
   [<Tests>]
