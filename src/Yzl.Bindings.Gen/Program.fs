@@ -48,8 +48,12 @@ type UrlOrFilePath =
 
 /// Derive a valid F# type identifier from a potentially dotted name.
 /// e.g. "io.k8s.api.apps.v1.Deployment" -> "Deployment"
+/// Strips leading non-identifier characters and replaces others with underscores.
 let toTypeName (name: string) =
-    name.Split([| '.' |]) |> Array.last
+    let last = name.Split([| '.' |]) |> Array.last
+    let stripped = last.TrimStart([| for c in last do if not (Char.IsLetter c || c = '_') then yield c |])
+    let sanitized = stripped |> String.map (fun c -> if Char.IsLetterOrDigit c || c = '_' then c else '_')
+    if sanitized = "" then "_" else sanitized
 
 let loadJson (url: UrlOrFilePath) =
     async {
@@ -212,7 +216,48 @@ let main argv =
         let escapeFSharpKeywords =
             function
             | "namespace"
-            | "type" as s -> sprintf "``%s``" s
+            | "type"
+            | "default"
+            | "when"
+            | "inherit"
+            | "interface"
+            | "abstract"
+            | "override"
+            | "member"
+            | "module"
+            | "open"
+            | "begin"
+            | "end"
+            | "in"
+            | "let"
+            | "do"
+            | "new"
+            | "base"
+            | "val"
+            | "rec"
+            | "and"
+            | "match"
+            | "with"
+            | "for"
+            | "while"
+            | "try"
+            | "finally"
+            | "use"
+            | "if"
+            | "then"
+            | "else"
+            | "fun"
+            | "function"
+            | "return"
+            | "yield"
+            | "static"
+            | "class"
+            | "struct"
+            | "true"
+            | "false"
+            | "not"
+            | "or"
+            | "parallel" as s -> sprintf "``%s``" s
             | s -> s
 
         let renderTypeAnnotation (f: YzlFunc) =
@@ -242,7 +287,7 @@ let main argv =
             | SchemaKind.Reference _
             | SchemaKind.PatternProperties
             | SchemaKind.InlineObject -> "Yzl.map"
-            | _ -> "Yzl.node"
+            | _ -> "Yzl.named"
 
         let renderImpl (f: YzlFunc) =
             let rec kindToImpl =
@@ -254,7 +299,7 @@ let main argv =
 
         let renderAdditionalMembers (t: YzlType) =
             [ "  static member Default = "
-              t.Name
+              t.Name |> escapeFSharpKeywords
               "()"
               newLine
               "  static member yzl (build:NamedNode list) : Node = build |> lift"
@@ -295,7 +340,7 @@ let main argv =
                       | Some d -> [ "/// "; d; newLine ]
                       | _ -> []
                   "type "
-                  t.Name
+                  t.Name |> escapeFSharpKeywords
                   "() ="
 
                   yield!
@@ -315,7 +360,11 @@ let main argv =
             let allFuncs =
                 x.AllTypes
                 |> List.collect (fun t -> t.Functions)
-                |> List.distinctBy (fun f -> (f.Name, f.Kind))
+                |> List.groupBy (fun f -> f.Name)
+                |> List.choose (fun (_, funcs) ->
+                    match funcs |> List.distinctBy (fun f -> f.Kind) with
+                    | [ f ] -> Some f
+                    | _ -> None)
 
             let renderLetBinding (f: YzlFunc) =
                 let isInline =
