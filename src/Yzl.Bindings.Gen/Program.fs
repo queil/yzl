@@ -314,6 +314,7 @@ let main argv =
             | SchemaKind.Float -> "Yzl.float"
             | SchemaKind.String -> "Yzl.str"
             | SchemaKind.Enum -> "Yzl.str"
+            | SchemaKind.Seq SchemaKind.Node -> "Yzl.named"
             | SchemaKind.Seq _ -> "Yzl.seq"
             | SchemaKind.Boolean -> "Yzl.boolean"
             | SchemaKind.Reference _
@@ -322,12 +323,9 @@ let main argv =
             | _ -> "Yzl.named"
 
         let renderImpl (f: YzlFunc) =
-            let rec kindToImpl =
-                function
-                | Reference _ -> "value"
-                | _ -> "value"
-
-            kindToImpl f.Kind
+            match f.Kind with
+            | Seq SchemaKind.Node -> "value |> SeqNode"
+            | _ -> "value"
 
         let renderAdditionalMembers (t: YzlType) =
             [ "  static member Default = "
@@ -400,7 +398,9 @@ let main argv =
                       typeAnnotation f
                       ")  = "
                       yzlFunc f
-                      "(value, \""
+                      "("
+                      renderImpl f
+                      ", \""
                       f.Name
                       "\")" ]
 
