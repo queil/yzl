@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/Yzl.Bindings.Gen/Yzl.Bindings.Gen.fsproj" />
     <Project Path="src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />
+    <Project Path="src/Yzl.Bindings.SealedSecrets/Yzl.Bindings.SealedSecrets.fsproj" />
     <Project Path="src/Yzl/Yzl.fsproj" />
   </Folder>
   <Project Path="tests/Yzl.Tests.Unit.fsproj" />

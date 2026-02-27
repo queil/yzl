@@ -17,10 +17,44 @@ type stepOciReference() =
   static member oci (value: NamedNode list)  = Yzl.map(value, "oci")
   static member Default = stepOciReference()
   static member yzl (build:NamedNode list) : Node = build |> lift
+type oci() =
+  /// The name of the file that defines the step, defaults to step.yml.
+  static member file (value: string)  = Yzl.str(value, "file")
+  /// The name of the file that defines the step, defaults to step.yml.
+  static member file (value: Str)  = Yzl.str(value, "file")
+  /// A directory inside the OCI image where the step can be found.
+  static member dir (value: string)  = Yzl.str(value, "dir")
+  /// A directory inside the OCI image where the step can be found.
+  static member dir (value: Str)  = Yzl.str(value, "dir")
+  /// A pointer to the image manifest hosted in the OCI repository.
+  static member tag (value: string)  = Yzl.str(value, "tag")
+  /// A pointer to the image manifest hosted in the OCI repository.
+  static member tag (value: Str)  = Yzl.str(value, "tag")
+  /// A path within the registry containing related OCI images. Typically the namespace, project, and image name.
+  static member repository (value: string)  = Yzl.str(value, "repository")
+  /// A path within the registry containing related OCI images. Typically the namespace, project, and image name.
+  static member repository (value: Str)  = Yzl.str(value, "repository")
+  /// The <host>[:<port>] of the container registry server.
+  static member registry (value: string)  = Yzl.str(value, "registry")
+  /// The <host>[:<port>] of the container registry server.
+  static member registry (value: Str)  = Yzl.str(value, "registry")
+  static member Default = oci()
+  static member yzl (build:NamedNode list) : Node = build |> lift
 /// GitReference is a reference to a step in a Git repository.
 type stepGitReference() =
   static member git (value: NamedNode list)  = Yzl.map(value, "git")
   static member Default = stepGitReference()
+  static member yzl (build:NamedNode list) : Node = build |> lift
+type git() =
+  static member file (value: string)  = Yzl.str(value, "file")
+  static member file (value: Str)  = Yzl.str(value, "file")
+  static member rev (value: string)  = Yzl.str(value, "rev")
+  static member rev (value: Str)  = Yzl.str(value, "rev")
+  static member dir (value: string)  = Yzl.str(value, "dir")
+  static member dir (value: Str)  = Yzl.str(value, "dir")
+  static member url (value: string)  = Yzl.str(value, "url")
+  static member url (value: Str)  = Yzl.str(value, "url")
+  static member Default = git()
   static member yzl (build:NamedNode list) : Node = build |> lift
 type stepNamedValues() =
   static member Default = stepNamedValues()
@@ -100,6 +134,47 @@ type job_template() =
   static member services (value: NamedNode list)  = Yzl.map(value, "services")
   static member image (value: NamedNode list)  = Yzl.map(value, "image")
   static member Default = job_template()
+  static member yzl (build:NamedNode list) : Node = build |> lift
+type ``inherit``() =
+  static member variables (value: Node)  = Yzl.named(value, "variables")
+  static member ``default`` (value: Node)  = Yzl.named(value, "default")
+  static member Default = ``inherit``()
+  static member yzl (build:NamedNode list) : Node = build |> lift
+/// Indicates that the job creates a Release.
+type release() =
+  static member assets (value: NamedNode list)  = Yzl.map(value, "assets")
+  /// The date and time when the release is ready. Defaults to the current date and time if not defined. Should be enclosed in quotes and expressed in ISO 8601 format.
+  static member released_at (value: string)  = Yzl.str(value, "released_at")
+  /// The date and time when the release is ready. Defaults to the current date and time if not defined. Should be enclosed in quotes and expressed in ISO 8601 format.
+  static member released_at (value: Str)  = Yzl.str(value, "released_at")
+  /// The title of each milestone the release is associated with.
+  static member milestones (value: string list)  = Yzl.seq(value, "milestones")
+  /// If the release: tag_name doesn’t exist yet, the release is created from ref. ref can be a commit SHA, another tag name, or a branch name.
+  static member ref (value: string)  = Yzl.str(value, "ref")
+  /// If the release: tag_name doesn’t exist yet, the release is created from ref. ref can be a commit SHA, another tag name, or a branch name.
+  static member ref (value: Str)  = Yzl.str(value, "ref")
+  /// The Release name. If omitted, it is populated with the value of release: tag_name.
+  static member name (value: string)  = Yzl.str(value, "name")
+  /// The Release name. If omitted, it is populated with the value of release: tag_name.
+  static member name (value: Str)  = Yzl.str(value, "name")
+  /// Specifies the longer description of the Release.
+  static member description (value: string)  = Yzl.str(value, "description")
+  /// Specifies the longer description of the Release.
+  static member description (value: Str)  = Yzl.str(value, "description")
+  /// Message to use if creating a new annotated tag.
+  static member tag_message (value: string)  = Yzl.str(value, "tag_message")
+  /// Message to use if creating a new annotated tag.
+  static member tag_message (value: Str)  = Yzl.str(value, "tag_message")
+  /// The tag_name must be specified. It can refer to an existing Git tag or can be specified by the user.
+  static member tag_name (value: string)  = Yzl.str(value, "tag_name")
+  /// The tag_name must be specified. It can refer to an existing Git tag or can be specified by the user.
+  static member tag_name (value: Str)  = Yzl.str(value, "tag_name")
+  static member Default = release()
+  static member yzl (build:NamedNode list) : Node = build |> lift
+type assets() =
+  /// Include asset links in the release.
+  static member links (value: NamedNode list list)  = Yzl.seq(value, "links")
+  static member Default = assets()
   static member yzl (build:NamedNode list) : Node = build |> lift
 type job() =
   static member Default = job()
@@ -273,67 +348,196 @@ type artifacts() =
   static member paths (value: string list)  = Yzl.seq(value, "paths")
   static member Default = artifacts()
   static member yzl (build:NamedNode list) : Node = build |> lift
+type reports() =
+  /// Path to file or list of files with Repository X-Ray report(s).
+  static member repository_xray (value: NamedNode list)  = Yzl.map(value, "repository_xray")
+  static member load_performance (value: NamedNode list)  = Yzl.map(value, "load_performance")
+  static member cyclonedx (value: NamedNode list)  = Yzl.map(value, "cyclonedx")
+  /// Path to file or list of files with terraform plan(s).
+  static member terraform (value: NamedNode list)  = Yzl.map(value, "terraform")
+  /// Path to file or list of files with custom metrics report(s).
+  static member metrics (value: NamedNode list)  = Yzl.map(value, "metrics")
+  /// Path to file or list of files with secret detection report(s).
+  static member secret_detection (value: NamedNode list)  = Yzl.map(value, "secret_detection")
+  /// Path to file or list of files with requirements report(s).
+  static member requirements (value: NamedNode list)  = Yzl.map(value, "requirements")
+  /// Path to file or list of files with license report(s).
+  static member license_scanning (value: NamedNode list)  = Yzl.map(value, "license_scanning")
+  /// Deprecated in 12.8: Path to file or list of files with license report(s).
+  static member license_management (value: NamedNode list)  = Yzl.map(value, "license_management")
+  /// Path to file or list of files with DAST vulnerabilities report(s).
+  static member dast (value: NamedNode list)  = Yzl.map(value, "dast")
+  /// Path to file or list of files with Container scanning vulnerabilities report(s).
+  static member container_scanning (value: NamedNode list)  = Yzl.map(value, "container_scanning")
+  /// Path to file or list of files with Dependency scanning vulnerabilities report(s).
+  static member dependency_scanning (value: NamedNode list)  = Yzl.map(value, "dependency_scanning")
+  /// Path to file or list of files with SAST vulnerabilities report(s).
+  static member sast (value: NamedNode list)  = Yzl.map(value, "sast")
+  /// Path to file or list of files containing code intelligence (Language Server Index Format).
+  static member lsif (value: NamedNode list)  = Yzl.map(value, "lsif")
+  /// Path to file or list of files containing runtime-created variables for this job.
+  static member dotenv (value: NamedNode list)  = Yzl.map(value, "dotenv")
+  /// Path to file or list of files with code quality report(s) (such as Code Climate).
+  static member codequality (value: NamedNode list)  = Yzl.map(value, "codequality")
+  /// Used to collect coverage reports from the job.
+  static member coverage_report (value: NamedNode list)  = Yzl.map(value, "coverage_report")
+  /// Path to a single file with browser performance metric report(s).
+  static member browser_performance (value: string)  = Yzl.str(value, "browser_performance")
+  /// Path to a single file with browser performance metric report(s).
+  static member browser_performance (value: Str)  = Yzl.str(value, "browser_performance")
+  /// Path for file(s) that should be parsed as JUnit XML result
+  static member junit (value: Node)  = Yzl.named(value, "junit")
+  /// Path to JSON file with annotations report.
+  static member annotations (value: string)  = Yzl.str(value, "annotations")
+  /// Path to JSON file with annotations report.
+  static member annotations (value: Str)  = Yzl.str(value, "annotations")
+  /// Path to JSON file with accessibility report.
+  static member accessibility (value: string)  = Yzl.str(value, "accessibility")
+  /// Path to JSON file with accessibility report.
+  static member accessibility (value: Str)  = Yzl.str(value, "accessibility")
+  static member Default = reports()
+  static member yzl (build:NamedNode list) : Node = build |> lift
+/// Used to collect coverage reports from the job.
+type coverage_report() =
+  /// Path to the coverage report file that should be parsed.
+  static member path (value: string)  = Yzl.str(value, "path")
+  /// Path to the coverage report file that should be parsed.
+  static member path (value: Str)  = Yzl.str(value, "path")
+  /// Code coverage format used by the test framework.
+  static member coverage_format (value: string)  = Yzl.str(value, "coverage_format")
+  static member Default = coverage_report()
+  static member yzl (build:NamedNode list) : Node = build |> lift
 
-[<AutoOpen>]
-module Builders =
-  let inline work_dir value = Yzl.str(value, "work_dir")
-  let inline command value = Yzl.seq(value, "command")
-  let oci value = Yzl.map(value, "oci")
-  let git value = Yzl.map(value, "git")
-  let pre_get_sources_script value = Yzl.map(value, "pre_get_sources_script")
-  let pages value = Yzl.named(value, "pages")
-  let inline publish value = Yzl.str(value, "publish")
-  let ``inherit`` value = Yzl.map(value, "inherit")
-  let trigger value = Yzl.named(value, "trigger")
-  let inline resource_group value = Yzl.str(value, "resource_group")
-  let interruptible value = Yzl.map(value, "interruptible")
-  let ``parallel`` value = Yzl.map(value, "parallel")
-  let retry value = Yzl.map(value, "retry")
-  let inline coverage value = Yzl.str(value, "coverage")
-  let release value = Yzl.map(value, "release")
-  let environment value = Yzl.named(value, "environment")
-  let artifacts value = Yzl.map(value, "artifacts")
-  let inline dependencies value = Yzl.seq(value, "dependencies")
-  let inline manual_confirmation value = Yzl.str(value, "manual_confirmation")
-  let start_in value = Yzl.map(value, "start_in")
-  let timeout value = Yzl.map(value, "timeout")
-  let allow_failure value = Yzl.map(value, "allow_failure")
-  let tags value = Yzl.map(value, "tags")
-  let except value = Yzl.map(value, "except")
-  let inline needs value = Yzl.seq(value, "needs")
-  let extends value = Yzl.named(value, "extends")
-  let only value = Yzl.map(value, "only")
-  let stage value = Yzl.named(value, "stage")
-  let run value = Yzl.map(value, "run")
-  let script value = Yzl.map(value, "script")
-  let secrets value = Yzl.map(value, "secrets")
-  let inputs value = Yzl.map(value, "inputs")
-  let identity value = Yzl.map(value, "identity")
-  let id_tokens value = Yzl.map(value, "id_tokens")
-  let cache value = Yzl.map(value, "cache")
-  let variables value = Yzl.map(value, "variables")
-  let rules value = Yzl.map(value, "rules")
-  let hooks value = Yzl.map(value, "hooks")
-  let after_script value = Yzl.map(value, "after_script")
-  let before_script value = Yzl.map(value, "before_script")
-  let services value = Yzl.map(value, "services")
-  let image value = Yzl.map(value, "image")
-  let inline fallback_keys value = Yzl.seq(value, "fallback_keys")
-  let untracked value = Yzl.boolean(value, "untracked")
-  let unprotect value = Yzl.boolean(value, "unprotect")
-  let inline policy value = Yzl.str(value, "policy")
-  let inline paths value = Yzl.seq(value, "paths")
-  let key value = Yzl.named(value, "key")
-  let inline on_new_commit value = Yzl.str(value, "on_new_commit")
-  let inline on_job_failure value = Yzl.str(value, "on_job_failure")
-  let ``default`` value = Yzl.named(value, "default")
-  let inline regex value = Yzl.str(value, "regex")
-  let inline options value = Yzl.seq(value, "options")
-  let inline description value = Yzl.str(value, "description")
-  let inline ``type`` value = Yzl.str(value, "type")
-  let reports value = Yzl.map(value, "reports")
-  let inline expire_in value = Yzl.str(value, "expire_in")
-  let inline access value = Yzl.str(value, "access")
-  let inline name value = Yzl.str(value, "name")
-  let inline expose_as value = Yzl.str(value, "expose_as")
-  let inline exclude value = Yzl.seq(value, "exclude")
+type Builders() =
+  static member work_dir (value: string)  = Yzl.str(value, "work_dir")
+  static member work_dir (value: Str)  = Yzl.str(value, "work_dir")
+  static member command (value: string list)  = Yzl.seq(value, "command")
+  static member oci (value: NamedNode list)  = Yzl.map(value, "oci")
+  static member file (value: string)  = Yzl.str(value, "file")
+  static member file (value: Str)  = Yzl.str(value, "file")
+  static member dir (value: string)  = Yzl.str(value, "dir")
+  static member dir (value: Str)  = Yzl.str(value, "dir")
+  static member tag (value: string)  = Yzl.str(value, "tag")
+  static member tag (value: Str)  = Yzl.str(value, "tag")
+  static member repository (value: string)  = Yzl.str(value, "repository")
+  static member repository (value: Str)  = Yzl.str(value, "repository")
+  static member registry (value: string)  = Yzl.str(value, "registry")
+  static member registry (value: Str)  = Yzl.str(value, "registry")
+  static member git (value: NamedNode list)  = Yzl.map(value, "git")
+  static member rev (value: string)  = Yzl.str(value, "rev")
+  static member rev (value: Str)  = Yzl.str(value, "rev")
+  static member url (value: string)  = Yzl.str(value, "url")
+  static member url (value: Str)  = Yzl.str(value, "url")
+  static member pre_get_sources_script (value: NamedNode list)  = Yzl.map(value, "pre_get_sources_script")
+  static member pages (value: Node)  = Yzl.named(value, "pages")
+  static member publish (value: string)  = Yzl.str(value, "publish")
+  static member publish (value: Str)  = Yzl.str(value, "publish")
+  static member ``inherit`` (value: NamedNode list)  = Yzl.map(value, "inherit")
+  static member trigger (value: Node)  = Yzl.named(value, "trigger")
+  static member resource_group (value: string)  = Yzl.str(value, "resource_group")
+  static member resource_group (value: Str)  = Yzl.str(value, "resource_group")
+  static member interruptible (value: NamedNode list)  = Yzl.map(value, "interruptible")
+  static member ``parallel`` (value: NamedNode list)  = Yzl.map(value, "parallel")
+  static member retry (value: NamedNode list)  = Yzl.map(value, "retry")
+  static member coverage (value: string)  = Yzl.str(value, "coverage")
+  static member coverage (value: Str)  = Yzl.str(value, "coverage")
+  static member release (value: NamedNode list)  = Yzl.map(value, "release")
+  static member environment (value: Node)  = Yzl.named(value, "environment")
+  static member artifacts (value: NamedNode list)  = Yzl.map(value, "artifacts")
+  static member dependencies (value: string list)  = Yzl.seq(value, "dependencies")
+  static member manual_confirmation (value: string)  = Yzl.str(value, "manual_confirmation")
+  static member manual_confirmation (value: Str)  = Yzl.str(value, "manual_confirmation")
+  static member start_in (value: NamedNode list)  = Yzl.map(value, "start_in")
+  static member ``when`` (value: NamedNode list)  = Yzl.map(value, "when")
+  static member timeout (value: NamedNode list)  = Yzl.map(value, "timeout")
+  static member allow_failure (value: NamedNode list)  = Yzl.map(value, "allow_failure")
+  static member tags (value: NamedNode list)  = Yzl.map(value, "tags")
+  static member except (value: NamedNode list)  = Yzl.map(value, "except")
+  static member needs (value: Node list)  = Yzl.seq(value, "needs")
+  static member extends (value: Node)  = Yzl.named(value, "extends")
+  static member only (value: NamedNode list)  = Yzl.map(value, "only")
+  static member stage (value: Node)  = Yzl.named(value, "stage")
+  static member run (value: NamedNode list)  = Yzl.map(value, "run")
+  static member script (value: NamedNode list)  = Yzl.map(value, "script")
+  static member secrets (value: NamedNode list)  = Yzl.map(value, "secrets")
+  static member inputs (value: NamedNode list)  = Yzl.map(value, "inputs")
+  static member identity (value: NamedNode list)  = Yzl.map(value, "identity")
+  static member id_tokens (value: NamedNode list)  = Yzl.map(value, "id_tokens")
+  static member cache (value: NamedNode list)  = Yzl.map(value, "cache")
+  static member variables (value: NamedNode list)  = Yzl.map(value, "variables")
+  static member rules (value: NamedNode list)  = Yzl.map(value, "rules")
+  static member hooks (value: NamedNode list)  = Yzl.map(value, "hooks")
+  static member after_script (value: NamedNode list)  = Yzl.map(value, "after_script")
+  static member before_script (value: NamedNode list)  = Yzl.map(value, "before_script")
+  static member services (value: NamedNode list)  = Yzl.map(value, "services")
+  static member image (value: NamedNode list)  = Yzl.map(value, "image")
+  static member variables (value: Node)  = Yzl.named(value, "variables")
+  static member ``default`` (value: Node)  = Yzl.named(value, "default")
+  static member assets (value: NamedNode list)  = Yzl.map(value, "assets")
+  static member released_at (value: string)  = Yzl.str(value, "released_at")
+  static member released_at (value: Str)  = Yzl.str(value, "released_at")
+  static member milestones (value: string list)  = Yzl.seq(value, "milestones")
+  static member ref (value: string)  = Yzl.str(value, "ref")
+  static member ref (value: Str)  = Yzl.str(value, "ref")
+  static member name (value: string)  = Yzl.str(value, "name")
+  static member name (value: Str)  = Yzl.str(value, "name")
+  static member description (value: string)  = Yzl.str(value, "description")
+  static member description (value: Str)  = Yzl.str(value, "description")
+  static member tag_message (value: string)  = Yzl.str(value, "tag_message")
+  static member tag_message (value: Str)  = Yzl.str(value, "tag_message")
+  static member tag_name (value: string)  = Yzl.str(value, "tag_name")
+  static member tag_name (value: Str)  = Yzl.str(value, "tag_name")
+  static member links (value: NamedNode list list)  = Yzl.seq(value, "links")
+  static member fallback_keys (value: string list)  = Yzl.seq(value, "fallback_keys")
+  static member ``when`` (value: string)  = Yzl.str(value, "when")
+  static member ``when`` (value: Str)  = Yzl.str(value, "when")
+  static member untracked (value: bool)  = Yzl.boolean(value, "untracked")
+  static member unprotect (value: bool)  = Yzl.boolean(value, "unprotect")
+  static member policy (value: string)  = Yzl.str(value, "policy")
+  static member policy (value: Str)  = Yzl.str(value, "policy")
+  static member paths (value: string list)  = Yzl.seq(value, "paths")
+  static member key (value: Node)  = Yzl.named(value, "key")
+  static member on_new_commit (value: string)  = Yzl.str(value, "on_new_commit")
+  static member on_new_commit (value: Str)  = Yzl.str(value, "on_new_commit")
+  static member on_job_failure (value: string)  = Yzl.str(value, "on_job_failure")
+  static member on_job_failure (value: Str)  = Yzl.str(value, "on_job_failure")
+  static member regex (value: string)  = Yzl.str(value, "regex")
+  static member regex (value: Str)  = Yzl.str(value, "regex")
+  static member options (value: Node list)  = Yzl.seq(value, "options")
+  static member ``type`` (value: string)  = Yzl.str(value, "type")
+  static member ``type`` (value: Str)  = Yzl.str(value, "type")
+  static member reports (value: NamedNode list)  = Yzl.map(value, "reports")
+  static member expire_in (value: string)  = Yzl.str(value, "expire_in")
+  static member expire_in (value: Str)  = Yzl.str(value, "expire_in")
+  static member access (value: string)  = Yzl.str(value, "access")
+  static member access (value: Str)  = Yzl.str(value, "access")
+  static member expose_as (value: string)  = Yzl.str(value, "expose_as")
+  static member expose_as (value: Str)  = Yzl.str(value, "expose_as")
+  static member exclude (value: string list)  = Yzl.seq(value, "exclude")
+  static member repository_xray (value: NamedNode list)  = Yzl.map(value, "repository_xray")
+  static member load_performance (value: NamedNode list)  = Yzl.map(value, "load_performance")
+  static member cyclonedx (value: NamedNode list)  = Yzl.map(value, "cyclonedx")
+  static member terraform (value: NamedNode list)  = Yzl.map(value, "terraform")
+  static member metrics (value: NamedNode list)  = Yzl.map(value, "metrics")
+  static member secret_detection (value: NamedNode list)  = Yzl.map(value, "secret_detection")
+  static member requirements (value: NamedNode list)  = Yzl.map(value, "requirements")
+  static member license_scanning (value: NamedNode list)  = Yzl.map(value, "license_scanning")
+  static member license_management (value: NamedNode list)  = Yzl.map(value, "license_management")
+  static member dast (value: NamedNode list)  = Yzl.map(value, "dast")
+  static member container_scanning (value: NamedNode list)  = Yzl.map(value, "container_scanning")
+  static member dependency_scanning (value: NamedNode list)  = Yzl.map(value, "dependency_scanning")
+  static member sast (value: NamedNode list)  = Yzl.map(value, "sast")
+  static member lsif (value: NamedNode list)  = Yzl.map(value, "lsif")
+  static member dotenv (value: NamedNode list)  = Yzl.map(value, "dotenv")
+  static member codequality (value: NamedNode list)  = Yzl.map(value, "codequality")
+  static member coverage_report (value: NamedNode list)  = Yzl.map(value, "coverage_report")
+  static member browser_performance (value: string)  = Yzl.str(value, "browser_performance")
+  static member browser_performance (value: Str)  = Yzl.str(value, "browser_performance")
+  static member junit (value: Node)  = Yzl.named(value, "junit")
+  static member annotations (value: string)  = Yzl.str(value, "annotations")
+  static member annotations (value: Str)  = Yzl.str(value, "annotations")
+  static member accessibility (value: string)  = Yzl.str(value, "accessibility")
+  static member accessibility (value: Str)  = Yzl.str(value, "accessibility")
+  static member path (value: string)  = Yzl.str(value, "path")
+  static member path (value: Str)  = Yzl.str(value, "path")
+  static member coverage_format (value: string)  = Yzl.str(value, "coverage_format")

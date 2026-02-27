@@ -138,46 +138,99 @@ let main argv =
 
         | Patterns.Properties xs ->
 
-            xs
-            |> Seq.fold
-                (fun ctx (k, s) ->
+            let rootTypeCreated = ctx.ParentType.IsNone
 
-                    let rec dataType (s': JsonSchema) =
-                        match s' with
-                        | Patterns.Integer _ -> Int
-                        | Patterns.Number _ -> Float
-                        | Patterns.String _ -> String
-                        | Patterns.Enum _ -> Enum
-                        | Patterns.Boolean _ -> Boolean
-                        | Patterns.Array x -> Seq(dataType x)
-                        | Patterns.PatternProperties _ -> PatternProperties
-                        | Patterns.Reference ref ->
-                            let def =
-                                schema.Definitions
-                                |> Seq.tryFind (fun (KeyValue(_, v)) -> v = ref)
+            let ctx =
+                if rootTypeCreated then
+                    let typeName =
+                        match s.Description with
+                        | null | "" -> "Root"
+                        | d ->
+                            d.Split([| ' '; '\n'; '\r'; '.'; '"' |], StringSplitOptions.RemoveEmptyEntries)
+                            |> Array.tryFind (fun w ->
+                                w.Length > 1
+                                && Char.IsUpper w.[0]
+                                && w |> Seq.forall Char.IsLetterOrDigit)
+                            |> Option.defaultValue "Root"
 
-                            match def with
-                            | Some d -> Reference(toTypeName d.Key)
-                            | None -> Node
-                        | Patterns.Object _ -> InlineObject
-                        | _ -> Node
+                    { ctx with ParentType = Some { Name = typeName; Description = s.Description |> toOption; Functions = [] } }
+                else
+                    ctx
 
-                    let yzlFunc =
-                        { Name = k
-                          Description = s.Description |> toOption
-                          Kind = dataType s
-                          Parent = ctx.ParentType }
+            let ctx =
+                xs
+                |> Seq.fold
+                    (fun ctx (k, s) ->
 
-                    { ctx with
-                        AllFuncs = yzlFunc :: ctx.AllFuncs
-                        ParentType =
-                            match ctx.ParentType with
-                            | None -> None
-                            | Some t ->
-                                Some
-                                    { t with
-                                        Functions = yzlFunc :: t.Functions } })
+                        let rec dataType (s': JsonSchema) =
+                            match s' with
+                            | Patterns.Integer _ -> Int
+                            | Patterns.Number _ -> Float
+                            | Patterns.String _ -> String
+                            | Patterns.Enum _ -> Enum
+                            | Patterns.Boolean _ -> Boolean
+                            | Patterns.Array x -> Seq(dataType x)
+                            | Patterns.PatternProperties _ -> PatternProperties
+                            | Patterns.Reference ref ->
+                                let def =
+                                    schema.Definitions
+                                    |> Seq.tryFind (fun (KeyValue(_, v)) -> v = ref)
+
+                                match def with
+                                | Some d -> Reference(toTypeName d.Key)
+                                | None -> Node
+                            | Patterns.Object _ -> InlineObject
+                            | _ -> Node
+
+                        let yzlFunc =
+                            { Name = k
+                              Description = s.Description |> toOption
+                              Kind = dataType s
+                              Parent = ctx.ParentType }
+
+                        // Recursively create sub-types for inline nested objects
+                        let ctx =
+                            match s with
+                            | Patterns.Properties _ ->
+                                let subType =
+                                    { Name = toTypeName k
+                                      Description = s.Description |> toOption
+                                      Functions = [] }
+
+                                let savedParent = ctx.ParentType
+                                let ctxAfterSub = metadata s { ctx with ParentType = Some subType }
+
+                                match ctxAfterSub.ParentType with
+                                | None -> ctxAfterSub
+                                | Some completedSub ->
+                                    let alreadyExists =
+                                        ctxAfterSub.AllTypes |> List.exists (fun t -> t.Name = completedSub.Name)
+
+                                    { ctxAfterSub with
+                                        AllTypes =
+                                            if alreadyExists then ctxAfterSub.AllTypes
+                                            else completedSub :: ctxAfterSub.AllTypes
+                                        ParentType = savedParent }
+                            | _ -> ctx
+
+                        { ctx with
+                            AllFuncs = yzlFunc :: ctx.AllFuncs
+                            ParentType =
+                                match ctx.ParentType with
+                                | None -> None
+                                | Some t ->
+                                    Some
+                                        { t with
+                                            Functions = yzlFunc :: t.Functions } })
+                    ctx
+
+            if rootTypeCreated then
+                match ctx.ParentType with
+                | None -> ctx
+                | Some t -> { ctx with AllTypes = t :: ctx.AllTypes; ParentType = None }
+            else
                 ctx
+
         | _ -> ctx
 
     let ctx =
@@ -332,43 +385,36 @@ let main argv =
                   newLine
                   yield! renderAdditionalMembers t ])
 
-        let renderAutoOpenModule () =
+        let renderBuildersType () =
             let allFuncs =
                 x.AllTypes
                 |> List.collect (fun t -> t.Functions)
-                |> List.groupBy (fun f -> f.Name)
-                |> List.choose (fun (_, funcs) ->
-                    match funcs |> List.distinctBy (fun f -> f.Kind) with
-                    | [ f ] -> Some f
-                    | _ -> None)
+                |> List.distinctBy (fun f -> (f.Name, renderTypeAnnotation f))
 
-            let renderLetBinding (f: YzlFunc) =
-                let isInline =
-                    match f.Kind with
-                    | String | Enum | Seq _ -> true
-                    | _ -> false
+            let renderMember (f: YzlFunc) =
+                let render (typeAnnotation: YzlFunc -> string) =
+                    [ newLine
+                      "  static member "
+                      f.Name |> escapeFSharpKeywords
+                      " (value: "
+                      typeAnnotation f
+                      ")  = "
+                      yzlFunc f
+                      "(value, \""
+                      f.Name
+                      "\")" ]
 
-                let letKw = if isInline then "let inline " else "let "
-                let escapedName = f.Name |> escapeFSharpKeywords
-
-                [ "  "
-                  letKw
-                  escapedName
-                  " value = "
-                  yzlFunc f
-                  "(value, \""
-                  f.Name
-                  "\")"
-                  newLine ]
+                [ yield! render renderTypeAnnotation
+                  match f.Kind with
+                  | String -> yield! render (fun _ -> "Str")
+                  | _ -> () ]
 
             [ newLine
-              "[<AutoOpen>]"
-              newLine
-              "module Builders ="
-              newLine
-              yield! allFuncs |> List.collect renderLetBinding ]
+              "type Builders() ="
+              yield! allFuncs |> List.collect renderMember
+              newLine ]
 
-        Seq.append allStrings (renderAutoOpenModule ()) |> String.concat ""
+        Seq.append allStrings (renderBuildersType ()) |> String.concat ""
 
     let header = $"// Auto-generated by Yzl.Bindings.Gen - do not edit manually.\n// Source schema: {schemaPath}\nnamespace rec {namespaceName}\nopen Yzl.Core\n\n"
 
