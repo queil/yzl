@@ -112,7 +112,7 @@ type job_template() =
   /// Job will run *except* for when these filtering options match.
   static member except (value: NamedNode list)  = Yzl.map(value, "except")
   /// The list of jobs in previous stages whose sole completion is needed to start the current job.
-  static member needs (value: Node list)  = Yzl.named(value |> SeqNode, "needs")
+  static member needs (value: NamedNode list list)  = Yzl.seq(value, "needs")
   /// The name of one or more jobs to inherit configuration from.
   static member extends (value: Node)  = Yzl.named(value, "extends")
   /// Job will run *only* when these filtering options match.
@@ -321,7 +321,7 @@ type baseInput() =
   static member ``default`` (value: Node)  = Yzl.named(value, "default")
   static member regex (value: string)  = Yzl.str(value, "regex")
   static member regex (value: Str)  = Yzl.str(value, "regex")
-  static member options (value: Node list)  = Yzl.named(value |> SeqNode, "options")
+  static member options (value: NamedNode list list)  = Yzl.seq(value, "options")
   static member description (value: string)  = Yzl.str(value, "description")
   static member description (value: Str)  = Yzl.str(value, "description")
   static member ``type`` (value: string)  = Yzl.str(value, "type")
@@ -453,7 +453,7 @@ type Builders() =
   static member allow_failure (value: NamedNode list)  = Yzl.map(value, "allow_failure")
   static member tags (value: NamedNode list)  = Yzl.map(value, "tags")
   static member except (value: NamedNode list)  = Yzl.map(value, "except")
-  static member needs (value: Node list)  = Yzl.named(value |> SeqNode, "needs")
+  static member needs (value: NamedNode list list)  = Yzl.seq(value, "needs")
   static member extends (value: Node)  = Yzl.named(value, "extends")
   static member only (value: NamedNode list)  = Yzl.map(value, "only")
   static member stage (value: Node)  = Yzl.named(value, "stage")
@@ -503,7 +503,7 @@ type Builders() =
   static member on_job_failure (value: Str)  = Yzl.str(value, "on_job_failure")
   static member regex (value: string)  = Yzl.str(value, "regex")
   static member regex (value: Str)  = Yzl.str(value, "regex")
-  static member options (value: Node list)  = Yzl.named(value |> SeqNode, "options")
+  static member options (value: NamedNode list list)  = Yzl.seq(value, "options")
   static member ``type`` (value: string)  = Yzl.str(value, "type")
   static member ``type`` (value: Str)  = Yzl.str(value, "type")
   static member reports (value: NamedNode list)  = Yzl.map(value, "reports")

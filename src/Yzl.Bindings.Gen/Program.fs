@@ -300,6 +300,7 @@ let main argv =
                 | SchemaKind.String -> "string"
                 | SchemaKind.Enum -> "string"
                 | SchemaKind.Boolean -> "bool"
+                | SchemaKind.Seq SchemaKind.Node -> "NamedNode list list"
                 | SchemaKind.Seq kind -> sprintf "%s list" <| kindToType kind
                 | SchemaKind.PatternProperties -> "NamedNode list"
                 | SchemaKind.Reference _ -> "NamedNode list"
@@ -314,7 +315,6 @@ let main argv =
             | SchemaKind.Float -> "Yzl.float"
             | SchemaKind.String -> "Yzl.str"
             | SchemaKind.Enum -> "Yzl.str"
-            | SchemaKind.Seq SchemaKind.Node -> "Yzl.named"
             | SchemaKind.Seq _ -> "Yzl.seq"
             | SchemaKind.Boolean -> "Yzl.boolean"
             | SchemaKind.Reference _
@@ -322,10 +322,7 @@ let main argv =
             | SchemaKind.InlineObject -> "Yzl.map"
             | _ -> "Yzl.named"
 
-        let renderImpl (f: YzlFunc) =
-            match f.Kind with
-            | Seq SchemaKind.Node -> "value |> SeqNode"
-            | _ -> "value"
+        let renderImpl (f: YzlFunc) = "value"
 
         let renderAdditionalMembers (t: YzlType) =
             [ "  static member Default = "

@@ -7,7 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Tests.fs" />
-    <!--<Compile Include="Bindings.fs" />-->
+    <Compile Include="Bindings.fs" />
     <Compile Include="Example.fs" />
     <Compile Include="StringsTests.fs" />
     <Compile Include="Main.fs" />
@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../src/Yzl/Yzl.fsproj" />
-    <!--<ProjectReference Include="../src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />-->
+    <ProjectReference Include="../src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="yaml/*.yaml" CopyToOutputDirectory="PreserveNewest" />

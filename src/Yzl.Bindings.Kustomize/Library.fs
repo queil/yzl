@@ -234,11 +234,11 @@ type Kustomization() =
   /// JSONPatches is a list of JSONPatch for applying JSON patch. See http://jsonpatch.com
   static member patchesJson6902 (value: NamedNode list list)  = Yzl.seq(value, "patchesJson6902")
   /// Apply a patch to multiple resources
-  static member patches (value: Node list)  = Yzl.named(value |> SeqNode, "patches")
+  static member patches (value: NamedNode list list)  = Yzl.seq(value, "patches")
   /// OpenAPI contains information about what kubernetes schema to use
   static member openapi (value: NamedNode list)  = Yzl.map(value, "openapi")
   /// Substitute field(s) in N target(s) with a field from a source
-  static member replacements (value: Node list)  = Yzl.named(value |> SeqNode, "replacements")
+  static member replacements (value: NamedNode list list)  = Yzl.seq(value, "replacements")
   /// Namespace to add to all objects
   static member ``namespace`` (value: string)  = Yzl.str(value, "namespace")
   /// Namespace to add to all objects
@@ -472,9 +472,9 @@ type Builders() =
   static member replicas (value: NamedNode list list)  = Yzl.seq(value, "replicas")
   static member patchesStrategicMerge (value: string list)  = Yzl.seq(value, "patchesStrategicMerge")
   static member patchesJson6902 (value: NamedNode list list)  = Yzl.seq(value, "patchesJson6902")
-  static member patches (value: Node list)  = Yzl.named(value |> SeqNode, "patches")
+  static member patches (value: NamedNode list list)  = Yzl.seq(value, "patches")
   static member openapi (value: NamedNode list)  = Yzl.map(value, "openapi")
-  static member replacements (value: Node list)  = Yzl.named(value |> SeqNode, "replacements")
+  static member replacements (value: NamedNode list list)  = Yzl.seq(value, "replacements")
   static member nameSuffix (value: string)  = Yzl.str(value, "nameSuffix")
   static member nameSuffix (value: Str)  = Yzl.str(value, "nameSuffix")
   static member namePrefix (value: string)  = Yzl.str(value, "namePrefix")

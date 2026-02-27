@@ -5,6 +5,7 @@ module Bindings =
   open Expecto
   open Yzl
   open Yzl.Bindings.Kustomize
+  open type Yzl.Bindings.Kustomize.Builders
 
 
 
@@ -63,6 +64,34 @@ configMapGenerator:
                   "two.env"
                 ]
                 name "cm" ]
+            ]
+          ]
+
+        "Rendering failed" |> Expect.equal (yaml |> Yzl.render) expected
+      }
+
+      test "Kustomize - patches" {
+
+        let expected =
+          """apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+- path: app-settings-secret.yaml
+  target:
+    kind: SealedSecret
+    name: app-settings-secret
+"""
+
+        let yaml =
+          Kustomization.yzl [
+            apiVersion "kustomize.config.k8s.io/v1beta1"
+            kind "Kustomization"
+            patches [
+              [ path "app-settings-secret.yaml"
+                target [
+                  kind "SealedSecret"
+                  name "app-settings-secret"
+                ] ]
             ]
           ]
 
