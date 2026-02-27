@@ -19,4 +19,4 @@ jobs:
           for proj in src/Yzl.Bindings.*/*.fsproj; do
             dotnet pack "$proj" -c Release -o artifacts
           done
-          dotnet nuget push artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+          dotnet nuget push artifacts/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
