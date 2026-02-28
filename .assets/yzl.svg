@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="easelGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4AE3B5;stop-opacity:1" /> <stop offset="100%" style="stop-color:#3A8DDE;stop-opacity:1" /> </linearGradient>
+  </defs>
+
+  <path d="M50 30 h100 a10 10 0 0 1 10 10 v100 a10 10 0 0 1 -10 10 h-30 l-20 20 l-20 -20 h-30 a10 10 0 0 1 -10 -10 v-100 a10 10 0 0 1 10 -10 Z" fill="url(#easelGradient)" />
+
+  <path d="M60 40 h80 a5 5 0 0 1 5 5 v80 a5 5 0 0 1 -5 5 h-80 a5 5 0 0 1 -5 -5 v-80 a5 5 0 0 1 5 -5 Z" fill="white" />
+
+  <rect x="70" y="60" width="50" height="8" rx="2" fill="url(#easelGradient)" />
+  <rect x="70" y="75" width="30" height="8" rx="2" fill="url(#easelGradient)" />
+  <rect x="85" y="90" width="45" height="8" rx="2" fill="url(#easelGradient)" />
+  <rect x="85" y="105" width="40" height="8" rx="2" fill="url(#easelGradient)" />
+</svg>
