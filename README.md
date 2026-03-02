@@ -1,3 +1,5 @@
+<img src=".assets/yzl.png" alt="yzl logo" width="128" align="right"/>
+
 # yzl [![Build Status](https://dev.azure.com/queil/yzl/_apis/build/status/queil.yzl?branchName=master)](https://dev.azure.com/queil/yzl/_build/latest?definitionId=2&branchName=master) [![NuGet Badge](https://buildstats.info/nuget/Yzl?includePreReleases=true)](https://www.nuget.org/packages/Yzl) ![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/queil/yzl/2)
 
 yzl /ˈiːz(ə)l/ - YAML Zero-Language - F# DSL for YAML
