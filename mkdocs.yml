@@ -9,7 +9,7 @@ theme:
   name: material
   logo: assets/yzl.svg
   palette:
-    primary: teal
+    primary: black
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
