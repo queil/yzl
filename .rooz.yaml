@@ -1,4 +1,20 @@
-image: ghcr.io/queil/image:dotnet-8
+vars:
+  port: 8000
+
+image: ghcr.io/queil/image:dotnet-10
 shell: ["zellij", "--layout", "fsharp"]
 caches:
 - ~/.nuget
+
+data:
+  /work: work
+
+sidecars:
+  mkdocs:
+    image: "ghcr.io/queil/image:mkdocs"
+    command: ["mkdocs", "serve", "-a", "0.0.0.0:{{ port }}"]
+    ports:
+    - "{{ port }}"
+    mounts:
+    - /work: work
+    work_dir: "/work/yzl"
