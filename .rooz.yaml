@@ -7,8 +7,11 @@ caches:
 - ~/.nuget
 
 data:
-  /work: work
+  work: {}
 
+mounts:
+  /work: work
+  
 sidecars:
   mkdocs:
     image: "ghcr.io/queil/image:mkdocs"
@@ -16,5 +19,5 @@ sidecars:
     ports:
     - "{{ port }}"
     mounts:
-    - /work: work
+      /work: work
     work_dir: "/work/yzl"
