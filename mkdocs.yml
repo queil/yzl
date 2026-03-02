@@ -5,8 +5,9 @@ nav:
 - Home: index.md
 - API Reference: reference/index.md
 - Contributing: contributing.md
-theme: 
+theme:
   name: material
+  logo: assets/yzl.svg
   palette:
     primary: teal
 markdown_extensions:
