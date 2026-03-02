@@ -11,8 +11,13 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/queil/yzl</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <VersionPrefix>0.3.0</VersionPrefix>
+    <PackageIcon>yzl.png</PackageIcon>
+    <VersionPrefix>0.4.0</VersionPrefix>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\.assets\yzl.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
   <ItemGroup>
 
