@@ -4,6 +4,7 @@
     <Project Path="src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />
     <Project Path="src/Yzl.Bindings.SealedSecrets/Yzl.Bindings.SealedSecrets.fsproj" />
     <Project Path="src/Yzl/Yzl.fsproj" />
+    <Project Path="src/Yzl.Patch/Yzl.Patch.fsproj" />
   </Folder>
   <Project Path="tests/Yzl.Tests.Unit.fsproj" />
 </Solution>

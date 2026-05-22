@@ -10,6 +10,7 @@
     <Compile Include="Bindings.fs" />
     <Compile Include="Example.fs" />
     <Compile Include="StringsTests.fs" />
+    <Compile Include="PatchTests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="../src/Yzl/Yzl.fsproj" />
     <ProjectReference Include="../src/Yzl.Bindings.Kustomize/Yzl.Bindings.Kustomize.fsproj" />
+    <ProjectReference Include="../src/Yzl.Patch/Yzl.Patch.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="yaml/*.yaml" CopyToOutputDirectory="PreserveNewest" />
